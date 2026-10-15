@@ -94,6 +94,16 @@ AI-generated puzzles must pass deterministic validation before reaching the play
 - local save profile
 - optional local AI backend for secret-safe LLM calls
 
+## Engine Version
+
+MindForge is pinned to **Godot 4.5 (stable)**, standard (non-.NET) build, using the GL Compatibility renderer. `project.godot` declares this in `config/features`. Upgrade the pin only in a dedicated task.
+
+Headless boot check (loads the project and runs the main scene for two frames):
+
+```bash
+GODOT=/path/to/godot tools/check_boot.sh
+```
+
 ## MVP
 
 The first portfolio-ready release should contain:

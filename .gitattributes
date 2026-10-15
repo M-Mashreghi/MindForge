@@ -1,2 +1,11 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Normalize line endings so Godot files diff cleanly across platforms.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+*.png binary
+*.jpg binary
+*.ogg binary
+*.wav binary
+*.ttf binary
+*.otf binary

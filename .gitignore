@@ -1,0 +1,21 @@
+# Godot 4 editor/import cache
+.godot/
+*.translation
+*.import.tmp
+
+# Secrets
+.env
+
+# Build / export output
+exports/
+export_credentials.cfg
+
+# Optional AI backend
+backend/.venv/
+backend/__pycache__/
+
+# Misc
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
