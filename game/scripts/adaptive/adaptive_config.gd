@@ -34,3 +34,7 @@ var logistic_scale: float = 250.0
 var k_factor: float = 40.0
 ## Hard cap on rating movement from a single puzzle.
 var max_delta_per_event: float = 30.0
+
+## Family vs overall updates (Task 3.4): the puzzle's family moves with the
+## full K, overall moves conservatively with this fraction of it.
+var overall_k_weight: float = 0.35

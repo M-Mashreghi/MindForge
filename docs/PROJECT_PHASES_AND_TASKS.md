@@ -787,7 +787,7 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 
 ### Task 3.4: Family-Specific and Overall Skill Updates
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 3 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -804,13 +804,19 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(3.4): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(3.4): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `SkillModel.apply()` (`game/scripts/adaptive/skill_model.gd`): the puzzle's family rating moves with the full K; overall moves with `overall_k_weight` 0.35 of it; all other families stay unchanged (no cross-family rule in v1). Observation counts increase for the family and overall.
+- Every update returns a record with algorithm version, family, difficulty, puzzle confidence, observed score and, for family and overall, expected success, K, rating / confidence / observations before and after.
+- `PlayerProfile` applies every validated puzzle result from `EventBus.puzzle_resolved` (placeholder results ignored), using calibrated difficulty when present, and keeps the last 50 update records in `history`. The puzzle result identity now includes `time_band_seconds` so timing can be normalized.
+- Validation: `tools/run_tests.sh` — 141 passed, 0 failed (adds `tests/unit/test_skill_model.gd`); `tools/check_boot.sh` OK.
 
 ---
 

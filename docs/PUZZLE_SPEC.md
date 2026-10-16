@@ -51,7 +51,8 @@ Implementation: `game/scripts/puzzles/puzzle_schema.gd` checks the common fields
   "fingerprint": "...",
   "target_difficulty": 520,
   "calibrated_difficulty": null,
-  "difficulty_confidence": 0.0
+  "difficulty_confidence": 0.0,
+  "time_band_seconds": [10, 35]
 }
 ```
 

@@ -72,6 +72,7 @@ func identity() -> Dictionary:
 		"target_difficulty": target_difficulty,
 		"calibrated_difficulty": calibrated_difficulty,
 		"difficulty_confidence": difficulty_confidence,
+		"time_band_seconds": time_band_seconds,
 	}
 
 
