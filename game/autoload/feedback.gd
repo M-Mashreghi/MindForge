@@ -28,12 +28,16 @@ const SOUND_SPECS := {
 
 var sounds: Dictionary = {}
 var last_played: StringName = &""
+## Headless runs (tests, tools) only record what would play: there is no
+## audio output and playbacks would outlive the process.
+var output_enabled: bool = true
 var _players: Array[AudioStreamPlayer] = []
 var _next_player := 0
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	output_enabled = DisplayServer.get_name() != "headless"
 	_ensure_bus()
 	for kind in SOUND_SPECS:
 		sounds[kind] = _synthesize(SOUND_SPECS[kind])
@@ -59,11 +63,13 @@ func _exit_tree() -> void:
 func play(kind: StringName) -> bool:
 	if not sounds.has(kind):
 		return false
+	last_played = kind
+	if not output_enabled:
+		return true
 	var player := _players[_next_player]
 	_next_player = (_next_player + 1) % _players.size()
 	player.stream = sounds[kind]
 	player.play()
-	last_played = kind
 	return true
 
 
