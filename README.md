@@ -92,14 +92,14 @@ Open the next room ← Reward score & XP ← Pick the next puzzle in the target 
 ### 🎯 Adaptive difficulty that stays fair
 - **Per-family skill** (pattern, logic, memory) plus an overall rating, each with **confidence** and an observation count. Being strong at one family never inflates another.
 - **Elo-style updates** with confidence-aware K: newcomers settle quickly, experienced players move gradually, and every puzzle is capped at ±45 rating points. Parameters were tuned with simulated players and are guarded by balance regression fixtures.
-- **Predicted-success targeting**: standard rooms aim for 70–80 %; breather, challenge and boss rooms have their own bands.
+- **Predicted-success targeting**: standard rooms aim for 65–75 % success, so most rooms make you think; breather, challenge and boss rooms have their own bands. Retuned after playtesting found the first version too easy.
 - **Anti-oscillation**: consecutive targets are smoothed and step-capped, so one lucky answer or one slip never swings the dungeon.
 - **Recovery mode with hysteresis**: after repeated failures the game eases off (without trivialising) and returns to normal only after a stable success streak.
-- **Warm-up calibration**: three gentle rooms for a new profile, one per family; you can skip them.
+- **Warm-up calibration**: three warm-up rooms for a new profile, one per family; you can skip them.
 
 ### 🧩 Content that is always solvable
 - **Three puzzle families** with deterministic solvers and validators.
-- **Solver-first procedural generators**: a seed picks structured parameters, and the solver derives the answer. Difficulty comes from structure (rule depth, item count, clue types, path length and scatter), never from obscure wording.
+- **Solver-first procedural generators**: a seed picks structured parameters, and the solver derives the answer. Difficulty comes from structure (rule depth, item count, clue types, path length and scatter), never from obscure wording. At the top tier: 6-item logic orderings with no direct clues, 8-9 cell memory paths on a 5×5 grid, and pattern recurrences from four terms.
 - **Logic uniqueness**: generated logic puzzles have exactly one solution, and harder ones need every clue.
 - **One 8-stage validation pipeline** for bundled, procedural and (future) AI content.
 
@@ -133,7 +133,7 @@ Open the next room ← Reward score & XP ← Pick the next puzzle in the target 
 - **Local telemetry only**: one schema-checked event per puzzle, with no personal data and nothing uploaded. Press **F9** for a read-only debug overlay.
 - **Simulated players** with known ability test the adaptive engine for convergence, oscillation and recovery.
 - **Empirical calibration** estimates each puzzle's real difficulty from play data, without touching its authored target.
-- **Adaptive vs static**: with the same simulated players, adaptive puts 53% of rooms in the right challenge range against 23% for a fixed ramp, and too-hard rooms fall from 49% to 10% ([report](docs/reports/adaptive_vs_static.md)).
+- **Adaptive vs static**: with the same simulated players, adaptive puts 47% of rooms in the right challenge range against 23% for a fixed ramp, and too-hard rooms fall from 49% to 17% ([report](docs/reports/adaptive_vs_static.md)).
 
 ---
 
@@ -145,7 +145,7 @@ flowchart LR
     N --> E[Elo-style update<br/>confidence-aware K, ±45 cap]
     E --> S[(Family skill<br/>+ confidence)]
     S --> P[Predicted success<br/>logistic model]
-    P --> B[Target band<br/>standard 70-80%]
+    P --> B[Target band<br/>standard 65-75%]
     B --> SM[Smoothing +<br/>recovery mode]
     SM --> SC[Scheduler<br/>fit + variety + coverage]
     SC --> NX[Next room's puzzle]
@@ -156,7 +156,7 @@ flowchart LR
 | Expected success | `1 / (1 + 10^((difficulty − skill) / 250))` |
 | Observed score | correct ≥ 0.45, incorrect ≤ 0.20; capped penalties for extra attempts (0.3 each), hints and slowness |
 | Update | `Δ = clamp(K × (observed − expected), −45, +45)`, with K from 90 (new) down to 14 (confident) |
-| Target bands | recovery 0.85–0.93 · standard 0.70–0.80 · challenge 0.55–0.68 · boss 0.45–0.60 |
+| Target bands | recovery 0.85–0.93 · standard 0.65–0.75 · challenge 0.52–0.64 · boss 0.42–0.56 |
 | Recovery | enter after 3 failures in 4 (or 2 hint exhaustions / abandons); exit after 3 straight successes |
 
 All parameters live in [`game/scripts/adaptive/adaptive_config.gd`](game/scripts/adaptive/adaptive_config.gd) and are design hypotheses meant to be calibrated with simulations ([Phase 7](#roadmap)). Turn on `mindforge/debug/adaptive_log` in Project Settings to print every scheduling decision with its reasons.
