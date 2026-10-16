@@ -33,11 +33,26 @@ func band_for(room_type: StringName) -> Array:
 	return config.target_bands.get(room_type, config.target_bands[&"standard"])
 
 
+## Moves from the previous target toward the new one by a fraction of the
+## gap, never more than `max_target_step`, so consecutive rooms do not
+## swing between easy and hard.
+func smooth_target(previous: float, raw: float) -> float:
+	if is_nan(previous):
+		return raw
+	var step := clampf(config.target_smoothing * (raw - previous), -config.max_target_step, config.max_target_step)
+	return previous + step
+
+
 ## Target for one room. `candidates` are PuzzleData of the wanted family.
-func select(skill: float, room_type: StringName, candidates: Array) -> Dictionary:
+## `previous_target` is the last target difficulty for this family (NAN for
+## none); the new target is smoothed from it.
+func select(skill: float, room_type: StringName, candidates: Array, previous_target: float = NAN) -> Dictionary:
 	var band: Array = band_for(room_type)
-	var target_success := (float(band[0]) + float(band[1])) / 2.0
-	var target_difficulty: float = predictor.difficulty_for(skill, target_success)
+	var band_target_success := (float(band[0]) + float(band[1])) / 2.0
+	var raw_target: float = predictor.difficulty_for(skill, band_target_success)
+	var target_difficulty := smooth_target(previous_target, raw_target)
+	# Rank against the success the smoothed target actually implies.
+	var target_success: float = predictor.predict(skill, target_difficulty)
 	# Higher success means an easier puzzle, so the band's upper success
 	# bound gives the lower difficulty bound.
 	var difficulty_range := [predictor.difficulty_for(skill, band[1]), predictor.difficulty_for(skill, band[0])]
@@ -47,6 +62,9 @@ func select(skill: float, room_type: StringName, candidates: Array) -> Dictionar
 		"skill": skill,
 		"band": band.duplicate(),
 		"target_success": target_success,
+		"band_target_success": band_target_success,
+		"raw_target_difficulty": raw_target,
+		"smoothed": not is_equal_approx(raw_target, target_difficulty),
 		"target_difficulty": target_difficulty,
 		"difficulty_range": difficulty_range,
 		"content_bounds": [],

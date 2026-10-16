@@ -892,7 +892,7 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 
 ### Task 3.7: Confidence-Aware Updates and Anti-Oscillation
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 3 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -909,13 +909,20 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(3.7): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(3.7): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Confidence-aware K (`skill_model.gd`): K falls from `k_max` 56 at zero confidence to `k_min` 14 at full confidence, and is multiplied by `0.6 + 0.4 x puzzle difficulty confidence`, so uncalibrated puzzles influence ratings less. The per-puzzle cap (30) still applies.
+- Confidence rule: grows toward the 0.95 cap with outcomes that match expectation, shrinks after surprises (|observed - expected|).
+- Target smoothing (`difficulty_selector.gd`): each new family target moves 60% of the way toward the raw band target, at most 80 points per room; the decision reports `raw_target_difficulty`, `smoothed` and the success the smoothed target implies.
+- Regression fixtures in `tests/unit/test_anti_oscillation.gd`: lucky-answer spike and one-off failure stay bounded for confident players, newcomers move faster than veterans, uncalibrated puzzles are discounted, confidence grows/drops/caps, alternating outcomes stay in a narrow rating band, sudden skill jumps and alternating skill do not swing targets.
+- Validation: `tools/run_tests.sh` — 163 passed, 0 failed; `tools/check_boot.sh` OK.
 
 ---
 

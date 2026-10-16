@@ -31,6 +31,8 @@ var min_response_seconds: float = 0.5
 ## Elo-like update (Task 3.3). `logistic_scale` rating points of advantage
 ## multiply the odds of success by 10 (chess uses 400 on a wider scale).
 var logistic_scale: float = 250.0
+## Reference K for the plain Elo math; skill updates use the
+## confidence-aware k_max..k_min range below (Task 3.7).
 var k_factor: float = 40.0
 ## Hard cap on rating movement from a single puzzle.
 var max_delta_per_event: float = 30.0
@@ -47,3 +49,18 @@ var target_bands: Dictionary = {
 	&"challenge": [0.55, 0.68],
 	&"boss": [0.45, 0.60],
 }
+
+## Confidence-aware updates (Task 3.7). K shrinks from k_max (no confidence)
+## to k_min (full confidence). Puzzles with uncalibrated difficulty count
+## less: K is multiplied by puzzle_trust_floor + (1 - floor) * confidence.
+var k_max: float = 56.0
+var k_min: float = 14.0
+var puzzle_trust_floor: float = 0.6
+## Confidence grows with evidence that matches expectation and shrinks with
+## surprises (|observed - expected|).
+var confidence_gain: float = 0.12
+var confidence_drop: float = 0.15
+
+## Smoothing of consecutive target difficulties per family (Task 3.7).
+var target_smoothing: float = 0.6
+var max_target_step: float = 80.0

@@ -34,10 +34,14 @@ func apply(profile: RefCounted, family: StringName, difficulty: float, performan
 	}
 
 
-## K used for `key` before applying weights (Task 3.7 makes this
-## confidence-aware).
-func k_for(profile: RefCounted, key: StringName, _puzzle_confidence: float) -> float:
-	return config.k_factor
+## Confidence-aware K for `key`: low-confidence ratings move faster, high-
+## confidence ratings move gradually, and puzzles with uncalibrated
+## difficulty have less influence.
+func k_for(profile: RefCounted, key: StringName, puzzle_confidence: float) -> float:
+	var c: float = profile.confidence(key)
+	var k: float = lerpf(config.k_max, config.k_min, c / maxf(config.confidence_max, 0.0001))
+	var trust: float = config.puzzle_trust_floor + (1.0 - config.puzzle_trust_floor) * clampf(puzzle_confidence, 0.0, 1.0)
+	return k * trust
 
 
 func _update_key(profile: RefCounted, key: StringName, difficulty: float, observed: float, weight: float,
@@ -63,6 +67,11 @@ func _update_key(profile: RefCounted, key: StringName, difficulty: float, observ
 	}
 
 
-## Confidence after one observation (Task 3.7 defines the rule).
-func next_confidence(current: float, _observed: float, _expected: float) -> float:
-	return current
+## Confidence after one observation: grows toward the cap when the outcome
+## matched expectation, shrinks after a surprise. Bounded to 0..confidence_max.
+func next_confidence(current: float, observed: float, expected: float) -> float:
+	var surprise := absf(observed - expected)
+	var gain: float = config.confidence_gain * (1.0 - current) * (1.0 - surprise)
+	var loss: float = config.confidence_drop * surprise * current
+	var c := current + gain - loss
+	return clampf(c, 0.0, config.confidence_max)
