@@ -87,3 +87,13 @@ func test_feedback_and_disabled_input() -> void:
 	r.item_buttons[0].pressed.emit()
 	check_eq(r.board.order(), ["", "", ""], "input ignored when disabled")
 	check(r.initial_focus() == r.item_buttons[0], "first item gets focus")
+
+
+func test_focus_moves_to_next_item_then_submit() -> void:
+	var r := await _make()
+	r.item_buttons[0].grab_focus()
+	r.item_buttons[0].pressed.emit()
+	check(r.get_viewport().gui_get_focus_owner() == r.item_buttons[1], "focus moves to next unplaced item")
+	r.item_buttons[1].pressed.emit()
+	r.item_buttons[2].pressed.emit()
+	check(r.get_viewport().gui_get_focus_owner() == r.find_child("SubmitButton"), "focus on Submit when full")

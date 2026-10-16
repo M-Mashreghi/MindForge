@@ -9,9 +9,10 @@ extends "res://game/scenes/puzzles/puzzle_renderer.gd"
 
 const SymbolGlyph := preload("res://game/scenes/puzzles/symbol_glyph.gd")
 const LogicBoard := preload("res://game/scripts/puzzles/logic_board.gd")
+const PuzzleStyles := preload("res://game/scenes/puzzles/puzzle_styles.gd")
 
-const SLOT_SIZE := Vector2(92, 92)
-const ITEM_SIZE := Vector2(132, 64)
+const SLOT_SIZE := Vector2(80, 80)
+const ITEM_SIZE := Vector2(140, 56)
 
 @onready var _clue_list: VBoxContainer = %ClueList
 @onready var _slot_row: HBoxContainer = %SlotRow
@@ -43,6 +44,8 @@ func setup(puzzle_data: RefCounted, host_options: Dictionary = {}) -> void:
 		var slot := Button.new()
 		slot.custom_minimum_size = SLOT_SIZE
 		slot.focus_mode = Control.FOCUS_ALL
+		slot.add_theme_font_size_override("font_size", 26)
+		PuzzleStyles.apply_cell_style(slot)
 		slot.pressed.connect(_on_slot_pressed.bind(i))
 		var glyph := SymbolGlyph.new()
 		glyph.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -53,14 +56,27 @@ func setup(puzzle_data: RefCounted, host_options: Dictionary = {}) -> void:
 		var button := Button.new()
 		button.custom_minimum_size = ITEM_SIZE
 		button.focus_mode = Control.FOCUS_ALL
-		button.text = "      " + _label(item)
-		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.add_theme_font_size_override("font_size", 20)
+		button.tooltip_text = _label(item)
+		button.set_meta("item", item)
+		# Glyph + name laid out inside the button so they never overlap.
+		var row := HBoxContainer.new()
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		row.offset_left = 8
+		row.add_theme_constant_override("separation", 6)
 		var glyph := SymbolGlyph.new()
 		glyph.symbol = item
-		glyph.position = Vector2(6, 8)
-		glyph.size = Vector2(48, 48)
-		button.add_child(glyph)
+		glyph.custom_minimum_size = Vector2(48, 48)
+		glyph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(glyph)
+		var name_label := Label.new()
+		name_label.text = _label(item)
+		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		name_label.size_flags_vertical = Control.SIZE_FILL
+		name_label.add_theme_font_size_override("font_size", 20)
+		row.add_child(name_label)
+		button.add_child(row)
 		button.pressed.connect(_on_item_pressed.bind(item))
 		_item_row.add_child(button)
 		item_buttons.append(button)
@@ -95,6 +111,18 @@ func _on_item_pressed(item: String) -> void:
 	if _input_enabled:
 		_feedback_text = ""
 		board.place(item)
+		_focus_next_control()
+
+
+## Keeps keyboard/controller focus on something usable after a placement:
+## the next unplaced item, or Submit once the board is full.
+func _focus_next_control() -> void:
+	for button in item_buttons:
+		if not button.disabled:
+			button.grab_focus()
+			return
+	if not _submit_button.disabled:
+		_submit_button.grab_focus()
 
 
 func _on_slot_pressed(slot: int) -> void:
@@ -123,8 +151,9 @@ func _refresh() -> void:
 		slot_buttons[i].text = "" if item != "" else str(i + 1)
 		slot_buttons[i].tooltip_text = _label(item) if item != "" else "Empty slot %d" % (i + 1)
 	for button in item_buttons:
-		var item: String = button.get_child(0).symbol
+		var item: String = button.get_meta("item")
 		button.disabled = not _input_enabled or board.is_placed(item)
+		button.modulate.a = 0.45 if board.is_placed(item) else 1.0
 	_submit_button.disabled = not _input_enabled or not board.is_complete()
 	_reset_button.disabled = not _input_enabled
 	if _feedback_text != "":

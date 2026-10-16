@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://game/scenes/puzzles/logic/logic_renderer.gd" id="1_logic"]
 
 [node name="LogicRenderer" type="VBoxContainer"]
-theme_override_constants/separation = 18
+theme_override_constants/separation = 12
 script = ExtResource("1_logic")
 
 [node name="Instruction" type="Label" parent="."]
