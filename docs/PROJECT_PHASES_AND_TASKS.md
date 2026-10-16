@@ -390,7 +390,7 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 
 ### Task 2.3: Pattern Puzzle Renderer and Input Flow
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 2 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -407,13 +407,19 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(2.3): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(2.3): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Pattern renderer `game/scenes/puzzles/pattern/pattern_renderer.tscn`: draws `prompt.sequence` as tiles plus a `?` slot, and `prompt.choices` as large focusable buttons. Numbers render as text; symbol values render as distinct shapes (`symbol_glyph.gd`: circle, triangle, square, diamond, star, hexagon, cross, ring) with a name tooltip.
+- Response contract: `{"answer": <chosen value>}`. The renderer never judges; after the host's check it marks the choice with ✓ / ✗ (symbol and color), disables a wrong non-final choice and moves focus to the next enabled one.
+- Keyboard/controller: first choice is the initial focus; arrow keys move between choices, Enter/Space/A selects.
+- Validation: `tools/run_tests.sh` — 63 passed, 0 failed (adds `tests/integration/test_pattern_renderer.gd`); `tools/check_boot.sh` OK.
 
 ---
 

@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/scenes/puzzles/pattern/pattern_renderer.gd" id="1_pattern"]
+
+[node name="PatternRenderer" type="VBoxContainer"]
+theme_override_constants/separation = 24
+script = ExtResource("1_pattern")
+
+[node name="Instruction" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Which comes next?"
+horizontal_alignment = 1
+
+[node name="SequenceRow" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="ChoiceRow" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 18
