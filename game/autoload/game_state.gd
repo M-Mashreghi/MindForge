@@ -62,14 +62,15 @@ func end_run(reason: StringName = &"completed") -> Dictionary:
 	return summary
 
 
-## Records that the player is now in `room_id`.
-func enter_room(room_id: StringName) -> void:
+## Records that the player is now in `room_id`. `index` is the room's
+## position in the run; by default the next room after the current one.
+func enter_room(room_id: StringName, index: int = -1) -> void:
 	if not run_active:
 		push_warning("GameState.enter_room called without an active run")
 		return
 	if current_room_id != &"":
 		EventBus.room_exited.emit(current_room_id)
-	room_index += 1
+	room_index = index if index >= 0 else room_index + 1
 	current_room_id = room_id
 	EventBus.room_entered.emit(room_id, room_index)
 	EventBus.run_state_changed.emit()

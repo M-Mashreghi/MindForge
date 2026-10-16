@@ -12,6 +12,11 @@ const WALL_COLOR := Color(0.32, 0.3, 0.38)
 
 ## Emitted when the player reaches a door (the dungeon decides what happens).
 signal door_reached(door: Area2D)
+## Emitted once when the room's challenge succeeds.
+signal solved
+
+## True once the room's challenge succeeded (set from a puzzle result).
+var is_solved: bool = false
 
 @export var room_def: RoomDef
 
@@ -34,7 +39,23 @@ func _ready() -> void:
 	_place_door(exit_door, room_def.has_exit_door, Vector2(room_def.size.x, room_def.size.y / 2.0))
 	entry_door.player_reached.connect(door_reached.emit)
 	exit_door.player_reached.connect(door_reached.emit)
+	_refresh_door_states()
 	queue_redraw()
+
+
+## Marks the room's challenge as succeeded and opens the exit.
+func mark_solved() -> void:
+	if is_solved:
+		return
+	is_solved = true
+	_refresh_door_states()
+	solved.emit()
+
+
+## Exit stays locked until success; the entry is open only for retreat rooms.
+func _refresh_door_states() -> void:
+	exit_door.set_state(Door.State.SOLVED if is_solved else Door.State.LOCKED)
+	entry_door.set_state(Door.State.UNLOCKED if room_def.allows_retreat else Door.State.LOCKED)
 
 
 func get_room_id() -> StringName:
@@ -43,6 +64,11 @@ func get_room_id() -> StringName:
 
 func get_spawn_global_position() -> Vector2:
 	return spawn_point.global_position
+
+
+## Where the player stands when coming back into this room through its exit.
+func get_return_global_position() -> Vector2:
+	return to_global(Vector2(room_def.size.x - room_def.spawn_position().x, room_def.size.y / 2.0))
 
 
 ## Interior rectangle in local coordinates.

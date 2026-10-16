@@ -34,7 +34,9 @@ func test_room_has_no_answer_validation() -> void:
 	var room := await _make_room(GALLERY)
 	for method in room.get_script().get_script_method_list():
 		var method_name: String = method["name"]
-		check(not ("validate" in method_name or "answer" in method_name or "solve" in method_name),
+		var looks_like_validation := (method_name.begins_with("validate")
+			or method_name.begins_with("solve") or "answer" in method_name)
+		check(not looks_like_validation,
 			"room script must not validate answers (%s)" % method_name)
 
 

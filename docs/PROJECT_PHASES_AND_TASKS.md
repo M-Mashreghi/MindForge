@@ -244,7 +244,7 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 
 ### Task 1.7: Room Transition and Door State Flow
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 1 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -261,13 +261,21 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(1.7): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(1.7): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Door states (`game/scenes/rooms/door.gd`): `LOCKED` (a blocker body closes the gap), `UNLOCKED` (open, used for retreat entries) and `SOLVED` (exit open after success). Each state has a distinct shape, not only a color.
+- Room (`dungeon_room.gd`): exit stays `LOCKED` until `mark_solved()`; entry is `UNLOCKED` only when `RoomDef.allows_retreat`. Solved state is set from a puzzle result, never computed by the room.
+- Dungeon (`dungeon.gd`): fade-out / swap / fade-in transitions; next room through a passable exit, previous room through an unlocked entry (progress kept), final exit ends the run (`completed`) and returns to the menu. `GameState.enter_room()` now takes the room's sequence index.
+- Double-fire protection: `game/scripts/dungeon/transition_guard.gd` latch plus deferred transition start; player input is disabled while a transition runs.
+- Placeholder until Task 2.2: pressing interact at the puzzle pedestal emits `puzzle_started` / `puzzle_resolved` with a placeholder correct result.
+- Validation: `tools/run_tests.sh` — 37 passed, 0 failed (adds `tests/integration/test_room_transitions.gd`: door states, locked-door blocking, next/retreat/final transitions, wrong answer keeps exit locked, no double-fire); `tools/check_boot.sh` OK.
 
 ---
 
