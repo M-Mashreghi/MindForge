@@ -14,7 +14,7 @@ const ContentPipeline := preload("res://game/scripts/puzzles/content_pipeline.gd
 
 const ENABLED_SETTING := "mindforge/telemetry/enabled"
 const TOOL_SCRIPTS := ["res://tests/run_tests.gd", "res://tools/validate_puzzles.gd", "res://tools/ai_smoke_test.gd",
-	"res://tools/capture_screenshots.gd", "res://tools/simulate_players.gd", "res://tools/calibrate_difficulty.gd", "res://tools/telemetry_report.gd", "res://tools/compare_schedules.gd"]
+	"res://tools/capture_screenshots.gd", "res://tools/simulate_players.gd", "res://tools/calibrate_difficulty.gd", "res://tools/telemetry_report.gd", "res://tools/compare_schedules.gd", "res://tools/update_balance_fixtures.gd"]
 
 var enabled: bool = true
 var path: String = "user://telemetry/events.jsonl"

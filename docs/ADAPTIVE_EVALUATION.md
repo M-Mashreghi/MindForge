@@ -97,6 +97,7 @@ A balance release should be blocked when:
 - Metrics: `game/scripts/simulation/adaptive_metrics.gd` (band occupancy, true fit, convergence, final error, oscillation, sign flips, overshoot, recovery time; per family and overall).
 - Regression thresholds: `tests/unit/test_adaptive_metrics.gd` (strong not trapped low, struggling not overrated, average near the middle, families independent, improving players followed, bounded oscillation, target band hit, short recovery).
 - Adaptive vs static: `game/scripts/simulation/schedule_comparison.gd`; `tools/compare_schedules.gd` writes [reports/adaptive_vs_static.md](reports/adaptive_vs_static.md) (same latent players and seeds for both arms; fit, too-hard and too-easy shares, abandonment, hints, progression, oscillation, final error; no score).
+- Balance regression fixtures: `game/scripts/simulation/balance_fixtures.gd` freezes 12 cases (six archetypes, seeds 11 and 12, 36 rooms) in `tests/fixtures/balance/balance_baseline.json`. `tests/unit/test_balance_fixtures.gd` fails when a final estimate moves more than 40 points, success or hint rate more than 8 points, abandonment more than 5, true fit more than 10, or oscillation more than 10. It also fails when the algorithm, harness, player-model or fixture version differs from the fixture. An intended balance change bumps the version and regenerates the fixture with `tools/update_balance_fixtures.gd` (which prints the drift first), in the same commit.
 
 ### Findings (schedule-comparison-v1, seeds 1 to 3, 36 rooms)
 
