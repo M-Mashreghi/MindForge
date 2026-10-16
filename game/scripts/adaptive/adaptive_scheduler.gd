@@ -3,7 +3,8 @@ extends RefCounted
 ##
 ##   fit          closeness of predicted success to the room's target
 ##   novelty      strong penalty for a puzzle seen in the recent window
-##   variety      penalties for repeating the last mechanic / family
+##   variety      penalties for repeating recent mechanics / the last family
+##                (both from VarietyTracker cooldowns, relaxed in recovery)
 ##   coverage     bonus for a family not seen recently
 ##   weakness     small bonus for the weakest family, turned into a penalty
 ##                when the last two picks already drilled it
@@ -16,14 +17,21 @@ extends RefCounted
 
 const AdaptiveConfig := preload("res://game/scripts/adaptive/adaptive_config.gd")
 const DifficultySelector := preload("res://game/scripts/adaptive/difficulty_selector.gd")
+const VarietyTracker := preload("res://game/scripts/adaptive/variety_tracker.gd")
 
 var config: RefCounted
 var selector: RefCounted
+## Family/mechanic/fingerprint cooldowns (soft penalties only).
+var variety: RefCounted = VarietyTracker.new()
 
 
 func _init(adaptive_config: RefCounted = null) -> void:
 	config = adaptive_config if adaptive_config else AdaptiveConfig.new()
 	selector = DifficultySelector.new(config)
+	variety.fingerprint_cooldown = config.schedule_recent_window
+	variety.fingerprint_penalty = config.schedule_repeat_penalty
+	variety.mechanic_penalty = config.schedule_same_mechanic_penalty
+	variety.family_penalty = config.schedule_same_family_penalty
 
 
 ## `request` keys:
@@ -97,22 +105,11 @@ func _score(entry: Dictionary, decision: Dictionary, family: StringName, recent:
 	c["fit"] = 1.0 - minf(miss / config.schedule_fit_tolerance, 1.0)
 	reasons.append("fit %.2f (predicted %.0f%% vs target %.0f%%)" % [c["fit"], entry["predicted_success"] * 100.0,
 		decision["target_success"] * 100.0])
-	c["novelty"] = 0.0
-	if recent.any(func(h): return h["fingerprint"] == puzzle.fingerprint):
-		c["novelty"] = -config.schedule_repeat_penalty
-		reasons.append("seen recently")
-	c["variety"] = 0.0
-	if not recent.is_empty():
-		var last: Dictionary = recent[-1]
-		if last["mechanic"] == puzzle.mechanic:
-			c["variety"] -= config.schedule_same_mechanic_penalty
-			reasons.append("same mechanic as last room")
-		if last["family"] == family:
-			c["variety"] -= config.schedule_same_family_penalty
-			reasons.append("same family as last room")
-			if recent.size() >= 2 and recent[-2]["family"] == family:
-				c["variety"] -= config.schedule_same_family_penalty
-				reasons.append("same family twice in a row")
+	var cooldowns: Dictionary = variety.evaluate(puzzle, request.get("history", []),
+		request.get("recovery_active", false))
+	c["novelty"] = cooldowns["novelty"]
+	c["variety"] = cooldowns["variety"]
+	reasons.append_array(cooldowns["reasons"])
 	c["coverage"] = 0.0
 	var last_three := recent.slice(maxi(0, recent.size() - 3))
 	if not last_three.any(func(h): return h["family"] == family):

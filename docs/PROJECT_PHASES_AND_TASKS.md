@@ -1400,7 +1400,7 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 
 ### Task 5.3: Puzzle-Family Rotation and Anti-Repetition
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 5 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1417,13 +1417,19 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(5.3): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(5.3): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `VarietyTracker` (`game/scripts/adaptive/variety_tracker.gd`) tracks recent families, mechanics and fingerprints from the run history and applies cooldown penalties: puzzle seen in the last 6 rooms (-1.0), mechanic seen in the last 2 rooms (-0.25 each), same family as the last room (-0.2, and again for two in a row). The scheduler now takes its novelty/variety components from it, with the reasons in each decision.
+- Respects recovery: while recovering, the mechanic cooldown is waived (familiar mechanics are welcome) and the fingerprint cooldown shrinks to 2 rooms, so the just-failed puzzle is still not repeated immediately.
+- Penalties are soft only, so variety rules can never make selection impossible; tests run a single-puzzle pool and a single-family pool for many rooms and always get a puzzle.
+- Validation: `tools/run_tests.sh` — 252 passed, 0 failed (adds `tests/unit/test_variety.gd`); `tools/check_boot.sh` OK.
 
 ---
 
