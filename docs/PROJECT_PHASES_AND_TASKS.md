@@ -1506,7 +1506,7 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 
 ### Task 5.6: Local Procedural Memory Generator
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 5 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1523,13 +1523,19 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(5.6): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(5.6): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `MemoryGenerator` (`game/scripts/puzzles/generators/memory_generator.gd`, `memory-gen-v1`): deterministic targets from a seed with difficulty-controlled features: grid size (3x3 up to 5x4), length (3 up to 8), mode, and interference (easy paths step to neighbouring cells so they chunk well; harder paths scatter across the grid; expert uses a `length - 1` recall threshold).
+- Presentation timing is a separate optional input (tier defaults for show/gap/conceal); it never changes the generated target, and the fingerprint excludes it. Accessibility scaling is still applied only by the renderer, so a 3x schedule shows exactly the same cells.
+- Output is validated by `PuzzleData.parse()` (retries on failure); `ContentPool` now generates memory puzzles too, so generated runs have procedural content for all three families.
+- Validation: `tools/run_tests.sh` — 267 passed, 0 failed (adds `tests/unit/test_memory_generator.gd`); `tools/check_boot.sh` OK.
 
 ---
 
