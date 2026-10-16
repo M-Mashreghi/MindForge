@@ -1541,7 +1541,7 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 
 ### Task 5.7: Puzzle Solvability, Ambiguity and Content Quality Pipeline
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 5 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1558,13 +1558,20 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(5.7): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(5.7): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `ContentPipeline.validate()` (`game/scripts/puzzles/content_pipeline.gd`, `content-pipeline-v1`): one pipeline for local, procedural and AI content with ordered stages `schema` (shared fields via `PuzzleSchema.validate_common`), `bounds` (prompt size), `solver` (canonical solution derivable), `family` (family validator), `ambiguity` (new `ambiguity()` hook per family: one matching choice / exactly one logic solution / distinct memory cells), `fingerprint` (stored mismatch, duplicate id, duplicate mechanics), `safety` (plain short text, no control characters, markup, links or blocked words) and `hint_leak`.
+- Structured rejections `{stage, code, message}` plus the failing stage; a logic puzzle with several solutions is classified as `ambiguity`, not `unsolvable`.
+- `PuzzleCatalog.add_entry()` now goes through the pipeline, so bundled files, generated content (`ContentPool`) and the bank validation tool all share it; rejected entries keep their structured reasons.
+- Documented in `docs/PUZZLE_SPEC.md`.
+- Validation: `tools/run_tests.sh` — 272 passed, 0 failed (adds `tests/unit/test_content_pipeline.gd`: acceptance for every source, a rejection at each stage, duplicates, text rules, catalog reasons); `tools/validate_puzzles.sh` 18 valid; `tools/check_boot.sh` OK.
 
 ---
 

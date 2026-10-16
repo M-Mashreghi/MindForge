@@ -21,8 +21,25 @@ const REQUIRED_FIELDS := [
 ]
 
 
+## Full check: common fields, then the family validator, then hint leakage.
 ## Returns a list of human-readable errors; empty means valid.
 static func validate(puzzle: Variant) -> PackedStringArray:
+	var errors := validate_common(puzzle)
+	if not errors.is_empty():
+		return errors
+	var p: Dictionary = puzzle
+	var validator: Object = PuzzleRegistry.validator(StringName(p["family"]))
+	errors.append_array(validator.validate(p))
+	if not errors.is_empty():
+		return errors
+	# The first (lightest) hint must never give the answer away.
+	if HintLadder.leaks_answer(str(p["hints"][0]["text"]), validator.answer_tokens(p)):
+		errors.append("first hint reveals the answer")
+	return errors
+
+
+## Shared fields only (structure, versions, bounds, hints, provenance).
+static func validate_common(puzzle: Variant) -> PackedStringArray:
 	var errors: PackedStringArray = []
 	if typeof(puzzle) != TYPE_DICTIONARY:
 		errors.append("puzzle must be a dictionary")
@@ -71,16 +88,6 @@ static func validate(puzzle: Variant) -> PackedStringArray:
 		errors.append("presentation must be a dictionary")
 	if p.has("fingerprint") and typeof(p["fingerprint"]) != TYPE_STRING:
 		errors.append("fingerprint must be a string")
-	if not errors.is_empty():
-		return errors
-
-	var validator: Object = PuzzleRegistry.validator(StringName(p["family"]))
-	errors.append_array(validator.validate(p))
-	if not errors.is_empty():
-		return errors
-	# The first (lightest) hint must never give the answer away.
-	if HintLadder.leaks_answer(str(p["hints"][0]["text"]), validator.answer_tokens(p)):
-		errors.append("first hint reveals the answer")
 	return errors
 
 

@@ -78,6 +78,20 @@ func mechanic_label(puzzle: Dictionary) -> String:
 	return "memory:%s" % puzzle["prompt"]["mode"]
 
 
+## Ambiguity: every target cell must be distinct (a repeated cell would make
+## positions-mode recall ambiguous).
+func ambiguity(puzzle: Dictionary) -> PackedStringArray:
+	var target: Variant = puzzle["prompt"].get("target", [])
+	if typeof(target) != TYPE_ARRAY:
+		return PackedStringArray()
+	var seen := {}
+	for cell in target:
+		if seen.has(cell):
+			return PackedStringArray(["memory: repeated target cell %s" % str(cell)])
+		seen[cell] = true
+	return PackedStringArray()
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	var cells: Array = puzzle["prompt"]["target"]
 	return PackedStringArray([", ".join(cells.map(func(c): return str(int(c) + 1)))])

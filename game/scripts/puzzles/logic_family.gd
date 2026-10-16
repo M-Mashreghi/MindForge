@@ -84,6 +84,14 @@ func mechanic_label(puzzle: Dictionary) -> String:
 	return "logic:%s:%d" % [puzzle["prompt"]["template"], (puzzle["prompt"]["items"] as Array).size()]
 
 
+## Ambiguity: the clue set must have exactly one solution.
+func ambiguity(puzzle: Dictionary) -> PackedStringArray:
+	if not _structure_errors(puzzle["prompt"]).is_empty():
+		return PackedStringArray()
+	var count := all_solutions(puzzle["prompt"], 2).size()
+	return PackedStringArray() if count == 1 else PackedStringArray(["logic: %s solutions" % ("no" if count == 0 else "multiple")])
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	var order: Array = puzzle["solution"].get("order", [])
 	return PackedStringArray([", ".join(order.map(func(i): return str(i).capitalize()))])

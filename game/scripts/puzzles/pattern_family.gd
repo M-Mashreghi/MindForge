@@ -89,6 +89,16 @@ func mechanic_label(puzzle: Dictionary) -> String:
 	return "pattern:%s" % puzzle["prompt"]["rule"]
 
 
+## Ambiguity: exactly one option may match the derived answer.
+func ambiguity(puzzle: Dictionary) -> PackedStringArray:
+	var solved: Variant = solve(puzzle["prompt"])
+	if solved == null:
+		return PackedStringArray()
+	var matches: int = (puzzle["prompt"].get("choices", []) as Array).filter(
+		func(c): return CanonicalJson.equal(c, solved["answer"])).size()
+	return PackedStringArray() if matches == 1 else PackedStringArray(["pattern: %d choices match the answer" % matches])
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	var solved: Variant = solve(puzzle["prompt"])
 	return PackedStringArray([str(solved["answer"])]) if solved else PackedStringArray()

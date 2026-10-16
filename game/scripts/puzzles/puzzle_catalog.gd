@@ -5,12 +5,13 @@ extends RefCounted
 ## RNG, avoiding fingerprints already used in the run when possible.
 
 const PuzzleData := preload("res://game/scripts/puzzles/puzzle_data.gd")
+const ContentPipeline := preload("res://game/scripts/puzzles/content_pipeline.gd")
 
 const BANK_DIR := "res://game/resources/puzzle_bank"
 
 ## Valid PuzzleData instances, in file then list order.
 var puzzles: Array = []
-## [{"file", "index", "id", "errors"}] for every rejected entry.
+## [{"file", "index", "id", "errors", "rejections", "stage"}] for every rejected entry.
 var rejected: Array = []
 ## fingerprint -> PuzzleData, for duplicate detection and anti-repetition.
 var by_fingerprint: Dictionary = {}
@@ -37,19 +38,19 @@ func add_file(path: String) -> void:
 		add_entry(parsed["puzzles"][i], path, i)
 
 
+## Runs `raw` through the common content pipeline; accepted puzzles join
+## the catalog, rejections are recorded with their structured reasons.
 func add_entry(raw: Variant, file: String = "", index: int = -1) -> bool:
-	var result := PuzzleData.parse(raw)
-	var id: String = str(raw.get("id", "")) if typeof(raw) == TYPE_DICTIONARY else ""
-	var errors: PackedStringArray = result["errors"]
-	var puzzle: RefCounted = result["puzzle"]
-	if puzzle != null:
-		if _ids.has(puzzle.id):
-			errors.append("duplicate id '%s'" % puzzle.id)
-		elif by_fingerprint.has(puzzle.fingerprint):
-			errors.append("duplicate of '%s' (same fingerprint)" % by_fingerprint[puzzle.fingerprint].id)
-	if not errors.is_empty():
-		rejected.append({"file": file, "index": index, "id": id, "errors": errors})
+	var known := {"ids": _ids, "fingerprints": {}}
+	for fp in by_fingerprint:
+		known["fingerprints"][fp] = by_fingerprint[fp].id
+	var result := ContentPipeline.validate(raw, known)
+	if not result["accepted"]:
+		var id: String = str(raw.get("id", "")) if typeof(raw) == TYPE_DICTIONARY else ""
+		rejected.append({"file": file, "index": index, "id": id, "errors": ContentPipeline.messages(result),
+			"rejections": result["rejections"], "stage": result["stage"]})
 		return false
+	var puzzle: RefCounted = result["puzzle"]
 	puzzles.append(puzzle)
 	_ids[puzzle.id] = true
 	by_fingerprint[puzzle.fingerprint] = puzzle

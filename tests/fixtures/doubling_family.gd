@@ -30,5 +30,9 @@ func mechanic_label(_puzzle: Dictionary) -> String:
 	return "doubling"
 
 
+func ambiguity(_puzzle: Dictionary) -> PackedStringArray:
+	return PackedStringArray()
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	return PackedStringArray([str(solve(puzzle["prompt"])["answer"])])

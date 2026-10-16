@@ -161,3 +161,5 @@ Schema Parse
 ```
 
 Rejected or quarantined content never enters active gameplay.
+
+Implementation (`content-pipeline-v1`): `game/scripts/puzzles/content_pipeline.gd` is the single gate for bundled, procedural and (later) AI content. Stages: `schema` -> `bounds` -> `solver` -> `family` -> `ambiguity` -> `fingerprint` (mismatch / duplicate id / duplicate mechanics) -> `safety` (plain short text, no markup, links or blocked words) -> `hint_leak`. Each rejection is `{stage, code, message}`; `PuzzleCatalog` records them for every rejected entry.
