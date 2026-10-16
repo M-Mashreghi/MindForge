@@ -51,6 +51,13 @@ if [ -n "${GODOT:-}" ]; then
 	bash "$ROOT/tools/validate_puzzles.sh" || FAIL=1
 fi
 
+PY="$(command -v python || command -v python3 || true)"
+if [ -n "$PY" ] && [ -d "$ROOT/backend/tests" ]; then
+	echo "== AI proxy tests"
+	PY_OUT="$(cd "$ROOT" && "$PY" -m unittest discover -s backend/tests -t . 2>&1)" || FAIL=1
+	echo "$PY_OUT" | tail -3
+fi
+
 if [ $FAIL -ne 0 ]; then
 	echo "precommit: FAILED" >&2
 	exit 1

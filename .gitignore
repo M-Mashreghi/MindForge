@@ -13,6 +13,7 @@ export_credentials.cfg
 # Optional AI backend
 backend/.venv/
 backend/__pycache__/
+backend/**/__pycache__/
 
 # Misc
 *.tmp

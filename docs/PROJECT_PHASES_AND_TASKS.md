@@ -1650,7 +1650,7 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 
 ### Task 6.2: Optional Secret-Safe AI Proxy Skeleton
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 6 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1667,13 +1667,21 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(6.2): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(6.2): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Optional proxy in `backend/` (Python standard library HTTP server, `python -m backend.app.server`): `GET /health`, `POST /v1/puzzle`. Bound to `127.0.0.1` by default, request bodies limited to 16 KB, provider output to 6 KB, provider timeout 20 s (configurable), typed error codes (`timeout`, `rate_limited`, `refused`, `invalid_request`, ...).
+- Provider abstraction (`backend/app/providers/`): `MockProvider` (offline, deterministic structured proposals; used when no key is set and in tests) and `AnthropicProvider` (official Anthropic Python SDK, default model `claude-opus-5-5`, JSON-schema structured output with the game's schema, server-side refusal fallbacks, refusal reported as an error).
+- Secret safety: keys only from environment variables (`.env.example` documents them; `.env` is git-ignored); `/health` and logs never include the key; the client never receives it. The proxy never interprets model output; the game validates it.
+- Core gameplay runs with the proxy absent (nothing in the game depends on it yet; the adapter in Task 6.3 treats it as optional). `backend/.gdignore` keeps it out of Godot imports.
+- Pre-commit runs the proxy tests when Python is available. `backend/README.md` documents setup and safety.
+- Validation: `python -m unittest discover -s backend/tests -t .` — 7 passed (config/key exposure, default model, mock determinism, bounds and validation, typed provider errors, oversized output, HTTP round trip); `tools/run_tests.sh` — 282 passed; `tools/check_boot.sh` OK.
 
 ---
 
