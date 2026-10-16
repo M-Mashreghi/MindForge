@@ -27,6 +27,36 @@
 
 Implementation: `game/scripts/puzzles/puzzle_schema.gd` checks the common fields (bounds, versions, hint ordering by non-decreasing cost, provenance) and then the family validator registered in `puzzle_registry.gd`. `PuzzleData.parse()` returns an instance only when every check passes. `max_attempts` (default 3) and `presentation` (display-only settings such as timing) are optional. `fingerprint` is optional in source files; when present it must match the computed one.
 
+## Puzzle Result
+
+`PuzzleHost` (`game/scenes/puzzles/puzzle_host.tscn`) emits one result per opened puzzle, through its `finished` signal and `EventBus.puzzle_resolved`:
+
+```json
+{
+  "result_version": 1,
+  "correct": true,
+  "abandoned": false,
+  "attempts": 1,
+  "hints_used": 0,
+  "hint_cost": 0.0,
+  "response_ms": 11840,
+  "timing_accommodation_active": false,
+  "details": {},
+  "puzzle_id": "pattern_001",
+  "family": "pattern",
+  "schema_version": 2,
+  "content_version": 1,
+  "source": "local",
+  "seed": null,
+  "fingerprint": "...",
+  "target_difficulty": 520,
+  "calibrated_difficulty": null,
+  "difficulty_confidence": 0.0
+}
+```
+
+Correctness comes only from the family validator's `check_response()`. The host never contains family rules. Renderers (`puzzle_renderer.gd`) emit `response_submitted(response)` and only display feedback.
+
 ## Required Invariants
 
 - canonical solution is deterministic,

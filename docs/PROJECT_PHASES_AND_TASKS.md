@@ -355,7 +355,7 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 
 ### Task 2.2: Puzzle Host Scene and Result Contract
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 2 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -372,13 +372,19 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(2.2): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(2.2): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `PuzzleHost` (`game/scenes/puzzles/puzzle_host.tscn`): overlay panel that takes a `PuzzleData`, instantiates the family renderer from the registry, checks each response with the family validator, counts attempts against `max_attempts`, and supports Leave (abandon).
+- Standardized result (documented in `PUZZLE_SPEC.md`): correctness, abandoned, attempts, hints used/cost, response time (injectable clock), timing-accommodation flag, validator details, and the puzzle identity block (id, family, schema/content version, source, seed, fingerprint, difficulty). Emitted once via `finished` and `EventBus.puzzle_resolved`.
+- Renderer base `puzzle_renderer.gd`: `setup()`, `response_submitted`, `show_feedback()`, `set_input_enabled()`, `initial_focus()`. Renderers never decide correctness.
+- Validation: `tools/run_tests.sh` — 58 passed, 0 failed (adds `tests/integration/test_puzzle_host.gd`, run against the test-only `doubling` family to prove the host is family-agnostic; also checks the host source has no family names); `tools/check_boot.sh` OK.
 
 ---
 
