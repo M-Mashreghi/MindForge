@@ -10,6 +10,7 @@ const MESSAGES := {
 	&"puzzle_failure": "Not this time.",
 	&"hint_used": "Hint revealed.",
 	&"room_completed": "Room cleared! The way forward is open.",
+	&"boss_stage_cleared": "Seal broken! The next one awaits.",
 }
 const ICONS := {
 	&"puzzle_success": "✓",
@@ -17,6 +18,7 @@ const ICONS := {
 	&"puzzle_failure": "✗",
 	&"hint_used": "?",
 	&"room_completed": "★",
+	&"boss_stage_cleared": "◆",
 }
 
 ## Seconds a message stays fully visible.
@@ -50,6 +52,8 @@ static func text_for(kind: StringName, data: Dictionary) -> String:
 				text = "You stepped away from this puzzle."
 		&"puzzle_retry":
 			text += " (%d left)" % int(data.get("attempts_left", 0))
+		&"boss_stage_cleared":
+			text += " (%d of %d)" % [int(data.get("stage", 0)), int(data.get("stages", 0))]
 		&"room_completed":
 			if data.get("final", false):
 				text = "Final room cleared! Head for the exit."

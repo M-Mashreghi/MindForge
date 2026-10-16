@@ -38,6 +38,9 @@ var scheduler: RefCounted = AdaptiveScheduler.new(config)
 var solved_mechanics: Dictionary = {}
 ## Run-level: puzzles presented this run, newest last.
 var schedule_history: Array = []
+## Run-level: fingerprints already rated this run. Retrying a puzzle after
+## seeing its feedback (e.g. a boss stage) does not move skill again.
+var rated_fingerprints: Dictionary = {}
 ## Run-level: last target difficulty per family (target smoothing).
 var previous_targets: Dictionary = {}
 ## Last scheduler decision, for the developer/debug view.
@@ -172,8 +175,16 @@ func record_result(result: Dictionary) -> Dictionary:
 	var performance := PerformanceEvent.normalize(result, result.get("time_band_seconds", []), config)
 	var difficulty := float(result["calibrated_difficulty"]) if result.get("calibrated_difficulty") != null \
 		else float(result.get("target_difficulty", config.skill_prior))
-	var record: Dictionary = model.apply(skills, StringName(result["family"]), difficulty, performance,
-		float(result.get("difficulty_confidence", 0.0)))
+	var fingerprint: String = str(result.get("fingerprint", ""))
+	var repeat := fingerprint != "" and rated_fingerprints.has(fingerprint)
+	var record: Dictionary
+	if repeat:
+		record = {"family": StringName(result["family"]), "difficulty": difficulty, "skipped": "repeat_attempt"}
+	else:
+		record = model.apply(skills, StringName(result["family"]), difficulty, performance,
+			float(result.get("difficulty_confidence", 0.0)))
+		if fingerprint != "":
+			rated_fingerprints[fingerprint] = true
 	record["puzzle_id"] = result.get("puzzle_id", &"")
 	record["content_version"] = result.get("content_version", 0)
 	record["performance"] = performance
@@ -209,6 +220,7 @@ func _on_run_started(_seed: int) -> void:
 
 func _reset_run_state() -> void:
 	schedule_history.clear()
+	rated_fingerprints.clear()
 	previous_targets.clear()
 	last_schedule = {}
 

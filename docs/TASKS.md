@@ -68,7 +68,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 5.5** — Local Procedural Logic Generator — Commit: `task(5.5)` — GitHub: `pushed to origin/main`
 - [x] **Task 5.6** — Local Procedural Memory Generator — Commit: `task(5.6)` — GitHub: `pushed to origin/main`
 - [x] **Task 5.7** — Puzzle Solvability, Ambiguity and Content Quality Pipeline — Commit: `task(5.7)` — GitHub: `pushed to origin/main`
-- [ ] **Task 5.8** — Boss-Room Template and Multi-Skill Challenge — Commit: `—` — GitHub: `—`
+- [x] **Task 5.8** — Boss-Room Template and Multi-Skill Challenge — Commit: `task(5.8)` — GitHub: `pushed to origin/main`
 
 ## Phase 6 — AI Puzzle Generation & Safe Content Pipeline
 

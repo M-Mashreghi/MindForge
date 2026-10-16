@@ -1577,7 +1577,7 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 
 ### Task 5.8: Boss-Room Template and Multi-Skill Challenge
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 5 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1594,13 +1594,19 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(5.8): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(5.8): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `BossTrial` (`game/scripts/dungeon/boss_trial.gd`, `boss-v1`): deterministic templates per run seed and room (Twin Seals: pattern + logic, Echo Lock: memory + pattern, Mind Gate: logic + memory). Each stage is a normal puzzle of its own family, presented by the host and checked/rated by that family's validator only; validators are never mixed. The room is solved only when every stage is solved in order ("Seal broken!" feedback between stages, stage title in the puzzle window).
+- Intentionally harder but bounded: stages are scheduled within their family at the boss band (predicted success 0.45-0.60) with the usual caps and smoothing; in recovery the boss softens to the challenge band.
+- Failure and retry: a failed stage ends the attempt, the trial restarts from stage 1 and re-plans its stages on the next interaction (so recovery can soften them). To keep the adaptive profile clean, a puzzle already rated in the current run is not rated again (`rated_fingerprints`, recorded as `repeat_attempt`); boss failures still count toward recovery mode.
+- Validation: `tools/run_tests.sh` — 277 passed, 0 failed (adds `tests/integration/test_boss_room.gd`: two-skill templates, ordered stages, failure/retry/re-plan, no double rating, recovery softening); `tools/check_boot.sh` OK.
 
 ---
 

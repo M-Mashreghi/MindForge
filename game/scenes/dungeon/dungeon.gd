@@ -10,6 +10,8 @@ const TransitionGuard := preload("res://game/scripts/dungeon/transition_guard.gd
 const PuzzleCatalog := preload("res://game/scripts/puzzles/puzzle_catalog.gd")
 const DungeonGenerator := preload("res://game/scripts/dungeon/dungeon_generator.gd")
 const ContentPool := preload("res://game/scripts/puzzles/content_pool.gd")
+const BossTrial := preload("res://game/scripts/dungeon/boss_trial.gd")
+const RoomDef := preload("res://game/scripts/dungeon/room_def.gd")
 const DEMO_ROOM_DEFS: Array[Resource] = [
 	preload("res://game/resources/room_defs/fixture_entrance.tres"),
 	preload("res://game/resources/room_defs/fixture_gallery.tres"),
@@ -39,6 +41,9 @@ var current_room: Node2D
 var room_defs: Array = []
 ## {"added", "rejected"} counts of procedurally generated puzzles this run.
 var generated_content: Dictionary = {}
+## Boss trial per room index (boss rooms only).
+var boss_trials: Dictionary = {}
+var _open_next_boss_stage := false
 var current_index: int = -1
 ## Rooms solved in this run, by fixture index (so retreat keeps progress).
 var _solved_rooms: Dictionary = {}
@@ -155,17 +160,36 @@ func _on_player_interact() -> void:
 		EventBus.puzzle_started.emit(room_id, puzzle_id)
 		EventBus.puzzle_resolved.emit(room_id, puzzle_id, {"correct": true, "placeholder": true})
 		return
+	_open_puzzle(puzzle, room_id)
+
+
+func _open_puzzle(puzzle: RefCounted, room_id: StringName) -> void:
 	player.input_enabled = false
 	var prediction: Dictionary = PlayerProfile.predict(puzzle)
-	puzzle_host.open(puzzle, room_id, {"context": {
+	var context := {
 		"predicted_success": prediction["predicted_success"],
 		"hints_available": puzzle.hints.size(),
-	}})
+	}
+	var options := {"context": context}
+	var trial: RefCounted = boss_trials.get(current_index)
+	if trial:
+		context["boss"] = true
+		context["boss_template"] = trial.template["id"]
+		context["boss_stage"] = trial.stage_index
+		context["boss_stages"] = trial.stages.size()
+		options["title"] = trial.stage_label()
+	puzzle_host.open(puzzle, room_id, options)
+
+
+func is_boss_room() -> bool:
+	return current_room != null and current_room.room_def.room_type == RoomDef.RoomType.BOSS
 
 
 ## Warm-up rooms come from the calibration plan; every other room asks the
 ## adaptive scheduler. Deterministic per run (run RNG), chosen once per room.
 func puzzle_for_current_room() -> RefCounted:
+	if is_boss_room() and PlayerProfile.calibration.next_family() == &"":
+		return _boss_stage_puzzle()
 	if not _room_puzzles.has(current_index):
 		var warmup_family: StringName = PlayerProfile.calibration.next_family()
 		var puzzle: RefCounted = null
@@ -180,16 +204,50 @@ func puzzle_for_current_room() -> RefCounted:
 	return _room_puzzles[current_index]
 
 
+## Boss rooms: plan the trial's stages (each scheduled within its family
+## at the boss band) and return the current stage's puzzle.
+func _boss_stage_puzzle() -> RefCounted:
+	if not boss_trials.has(current_index):
+		boss_trials[current_index] = BossTrial.new(BossTrial.template_for(GameState.run_seed, current_room.get_room_id()))
+	var trial: RefCounted = boss_trials[current_index]
+	if not trial.is_planned():
+		var base_def: Resource = current_room.room_def
+		trial.plan(func(family):
+			var stage_def: Resource = base_def.duplicate()
+			stage_def.puzzle_family = family
+			return PlayerProfile.schedule(stage_def, catalog.by_family(family), GameState.rng))
+	return trial.current_stage()
+
+
 func _on_puzzle_finished(_result: Dictionary) -> void:
+	# `finished` fires before EventBus.puzzle_resolved; wait so the result
+	# (and any boss stage progress) has been handled first.
 	if puzzle_close_delay > 0.0:
 		await get_tree().create_timer(puzzle_close_delay).timeout
+	else:
+		await get_tree().process_frame
 	puzzle_host.close()
 	player.input_enabled = true
+	if _open_next_boss_stage:
+		_open_next_boss_stage = false
+		var next: RefCounted = puzzle_for_current_room()
+		if next:
+			_open_puzzle(next, current_room.get_room_id())
 
 
 func _on_puzzle_resolved(room_id: StringName, _puzzle_id: StringName, result: Dictionary) -> void:
 	if current_room == null or room_id != current_room.get_room_id() or current_room.is_solved:
 		return
+	var trial: RefCounted = boss_trials.get(current_index)
+	if trial and result.get("context", {}).get("boss", false):
+		var outcome: String = trial.record(result.get("correct", false))
+		if outcome == "next":
+			_open_next_boss_stage = true
+			EventBus.feedback_requested.emit(&"boss_stage_cleared", {"stage": trial.stage_index,
+				"stages": trial.stages.size()})
+			return
+		if outcome == "failed":
+			return
 	if result.get("correct", false):
 		_solved_rooms[current_index] = true
 		current_room.mark_solved()

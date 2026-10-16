@@ -42,7 +42,8 @@ func _ready() -> void:
 
 ## Shows `puzzle_data`. `host_options` may include `timing_scale` and
 ## `timing_accommodation_active` (accessibility; never changes correctness)
-## and `context`, a dictionary copied into the result for telemetry.
+## `context`, a dictionary copied into the result for telemetry, and an
+## optional `title`.
 func open(puzzle_data: RefCounted, for_room: StringName = &"", host_options: Dictionary = {}) -> bool:
 	if is_open or puzzle_data == null or not PuzzleRegistry.has_family(puzzle_data.family):
 		return false
@@ -63,7 +64,7 @@ func open(puzzle_data: RefCounted, for_room: StringName = &"", host_options: Dic
 	_slot.add_child(_renderer)
 	_renderer.setup(puzzle, _options)
 	_renderer.response_submitted.connect(_on_response_submitted)
-	_title.text = "%s puzzle" % str(puzzle.family).capitalize()
+	_title.text = str(host_options.get("title", "%s puzzle" % str(puzzle.family).capitalize()))
 	_status.text = ""
 	is_open = true
 	visible = true
