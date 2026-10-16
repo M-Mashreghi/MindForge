@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Pre-commit checks from docs/GIT_WORKFLOW.md. Run after staging task files:
-#   tools/precommit_check.sh            (set GODOT=/path/to/godot to include the boot check)
+#   tools/precommit_check.sh            (set GODOT=/path/to/godot to include the boot check and tests)
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT" || exit 1
@@ -42,6 +42,8 @@ git status --short | grep -vE '^[MADRC] ' || echo "(none)"
 if [ -n "${GODOT:-}" ]; then
 	echo "== headless boot"
 	bash "$ROOT/tools/check_boot.sh" || FAIL=1
+	echo "== headless tests"
+	bash "$ROOT/tools/run_tests.sh" || FAIL=1
 fi
 
 if [ $FAIL -ne 0 ]; then

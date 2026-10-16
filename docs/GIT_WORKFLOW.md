@@ -60,7 +60,7 @@ After staging, run:
 tools/precommit_check.sh
 ```
 
-It prints the branch, remote and staged diff stat, and fails on staged whitespace errors, a staged `.env` / export credentials file, or added lines that look like a real secret. Set `GODOT=/path/to/godot` to also run the headless boot check (`tools/check_boot.sh`).
+It prints the branch, remote and staged diff stat, and fails on staged whitespace errors, a staged `.env` / export credentials file, or added lines that look like a real secret. Set `GODOT=/path/to/godot` to also run the headless boot check (`tools/check_boot.sh`) and test suite (`tools/run_tests.sh`).
 
 ## Staging
 

@@ -102,7 +102,7 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 
 ### Task 1.3: Autoload Game State and Event Bus
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 1 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -119,13 +119,19 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(1.3): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(1.3): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `EventBus` autoload (`game/autoload/event_bus.gd`): signals only — `run_started`, `run_ended`, `room_entered`, `room_exited`, `puzzle_started`, `puzzle_resolved`, `profile_changed`, `run_state_changed`. No state, no puzzle/scoring logic.
+- `GameState` autoload (`game/autoload/game_state.gd`): run seed + seeded RNG, room index/id, rooms cleared, run length, and placeholder score/XP/streak values that later scoring/progression systems write. `start_run(seed)` is deterministic; `reset()` returns to idle; `snapshot()` returns plain data.
+- Headless test harness: `tests/run_tests.gd` (SceneTree runner over `tests/unit` and `tests/integration`), `tests/test_case.gd` base, `tools/run_tests.sh` wrapper.
+- Validation: `tools/run_tests.sh` — 8 passed, 0 failed (`tests/unit/test_game_state.gd`); `tools/check_boot.sh` OK.
 
 ---
 

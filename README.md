@@ -104,6 +104,12 @@ Headless boot check (loads the project and runs the main scene for two frames):
 GODOT=/path/to/godot tools/check_boot.sh
 ```
 
+Headless test suite (`tests/unit`, `tests/integration`):
+
+```bash
+GODOT=/path/to/godot tools/run_tests.sh
+```
+
 ## MVP
 
 The first portfolio-ready release should contain:
