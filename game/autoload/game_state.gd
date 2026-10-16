@@ -5,6 +5,8 @@ extends Node
 
 const RUN_STATE_VERSION := 1
 const DEFAULT_RUN_LENGTH := 3
+const MAIN_MENU_SCENE := "res://game/scenes/ui/main_menu.tscn"
+const DUNGEON_SCENE := "res://game/scenes/dungeon/dungeon.tscn"
 
 var run_active: bool = false
 var run_seed: int = 0
@@ -83,6 +85,30 @@ func mark_room_cleared() -> void:
 
 func is_final_room() -> bool:
 	return run_active and room_index >= run_length - 1
+
+
+## Picks a fresh seed for a new run. The run itself is deterministic from it.
+func make_run_seed() -> int:
+	var seeder := RandomNumberGenerator.new()
+	seeder.randomize()
+	return seeder.randi()
+
+
+## Starts a run from `seed_value` and switches to the dungeon scene.
+func begin_new_run(seed_value: int) -> void:
+	start_run(seed_value)
+	_change_scene(DUNGEON_SCENE)
+
+
+## Abandons any active run and switches back to the main menu.
+func return_to_main_menu() -> void:
+	if run_active:
+		end_run(&"abandoned")
+	_change_scene(MAIN_MENU_SCENE)
+
+
+func _change_scene(path: String) -> void:
+	get_tree().change_scene_to_file.call_deferred(path)
 
 
 ## Plain-data copy of the run state (for summaries, saves and tests).

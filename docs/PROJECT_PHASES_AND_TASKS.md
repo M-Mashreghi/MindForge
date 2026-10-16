@@ -137,7 +137,7 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 
 ### Task 1.4: Main Menu, New Run and Exit Flow
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 1 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -154,13 +154,19 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(1.4): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(1.4): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Main menu `game/scenes/ui/main_menu.tscn`: title, New Run, Settings (placeholder panel with Back) and Exit. New Run has focus in `_ready`, so keyboard/controller navigation works from the first frame; Esc closes the settings panel.
+- New Run calls `GameState.begin_new_run(seed)`: run state is a pure function of the seed (seed picked by `make_run_seed()`), then the dungeon scene loads. Repeated presses start only one run.
+- Boot scene now opens the main menu after printing the boot message. Dungeon shell `game/scenes/dungeon/dungeon.tscn`: Esc abandons the run and returns to the menu (`GameState.return_to_main_menu()`).
+- Validation: `tools/run_tests.sh` — 13 passed, 0 failed (adds `tests/integration/test_main_menu.gd`); `tools/check_boot.sh` OK.
 
 ---
 
