@@ -27,3 +27,10 @@ var slow_penalty_max: float = 0.1
 ## than `min_response_seconds`) are treated as unreliable and ignored.
 var timing_ignore_factor: float = 4.0
 var min_response_seconds: float = 0.5
+
+## Elo-like update (Task 3.3). `logistic_scale` rating points of advantage
+## multiply the odds of success by 10 (chess uses 400 on a wider scale).
+var logistic_scale: float = 250.0
+var k_factor: float = 40.0
+## Hard cap on rating movement from a single puzzle.
+var max_delta_per_event: float = 30.0

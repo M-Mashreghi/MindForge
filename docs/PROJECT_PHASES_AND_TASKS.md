@@ -753,7 +753,7 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 
 ### Task 3.3: Elo-Like Base Skill Update Engine
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 3 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -770,13 +770,18 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(3.3): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(3.3): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `Elo` (`game/scripts/adaptive/elo.gd`): pure functions. `expected = 1 / (1 + 10^((difficulty - skill) / scale))`, `delta = clamp(k * (observed - expected), -cap, cap)`, `update()` clamps the rating to 0..1000.
+- Configurable in `adaptive_config.gd`: `logistic_scale` 250 (250 points of advantage = 10x odds on the 0..1000 scale), `k_factor` 40, `max_delta_per_event` 30.
+- Validation: `tools/run_tests.sh` — 136 passed, 0 failed (adds `tests/unit/test_elo.gd`: even match = 0.5, monotonic in skill and difficulty, scale steepness, update direction, larger moves for surprises, gain shrinks as skill rises, per-event cap and bounds, determinism); `tools/check_boot.sh` OK.
 
 ---
 
