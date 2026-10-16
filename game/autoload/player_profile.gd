@@ -8,6 +8,7 @@ const SkillProfile := preload("res://game/scripts/adaptive/skill_profile.gd")
 const SkillModel := preload("res://game/scripts/adaptive/skill_model.gd")
 const PerformanceEvent := preload("res://game/scripts/adaptive/performance_event.gd")
 const AdaptiveConfig := preload("res://game/scripts/adaptive/adaptive_config.gd")
+const SuccessPredictor := preload("res://game/scripts/adaptive/success_predictor.gd")
 
 const PROFILE_ID := &"local"
 const HISTORY_LIMIT := 50
@@ -15,6 +16,9 @@ const HISTORY_LIMIT := 50
 var config: RefCounted = AdaptiveConfig.new()
 var skills: RefCounted = SkillProfile.new(config)
 var model: RefCounted = SkillModel.new(config)
+var predictor: RefCounted = SuccessPredictor.new(config)
+## Prediction for the puzzle currently or most recently presented.
+var last_prediction: Dictionary = {}
 ## Recent skill update records (newest last), for telemetry/debugging.
 var history: Array = []
 
@@ -26,7 +30,15 @@ func _ready() -> void:
 func reset() -> void:
 	skills.reset()
 	history.clear()
+	last_prediction = {}
 	EventBus.profile_changed.emit(PROFILE_ID)
+
+
+## Predicted success for `puzzle` with the current profile; remembered as
+## `last_prediction` for the debug overlay and the next update record.
+func predict(puzzle: RefCounted) -> Dictionary:
+	last_prediction = predictor.predict_puzzle(skills, puzzle)
+	return last_prediction
 
 
 func last_update() -> Dictionary:
@@ -46,6 +58,9 @@ func record_result(result: Dictionary) -> Dictionary:
 	record["puzzle_id"] = result.get("puzzle_id", &"")
 	record["content_version"] = result.get("content_version", 0)
 	record["performance"] = performance
+	var context: Dictionary = result.get("context", {})
+	if context.has("predicted_success"):
+		record["predicted_success"] = context["predicted_success"]
 	history.append(record)
 	if history.size() > HISTORY_LIMIT:
 		history.pop_front()

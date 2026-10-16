@@ -137,7 +137,8 @@ func _on_player_interact() -> void:
 		EventBus.puzzle_resolved.emit(room_id, puzzle_id, {"correct": true, "placeholder": true})
 		return
 	player.input_enabled = false
-	puzzle_host.open(puzzle, room_id)
+	var prediction: Dictionary = PlayerProfile.predict(puzzle)
+	puzzle_host.open(puzzle, room_id, {"context": {"predicted_success": prediction["predicted_success"]}})
 
 
 ## Deterministic per run: picked with the run RNG the first time it is needed.

@@ -5,7 +5,7 @@ const PuzzleData := preload("res://game/scripts/puzzles/puzzle_data.gd")
 const HOST_SCENE := preload("res://game/scenes/puzzles/puzzle_host.tscn")
 
 const RESULT_KEYS := ["result_version", "correct", "abandoned", "attempts", "hints_used", "hint_cost",
-	"response_ms", "timing_accommodation_active", "details", "puzzle_id", "family", "schema_version",
+	"response_ms", "timing_accommodation_active", "details", "context", "puzzle_id", "family", "schema_version",
 	"content_version", "source", "seed", "fingerprint", "target_difficulty", "calibrated_difficulty",
 	"difficulty_confidence", "time_band_seconds"]
 

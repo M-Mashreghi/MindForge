@@ -42,6 +42,7 @@ Implementation: `game/scripts/puzzles/puzzle_schema.gd` checks the common fields
   "response_ms": 11840,
   "timing_accommodation_active": false,
   "details": {},
+  "context": {"predicted_success": 0.76},
   "puzzle_id": "pattern_001",
   "family": "pattern",
   "schema_version": 2,

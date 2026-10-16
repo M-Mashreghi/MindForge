@@ -822,7 +822,7 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 
 ### Task 3.5: Predicted-Success Model
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 3 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -839,13 +839,18 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(3.5): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(3.5): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `SuccessPredictor` (`game/scripts/adaptive/success_predictor.gd`): deterministic logistic probability of success from family skill and the puzzle's effective difficulty (calibrated when available), clamped to [0.01, 0.99]; `difficulty_for(skill, p)` is its exact inverse for the selector; `predict_puzzle()` returns a versioned record (skill, confidence, difficulty, difficulty confidence, predicted success).
+- Exposure: `PlayerProfile.predict()` keeps `last_prediction` for the debug overlay; the dungeon passes the prediction into `PuzzleHost` as `context`, which is copied into the puzzle result (telemetry) and into the skill update record.
+- Validation: `tools/run_tests.sh` — 147 passed, 0 failed (adds `tests/unit/test_success_predictor.gd`: monotonic in skill and in difficulty across the whole scale, bounds, symmetry, inverse round trip, calibrated difficulty, end-to-end exposure); `tools/check_boot.sh` OK.
 
 ---
 

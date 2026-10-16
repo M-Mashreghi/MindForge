@@ -41,7 +41,8 @@ func _ready() -> void:
 
 
 ## Shows `puzzle_data`. `host_options` may include `timing_scale` and
-## `timing_accommodation_active` (accessibility; never changes correctness).
+## `timing_accommodation_active` (accessibility; never changes correctness)
+## and `context`, a dictionary copied into the result for telemetry.
 func open(puzzle_data: RefCounted, for_room: StringName = &"", host_options: Dictionary = {}) -> bool:
 	if is_open or puzzle_data == null or not PuzzleRegistry.has_family(puzzle_data.family):
 		return false
@@ -135,6 +136,7 @@ func _finish(correct: bool, abandoned: bool, check: Dictionary) -> void:
 		"response_ms": maxi(0, int(clock.call()) - _started_ms),
 		"timing_accommodation_active": bool(_options.get("timing_accommodation_active", false)),
 		"details": check,
+		"context": _options.get("context", {}),
 	})
 	finished.emit(result)
 	EventBus.puzzle_resolved.emit(room_id, puzzle.id, result)
@@ -161,6 +163,8 @@ static func build_result(puzzle_data: RefCounted, outcome: Dictionary) -> Dictio
 		"response_ms": int(outcome.get("response_ms", 0)),
 		"timing_accommodation_active": bool(outcome.get("timing_accommodation_active", false)),
 		"details": outcome.get("details", {}),
+		## Caller-supplied decision context (e.g. predicted success), copied as-is.
+		"context": outcome.get("context", {}),
 	}
 	result.merge(puzzle_data.identity())
 	return result
