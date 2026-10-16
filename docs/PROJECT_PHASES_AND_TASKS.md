@@ -1614,7 +1614,7 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 
 ### Task 6.1: AI Puzzle JSON Contract and Prompt Versioning
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 6 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1631,13 +1631,20 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(6.1): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(6.1): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `AiContract` (`game/scripts/ai/ai_contract.gd`): strict structured contract for AI pattern and logic proposals. Proposals carry structured parameters only (pattern: rule, params, shown; logic: items, clues), plus optional `declared_answer` (cross-checked, never trusted), `difficulty_estimate` (provisional), up to 3 hints, explanation and flavor text.
+- Parser policy: responses over 6000 bytes, non-object JSON, unknown top-level fields, unknown pattern params or clue fields, unsupported rules/clue types/families, wrong types, more than 10 clues, and text over 160 characters are rejected with readable errors.
+- Versioning: `versions(model)` reports model, `ai-prompt-v1`, `ai-schema-v1`, content pipeline version and new solver versions (`pattern-solver-v1`, `logic-solver-v1`, `memory-validator-v1`) for caching and invalidation.
+- `build_request()` (family, difficulty band, allowed mechanics/symbols, bounds, tone; no personal data or telemetry), `prompt_text()` (versioned instructions, solver-first), and `output_schema()` (JSON schema with `additionalProperties: false`) for the proxy.
+- Validation: `tools/run_tests.sh` — 282 passed, 0 failed (adds `tests/unit/test_ai_contract.gd`); `tools/check_boot.sh` OK.
 
 ---
 

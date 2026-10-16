@@ -72,7 +72,7 @@ A completed task should record its commit hash and push status.
 
 ## Phase 6 — AI Puzzle Generation & Safe Content Pipeline
 
-- [ ] **Task 6.1** — AI Puzzle JSON Contract and Prompt Versioning — Commit: `—` — GitHub: `—`
+- [x] **Task 6.1** — AI Puzzle JSON Contract and Prompt Versioning — Commit: `task(6.1)` — GitHub: `pushed to origin/main`
 - [ ] **Task 6.2** — Optional Secret-Safe AI Proxy Skeleton — Commit: `—` — GitHub: `—`
 - [ ] **Task 6.3** — Godot AI Content Adapter — Commit: `—` — GitHub: `—`
 - [ ] **Task 6.4** — Solver-First AI Pattern Puzzle Generation — Commit: `—` — GitHub: `—`

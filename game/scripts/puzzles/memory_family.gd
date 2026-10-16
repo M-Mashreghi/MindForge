@@ -11,6 +11,8 @@ extends RefCounted
 ## solution = {"cells": target}
 
 const CanonicalJson := preload("res://game/scripts/puzzles/canonical_json.gd")
+## Bumped whenever solving/validation rules change (AI cache invalidation).
+const SOLVER_VERSION := "memory-validator-v1"
 
 const MODES := ["sequence", "positions"]
 const MIN_GRID := 2

@@ -14,6 +14,8 @@ extends RefCounted
 ## solution = {"order": [item ids]}
 
 const CanonicalJson := preload("res://game/scripts/puzzles/canonical_json.gd")
+## Bumped whenever solving/validation rules change (AI cache invalidation).
+const SOLVER_VERSION := "logic-solver-v1"
 const SymbolGlyph := preload("res://game/scenes/puzzles/symbol_glyph.gd")
 
 const TEMPLATES := ["ordering"]
