@@ -122,3 +122,40 @@ static func validate(event: Variant) -> PackedStringArray:
 		if not FIELDS.has(field):
 			errors.append("unknown field %s" % field)
 	return errors
+
+
+## Every well-formed event in `file_path`, in file order. Malformed lines are
+## skipped (and counted in the returned "skipped").
+static func read_events(file_path: String) -> Dictionary:
+	var events: Array = []
+	var skipped := 0
+	if not FileAccess.file_exists(file_path):
+		return {"events": events, "skipped": 0}
+	var file := FileAccess.open(file_path, FileAccess.READ)
+	while not file.eof_reached():
+		var line := file.get_line().strip_edges()
+		if line.is_empty():
+			continue
+		var json := JSON.new()
+		if json.parse(line) != OK or not validate(json.data).is_empty():
+			skipped += 1
+			continue
+		events.append(json.data)
+	return {"events": events, "skipped": skipped}
+
+
+## Deterministic export: the same events always produce the same bytes
+## (sorted keys, stable order by timestamp then puzzle id).
+static func export_events(events: Array, out_path: String) -> Error:
+	var ordered := events.duplicate()
+	ordered.sort_custom(func(a, b):
+		if a["timestamp"] != b["timestamp"]:
+			return a["timestamp"] < b["timestamp"]
+		return str(a["puzzle_id"]) < str(b["puzzle_id"]))
+	var file := FileAccess.open(out_path, FileAccess.WRITE)
+	if file == null:
+		return FileAccess.get_open_error()
+	for e in ordered:
+		file.store_line(JSON.stringify(e, "", true))
+	file.close()
+	return OK

@@ -14,7 +14,7 @@ const ContentPipeline := preload("res://game/scripts/puzzles/content_pipeline.gd
 
 const ENABLED_SETTING := "mindforge/telemetry/enabled"
 const TOOL_SCRIPTS := ["res://tests/run_tests.gd", "res://tools/validate_puzzles.gd", "res://tools/ai_smoke_test.gd",
-	"res://tools/capture_screenshots.gd", "res://tools/simulate_players.gd"]
+	"res://tools/capture_screenshots.gd", "res://tools/simulate_players.gd", "res://tools/calibrate_difficulty.gd"]
 
 var enabled: bool = true
 var path: String = "user://telemetry/events.jsonl"
@@ -79,38 +79,11 @@ func record(event: Dictionary) -> bool:
 	return true
 
 
-## Every well-formed event in `file_path`, in file order. Malformed lines are
-## skipped (and counted in the returned "skipped").
+## Every well-formed event in `file_path` (see TelemetryEvent.read_events).
 static func read_back(file_path: String) -> Dictionary:
-	var events: Array = []
-	var skipped := 0
-	if not FileAccess.file_exists(file_path):
-		return {"events": events, "skipped": 0}
-	var file := FileAccess.open(file_path, FileAccess.READ)
-	while not file.eof_reached():
-		var line := file.get_line().strip_edges()
-		if line.is_empty():
-			continue
-		var json := JSON.new()
-		if json.parse(line) != OK or not TelemetryEvent.validate(json.data).is_empty():
-			skipped += 1
-			continue
-		events.append(json.data)
-	return {"events": events, "skipped": skipped}
+	return TelemetryEvent.read_events(file_path)
 
 
-## Deterministic export: the same events always produce the same bytes
-## (sorted keys, stable order by timestamp then puzzle id).
+## Deterministic export (see TelemetryEvent.export_events).
 static func export_events(events: Array, out_path: String) -> Error:
-	var ordered := events.duplicate()
-	ordered.sort_custom(func(a, b):
-		if a["timestamp"] != b["timestamp"]:
-			return a["timestamp"] < b["timestamp"]
-		return str(a["puzzle_id"]) < str(b["puzzle_id"]))
-	var file := FileAccess.open(out_path, FileAccess.WRITE)
-	if file == null:
-		return FileAccess.get_open_error()
-	for e in ordered:
-		file.store_line(JSON.stringify(e, "", true))
-	file.close()
-	return OK
+	return TelemetryEvent.export_events(events, out_path)

@@ -2185,7 +2185,7 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 
 ### Task 7.6: Empirical Puzzle Difficulty Calibration with Confidence
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 7 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2202,13 +2202,20 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(7.6): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(7.6): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `DifficultyCalibrator` (`game/scripts/telemetry/difficulty_calibrator.gd`, `calibration-v1`): groups usable telemetry events by puzzle fingerprint and, once a puzzle has at least `min_samples` (20) events, estimates its calibrated difficulty by maximum likelihood under the game's success model given each player's skill before the attempt (grid search, then 1-point refinement). Confidence = n / (n + 40), capped at 0.95; entries record sample count, calibration and adaptive algorithm versions.
+- Never learns from malformed telemetry: events failing schema validation, without skill_before, marked as skipped repeat attempts, or without a fingerprint are ignored and counted.
+- Never overwrites authored difficulty: `apply()` only sets `calibrated_difficulty` and `difficulty_confidence`; selection then prefers the calibrated value (`effective_difficulty()`), and the higher confidence also gives the puzzle more weight in skill updates.
+- `tools/calibrate_difficulty.gd` builds `user://calibration.json` from the local telemetry log; the dungeon applies it when loading puzzles. Event file reading/export moved into `telemetry_event.gd` so tools do not depend on autoload scripts.
+- Validation: `tools/run_tests.sh` — 352 passed, 0 failed (adds `tests/unit/test_difficulty_calibrator.gd`: recovers a true difficulty of 620 within 50 from 400 synthetic events, sample threshold and low confidence near it, unusable events skipped, authored target unchanged, save/load); `tools/calibrate_difficulty.gd` runs; `tools/check_boot.sh` OK.
 
 ---
 

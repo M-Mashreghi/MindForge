@@ -11,6 +11,8 @@ const PuzzleCatalog := preload("res://game/scripts/puzzles/puzzle_catalog.gd")
 const DungeonGenerator := preload("res://game/scripts/dungeon/dungeon_generator.gd")
 const ContentPool := preload("res://game/scripts/puzzles/content_pool.gd")
 const BossTrial := preload("res://game/scripts/dungeon/boss_trial.gd")
+const DifficultyCalibrator := preload("res://game/scripts/telemetry/difficulty_calibrator.gd")
+const CALIBRATION_PATH := "user://calibration.json"
 const RoomDef := preload("res://game/scripts/dungeon/room_def.gd")
 const DEMO_ROOM_DEFS: Array[Resource] = [
 	preload("res://game/resources/room_defs/fixture_entrance.tres"),
@@ -58,6 +60,8 @@ func _ready() -> void:
 	player.interact_requested.connect(_on_player_interact)
 	puzzle_host.finished.connect(_on_puzzle_finished)
 	catalog = PuzzleCatalog.load_bank()
+	# Empirical calibration (tools/calibrate_difficulty.gd), when available.
+	DifficultyCalibrator.apply(catalog, DifficultyCalibrator.load_file(CALIBRATION_PATH))
 	EventBus.puzzle_resolved.connect(_on_puzzle_resolved)
 	if not GameState.run_active:
 		GameState.start_run(DEMO_SEED, DEMO_ROOM_DEFS.size())
