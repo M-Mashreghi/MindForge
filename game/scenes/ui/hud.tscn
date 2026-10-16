@@ -1,0 +1,130 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/scenes/ui/hud.gd" id="1_hud"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+bg_color = Color(0.05, 0.05, 0.09, 0.78)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.55, 0.5, 0.7, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="HUD" type="CanvasLayer"]
+layer = 5
+script = ExtResource("1_hud")
+
+[node name="Root" type="MarginContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 64.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+
+[node name="Bar" type="HBoxContainer" parent="Root"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="RoomCard" type="PanelContainer" parent="Root/Bar"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="Row" type="HBoxContainer" parent="Root/Bar/RoomCard"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="RoomValue" type="Label" parent="Root/Bar/RoomCard/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Room - / -"
+
+[node name="ClearedValue" type="Label" parent="Root/Bar/RoomCard/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.76, 0.86, 1)
+theme_override_font_sizes/font_size = 20
+text = "Cleared 0"
+
+[node name="Spacer" type="Control" parent="Root/Bar"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="ScoreCard" type="PanelContainer" parent="Root/Bar"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="Row" type="HBoxContainer" parent="Root/Bar/ScoreCard"]
+layout_mode = 2
+
+[node name="ScoreCaption" type="Label" parent="Root/Bar/ScoreCard/Row"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.76, 0.86, 1)
+theme_override_font_sizes/font_size = 20
+text = "Score"
+
+[node name="ScoreValue" type="Label" parent="Root/Bar/ScoreCard/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "0"
+horizontal_alignment = 2
+
+[node name="XpCard" type="PanelContainer" parent="Root/Bar"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="Row" type="HBoxContainer" parent="Root/Bar/XpCard"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="XpValue" type="Label" parent="Root/Bar/XpCard/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "XP 0"
+
+[node name="XpBar" type="ProgressBar" parent="Root/Bar/XpCard/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 18)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+show_percentage = false
+
+[node name="StreakCard" type="PanelContainer" parent="Root/Bar"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="Row" type="HBoxContainer" parent="Root/Bar/StreakCard"]
+layout_mode = 2
+
+[node name="StreakCaption" type="Label" parent="Root/Bar/StreakCard/Row"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.76, 0.86, 1)
+theme_override_font_sizes/font_size = 20
+text = "Streak"
+
+[node name="StreakValue" type="Label" parent="Root/Bar/StreakCard/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "x0"

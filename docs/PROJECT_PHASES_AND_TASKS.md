@@ -281,7 +281,7 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 
 ### Task 1.8: HUD Shell: Score, XP, Streak and Room
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 1 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -298,13 +298,20 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(1.8): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(1.8): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- HUD `game/scenes/ui/hud.tscn` (CanvasLayer, top bar): room progress (`Room 2 / 3`, `Cleared 1`), score, XP with progress bar, streak. Labels plus captions, so no value relies on color alone.
+- `hud.gd` only reads `GameState.snapshot()` on `EventBus.run_state_changed`; the pure `format_values()` turns missing, negative or out-of-range values into safe placeholders (`Room - / -`, `0`, `x0`). `GameState.xp_progress` added as a placeholder field for Task 4.3.
+- Minimum window size 960x540 (set in the boot scene). The UI is laid out at 1280x720 with `canvas_items` stretch; the smallest HUD font is 15 px at the minimum size, and the bar fits within 960 px even unscaled.
+- HUD added to the dungeon scene; dark default clear color; README lists the Phase 1 controls.
+- Validation: `tools/run_tests.sh` — 43 passed, 0 failed (adds `tests/integration/test_hud.gd`); `tools/check_boot.sh` OK; windowed screenshots of the menu and rooms checked by eye.
 
 ---
 

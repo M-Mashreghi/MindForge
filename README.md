@@ -110,6 +110,16 @@ Headless test suite (`tests/unit`, `tests/integration`):
 GODOT=/path/to/godot tools/run_tests.sh
 ```
 
+## Controls (Phase 1 skeleton)
+
+| Action | Keyboard | Controller |
+|---|---|---|
+| Move | WASD / arrow keys | Left stick / d-pad |
+| Interact | E / Space / Enter | A |
+| Back / abandon run | Esc | - |
+
+Until the puzzle host arrives (Task 2.2), interacting at the purple pedestal clears a room with a placeholder result and opens its exit door.
+
 ## MVP
 
 The first portfolio-ready release should contain:

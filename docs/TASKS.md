@@ -20,7 +20,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 1.5** — Top-Down Player Controller — Commit: `task(1.5)` — GitHub: `pushed to origin/main`
 - [x] **Task 1.6** — Reusable Dungeon Room Scene — Commit: `task(1.6)` — GitHub: `pushed to origin/main`
 - [x] **Task 1.7** — Room Transition and Door State Flow — Commit: `task(1.7)` — GitHub: `pushed to origin/main`
-- [ ] **Task 1.8** — HUD Shell: Score, XP, Streak and Room — Commit: `—` — GitHub: `—`
+- [x] **Task 1.8** — HUD Shell: Score, XP, Streak and Room — Commit: `task(1.8)` — GitHub: `pushed to origin/main`
 
 ## Phase 2 — Puzzle Framework & Three Puzzle Families
 

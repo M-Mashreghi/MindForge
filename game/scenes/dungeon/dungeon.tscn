@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://game/scenes/dungeon/dungeon.gd" id="1_dungeon"]
 [ext_resource type="PackedScene" path="res://game/scenes/dungeon/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://game/scenes/ui/hud.tscn" id="3_hud"]
 
 [node name="Dungeon" type="Node2D"]
 script = ExtResource("1_dungeon")
@@ -9,6 +10,8 @@ script = ExtResource("1_dungeon")
 [node name="RoomHolder" type="Node2D" parent="."]
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
 
 [node name="FadeLayer" type="CanvasLayer" parent="."]
 layer = 10

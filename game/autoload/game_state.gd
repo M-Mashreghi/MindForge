@@ -18,6 +18,8 @@ var rooms_cleared: int = 0
 var run_length: int = DEFAULT_RUN_LENGTH
 var score: int = 0
 var xp: int = 0
+## Progress toward the next XP level, 0..1. Written by progression (Task 4.3).
+var xp_progress: float = 0.0
 var streak: int = 0
 
 
@@ -36,6 +38,7 @@ func reset() -> void:
 	run_length = DEFAULT_RUN_LENGTH
 	score = 0
 	xp = 0
+	xp_progress = 0.0
 	streak = 0
 
 
@@ -124,5 +127,6 @@ func snapshot() -> Dictionary:
 		"run_length": run_length,
 		"score": score,
 		"xp": xp,
+		"xp_progress": xp_progress,
 		"streak": streak,
 	}
