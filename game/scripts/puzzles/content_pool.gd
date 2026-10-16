@@ -8,6 +8,7 @@ extends RefCounted
 
 const GENERATORS := {
 	&"pattern": "res://game/scripts/puzzles/generators/pattern_generator.gd",
+	&"logic": "res://game/scripts/puzzles/generators/logic_generator.gd",
 }
 ## Rating offsets of the generated puzzles relative to the family rating.
 const OFFSETS := [-200.0, -120.0, -60.0, 0.0, 60.0, 120.0, 200.0]

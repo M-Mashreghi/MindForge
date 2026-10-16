@@ -1470,7 +1470,7 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 
 ### Task 5.5: Local Procedural Logic Generator
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 5 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1487,13 +1487,20 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(5.5): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(5.5): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `LogicGenerator` (`game/scripts/puzzles/generators/logic_generator.gd`, `logic-gen-v1`): from a seed it picks items and a hidden arrangement, adds randomly chosen clues that are true for it until the deterministic solver reports exactly one solution, then prunes clues that are not needed (harder tiers down to a minimal set where every clue is required; easy puzzles keep extras, all fit the 10-clue limit).
+- Difficulty through constraint structure, not wording: easy 3 items with direct slot clues, medium 4 items (max 2 slot clues), hard 5 items (max 1), expert 5-6 items with only relational and exclusion clues. Clue text is still generated from structure by the renderer.
+- Satisfiability and uniqueness are verified by the solver before returning, then the puzzle is validated by `PuzzleData.parse()`; failures retry with another sub-seed (up to 8). Hints: two general hints and one that reveals a single slot (never the whole arrangement).
+- `ContentPool` now also generates logic puzzles for generated runs.
+- Validation: `tools/run_tests.sh` — 262 passed, 0 failed (adds `tests/unit/test_logic_generator.gd`: 100 seed/difficulty combinations unique and valid, tier structure, every pruned clue required, determinism, no first-hint leak); `tools/check_boot.sh` OK.
 
 ---
 
