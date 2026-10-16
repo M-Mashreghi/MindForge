@@ -29,9 +29,12 @@ if echo "$STAGED" | grep -qE '(^|/)\.env$|export_credentials\.cfg$'; then
 	echo "precommit: .env or export credentials staged" >&2
 	FAIL=1
 fi
-# Added lines that look like a filled-in secret (empty template values are fine).
+# Added lines that look like a filled-in secret: a key/secret/token/password
+# name assigned a value of 12+ chars (`=` as in .env files, or `:` followed by
+# a quoted literal), or a known provider key prefix. Typed code such as
+# `tokens: PackedStringArray` is not flagged; empty template values are fine.
 if git diff --cached -U0 | grep -E '^\+' | grep -v '^+++' \
-	| grep -qiE '(api[_-]?key|secret|token|password)[A-Z_]*[[:space:]]*[:=][[:space:]]*["'\'']?[A-Za-z0-9_\-]{12,}|sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}'; then
+	| grep -qiE '(api[_-]?key|secret|token|password)[a-z_]*[[:space:]]*(=[[:space:]]*["'\'']?|:[[:space:]]*["'\''])[A-Za-z0-9_/+\-]{12,}|sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}'; then
 	echo "precommit: staged change looks like it contains a secret" >&2
 	FAIL=1
 fi
