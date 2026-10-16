@@ -1,0 +1,402 @@
+{
+  "puzzles": [
+    {
+      "id": "memory_seq_easy_01",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "sequence",
+        "grid": {
+          "cols": 3,
+          "rows": 3
+        },
+        "target": [
+          4,
+          0,
+          8
+        ]
+      },
+      "solution": {
+        "cells": [
+          4,
+          0,
+          8
+        ]
+      },
+      "hints": [
+        {
+          "text": "Say the positions out loud as they light up.",
+          "cost": 0.1
+        },
+        {
+          "text": "The path starts in the centre.",
+          "cost": 0.25
+        },
+        {
+          "text": "Centre first, then a corner, then the opposite corner.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        30
+      ],
+      "tags": [
+        "sequence",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    },
+    {
+      "id": "memory_pos_easy_01",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 220,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "positions",
+        "grid": {
+          "cols": 3,
+          "rows": 3
+        },
+        "target": [
+          1,
+          3,
+          5
+        ]
+      },
+      "solution": {
+        "cells": [
+          1,
+          3,
+          5
+        ]
+      },
+      "hints": [
+        {
+          "text": "Look at the shape the lit cells make.",
+          "cost": 0.1
+        },
+        {
+          "text": "None of the lit cells are corners.",
+          "cost": 0.25
+        },
+        {
+          "text": "Three edge cells light up: top, left and right.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        30
+      ],
+      "tags": [
+        "positions",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    },
+    {
+      "id": "memory_seq_medium_01",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 460,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "sequence",
+        "grid": {
+          "cols": 4,
+          "rows": 3
+        },
+        "target": [
+          1,
+          6,
+          11,
+          4,
+          9
+        ]
+      },
+      "solution": {
+        "cells": [
+          1,
+          6,
+          11,
+          4,
+          9
+        ]
+      },
+      "hints": [
+        {
+          "text": "Group the path into two short chunks.",
+          "cost": 0.1
+        },
+        {
+          "text": "The path keeps moving down and to the right before turning back.",
+          "cost": 0.25
+        },
+        {
+          "text": "It starts in the top row, second column.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        10,
+        45
+      ],
+      "tags": [
+        "sequence",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    },
+    {
+      "id": "memory_pos_medium_01",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 520,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "positions",
+        "grid": {
+          "cols": 4,
+          "rows": 4
+        },
+        "target": [
+          0,
+          5,
+          10,
+          15,
+          3
+        ]
+      },
+      "solution": {
+        "cells": [
+          0,
+          5,
+          10,
+          15,
+          3
+        ]
+      },
+      "hints": [
+        {
+          "text": "Most lit cells line up in one straight line.",
+          "cost": 0.1
+        },
+        {
+          "text": "Four of them form the main diagonal.",
+          "cost": 0.25
+        },
+        {
+          "text": "The diagonal from top-left to bottom-right, plus the top-right corner.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        10,
+        45
+      ],
+      "tags": [
+        "positions",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    },
+    {
+      "id": "memory_seq_hard_01",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 720,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "sequence",
+        "grid": {
+          "cols": 4,
+          "rows": 4
+        },
+        "target": [
+          2,
+          13,
+          7,
+          8,
+          14,
+          1,
+          11
+        ],
+        "scoring": {
+          "rule": "threshold",
+          "min_correct": 6
+        }
+      },
+      "solution": {
+        "cells": [
+          2,
+          13,
+          7,
+          8,
+          14,
+          1,
+          11
+        ]
+      },
+      "hints": [
+        {
+          "text": "Split the path into a first half and a second half.",
+          "cost": 0.1
+        },
+        {
+          "text": "The path jumps between the top and bottom halves.",
+          "cost": 0.25
+        },
+        {
+          "text": "It starts in the top row, third column, then drops to the bottom row.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        15,
+        70
+      ],
+      "tags": [
+        "sequence",
+        "hard"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 700,
+        "gap_ms": 250,
+        "conceal_ms": 800
+      }
+    },
+    {
+      "id": "memory_pos_hard_01",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 760,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "positions",
+        "grid": {
+          "cols": 5,
+          "rows": 4
+        },
+        "target": [
+          0,
+          4,
+          7,
+          12,
+          15,
+          19,
+          11
+        ],
+        "scoring": {
+          "rule": "threshold",
+          "min_correct": 6
+        }
+      },
+      "solution": {
+        "cells": [
+          0,
+          4,
+          7,
+          12,
+          15,
+          19,
+          11
+        ]
+      },
+      "hints": [
+        {
+          "text": "Look for cells that mirror each other.",
+          "cost": 0.1
+        },
+        {
+          "text": "The four corners are all part of it.",
+          "cost": 0.25
+        },
+        {
+          "text": "Corners plus three cells near the middle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        15,
+        70
+      ],
+      "tags": [
+        "positions",
+        "hard"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 900,
+        "gap_ms": 250,
+        "conceal_ms": 800
+      }
+    }
+  ]
+}

@@ -31,7 +31,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 2.5** — Logic Puzzle Renderer and Input Flow — Commit: `task(2.5)` — GitHub: `pushed to origin/main`
 - [x] **Task 2.6** — Logic Puzzle Deterministic Solver and Uniqueness Validator — Commit: `task(2.6)` — GitHub: `pushed to origin/main`
 - [x] **Task 2.7** — Memory Puzzle Renderer and Timing Flow — Commit: `task(2.7)` — GitHub: `pushed to origin/main`
-- [ ] **Task 2.8** — Memory Puzzle Deterministic Validator — Commit: `—` — GitHub: `—`
+- [x] **Task 2.8** — Memory Puzzle Deterministic Validator — Commit: `task(2.8)` — GitHub: `pushed to origin/main`
 - [ ] **Task 2.9** — Tiered Hint Ladder — Commit: `—` — GitHub: `—`
 - [ ] **Task 2.10** — Local Puzzle Bank, Schema Validation and Fingerprints — Commit: `—` — GitHub: `—`
 

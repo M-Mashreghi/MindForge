@@ -1,0 +1,431 @@
+{
+  "puzzles": [
+    {
+      "id": "bad_cell_out_of_grid",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "sequence",
+        "grid": {
+          "cols": 3,
+          "rows": 3
+        },
+        "target": [
+          4,
+          0,
+          9
+        ]
+      },
+      "solution": {
+        "cells": [
+          4,
+          0,
+          9
+        ]
+      },
+      "hints": [
+        {
+          "text": "Say the positions out loud as they light up.",
+          "cost": 0.1
+        },
+        {
+          "text": "The path starts in the centre.",
+          "cost": 0.25
+        },
+        {
+          "text": "Centre first, then a corner, then the opposite corner.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        30
+      ],
+      "tags": [
+        "sequence",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    },
+    {
+      "id": "bad_repeated_cell",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "sequence",
+        "grid": {
+          "cols": 3,
+          "rows": 3
+        },
+        "target": [
+          4,
+          4,
+          8
+        ]
+      },
+      "solution": {
+        "cells": [
+          4,
+          4,
+          8
+        ]
+      },
+      "hints": [
+        {
+          "text": "Say the positions out loud as they light up.",
+          "cost": 0.1
+        },
+        {
+          "text": "The path starts in the centre.",
+          "cost": 0.25
+        },
+        {
+          "text": "Centre first, then a corner, then the opposite corner.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        30
+      ],
+      "tags": [
+        "sequence",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    },
+    {
+      "id": "bad_mode",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "colors",
+        "grid": {
+          "cols": 3,
+          "rows": 3
+        },
+        "target": [
+          4,
+          0,
+          8
+        ]
+      },
+      "solution": {
+        "cells": [
+          4,
+          0,
+          8
+        ]
+      },
+      "hints": [
+        {
+          "text": "Say the positions out loud as they light up.",
+          "cost": 0.1
+        },
+        {
+          "text": "The path starts in the centre.",
+          "cost": 0.25
+        },
+        {
+          "text": "Centre first, then a corner, then the opposite corner.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        30
+      ],
+      "tags": [
+        "sequence",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    },
+    {
+      "id": "bad_grid",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "sequence",
+        "grid": {
+          "cols": 9,
+          "rows": 1
+        },
+        "target": [
+          4,
+          0,
+          8
+        ]
+      },
+      "solution": {
+        "cells": [
+          4,
+          0,
+          8
+        ]
+      },
+      "hints": [
+        {
+          "text": "Say the positions out loud as they light up.",
+          "cost": 0.1
+        },
+        {
+          "text": "The path starts in the centre.",
+          "cost": 0.25
+        },
+        {
+          "text": "Centre first, then a corner, then the opposite corner.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        30
+      ],
+      "tags": [
+        "sequence",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    },
+    {
+      "id": "bad_wrong_stored_solution",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "sequence",
+        "grid": {
+          "cols": 3,
+          "rows": 3
+        },
+        "target": [
+          4,
+          0,
+          8
+        ]
+      },
+      "solution": {
+        "cells": [
+          4,
+          8,
+          0
+        ]
+      },
+      "hints": [
+        {
+          "text": "Say the positions out loud as they light up.",
+          "cost": 0.1
+        },
+        {
+          "text": "The path starts in the centre.",
+          "cost": 0.25
+        },
+        {
+          "text": "Centre first, then a corner, then the opposite corner.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        30
+      ],
+      "tags": [
+        "sequence",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    },
+    {
+      "id": "bad_threshold",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "sequence",
+        "grid": {
+          "cols": 3,
+          "rows": 3
+        },
+        "target": [
+          4,
+          0,
+          8
+        ],
+        "scoring": {
+          "rule": "threshold",
+          "min_correct": 5
+        }
+      },
+      "solution": {
+        "cells": [
+          4,
+          0,
+          8
+        ]
+      },
+      "hints": [
+        {
+          "text": "Say the positions out loud as they light up.",
+          "cost": 0.1
+        },
+        {
+          "text": "The path starts in the centre.",
+          "cost": 0.25
+        },
+        {
+          "text": "Centre first, then a corner, then the opposite corner.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        30
+      ],
+      "tags": [
+        "sequence",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    },
+    {
+      "id": "bad_too_short",
+      "family": "memory",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "mode": "sequence",
+        "grid": {
+          "cols": 3,
+          "rows": 3
+        },
+        "target": [
+          4
+        ]
+      },
+      "solution": {
+        "cells": [
+          4
+        ]
+      },
+      "hints": [
+        {
+          "text": "Say the positions out loud as they light up.",
+          "cost": 0.1
+        },
+        {
+          "text": "The path starts in the centre.",
+          "cost": 0.25
+        },
+        {
+          "text": "Centre first, then a corner, then the opposite corner.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        30
+      ],
+      "tags": [
+        "sequence",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      },
+      "presentation": {
+        "show_ms": 800,
+        "gap_ms": 300,
+        "conceal_ms": 700
+      }
+    }
+  ]
+}

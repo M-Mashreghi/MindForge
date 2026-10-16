@@ -22,6 +22,10 @@ const BUILTIN_FAMILIES := {
 		"validator": "res://game/scripts/puzzles/logic_family.gd",
 		"renderer": "res://game/scenes/puzzles/logic/logic_renderer.tscn",
 	},
+	&"memory": {
+		"validator": "res://game/scripts/puzzles/memory_family.gd",
+		"renderer": "res://game/scenes/puzzles/memory/memory_renderer.tscn",
+	},
 }
 
 

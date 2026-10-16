@@ -571,7 +571,7 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 
 ### Task 2.8: Memory Puzzle Deterministic Validator
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 2 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -588,13 +588,21 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(2.8): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(2.8): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Memory family `game/scripts/puzzles/memory_family.gd`, registered as a built-in family (renderer from Task 2.7). Prompt: `mode` (`sequence` / `positions`), `grid` (2..5 x 2..5), unique in-grid `target` cells (2..9), optional `scoring`; solution must equal the canonical target.
+- Response rules defined by the contract: `sequence` counts a cell only at the same position; `positions` counts each target cell once in any order. `exact` (default) needs complete recall with no extra picks; `threshold` passes at `min_correct` matches. Result details: `correct`, `complete`, `matched`, `total`.
+- Fingerprint mechanics = mode + grid + target (sorted for positions) + scoring; presentation timing excluded.
+- Bundled fixtures `game/resources/puzzle_bank/memory.json` (2 easy, 2 medium, 2 hard, including threshold scoring). Invalid fixtures `tests/fixtures/memory_invalid.json` (7 cases). All three fixture rooms now open real puzzles.
+- Accessibility: a test plays the renderer at 1x and 3x timing with the same picks and gets identical validator results.
+- Validation: `tools/run_tests.sh` — 100 passed, 0 failed (adds `tests/unit/test_memory_family.gd`); `tools/check_boot.sh` OK.
 
 ---
 
