@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/dungeon/room_def.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+room_id = &"fixture_gallery"
+display_name = "Echo Gallery"
+room_type = 0
+size = Vector2(1024, 576)
+spawn_point = Vector2(0.08, 0.5)
+puzzle_anchor = Vector2(0.6, 0.35)
+allows_retreat = true
+has_entry_door = true
+has_exit_door = true
+puzzle_family = &"logic"
+floor_color = Color(0.14, 0.17, 0.2, 1)

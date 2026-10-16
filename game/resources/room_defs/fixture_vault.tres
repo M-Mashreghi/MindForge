@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/scripts/dungeon/room_def.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+room_id = &"fixture_vault"
+display_name = "Rune Vault"
+room_type = 2
+size = Vector2(896, 512)
+spawn_point = Vector2(0.08, 0.5)
+puzzle_anchor = Vector2(0.55, 0.6)
+allows_retreat = false
+has_entry_door = true
+has_exit_door = true
+puzzle_family = &"memory"
+floor_color = Color(0.2, 0.14, 0.17, 1)

@@ -208,7 +208,7 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 
 ### Task 1.6: Reusable Dungeon Room Scene
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 1 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -225,13 +225,20 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(1.6): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(1.6): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Room metadata resource `game/scripts/dungeon/room_def.gd`: id, display name, room type (standard/recovery/challenge/boss), size, spawn point and puzzle anchor (fractions of size), retreat flag, door flags, requested puzzle family. No answers.
+- Reusable room `game/scenes/rooms/dungeon_room.tscn`: floor, collision walls with door gaps, `SpawnPoint`, `PuzzleAnchor` (placeholder pedestal), `EntryDoor` / `ExitDoor` (`door.tscn`, Area2D that reports `player_reached`). The room re-emits `door_reached` and contains no answer validation.
+- Fixture rooms in `game/resources/room_defs/`: `fixture_entrance`, `fixture_gallery`, `fixture_vault`.
+- Deterministic demo flow: `dungeon.tscn` loads the fixed fixture list, centers the room, places the player at the spawn point and calls `GameState.enter_room()`. Running the dungeon scene directly starts a run with `DEMO_SEED`.
+- Validation: `tools/run_tests.sh` — 26 passed, 0 failed (adds `tests/integration/test_dungeon_room.gd`); `tools/check_boot.sh` OK.
 
 ---
 
