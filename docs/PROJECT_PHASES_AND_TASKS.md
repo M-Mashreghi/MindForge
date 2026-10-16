@@ -1687,7 +1687,7 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 
 ### Task 6.3: Godot AI Content Adapter
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 6 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1704,13 +1704,19 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(6.3): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(6.3): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `AiContent` autoload (`game/autoload/ai_content.gd`): builds the versioned request (contract + prompt + output schema), sends it to the proxy (`mindforge/ai/proxy_url`, default `http://127.0.0.1:8787`) with a bounded timeout (`mindforge/ai/timeout_seconds`, default 8 s), and returns a typed result `{ok, status, proposal, model, request_id, error}` with status `ok | disabled | busy | timeout | network_error | http_error | invalid_response | rejected`. Nothing raises into gameplay.
+- Off by default (`mindforge/ai/enabled = false`); at most 2 requests in flight. No provider-specific logic: the proxy's provider is invisible to the game, and replies are parsed with the strict `AiContract` before anyone sees them.
+- The adapter never references GameState, PlayerProfile, SaveManager, score or skills (tested by source check). The HTTP transport is injectable so tests use a fake.
+- Validation: `tools/run_tests.sh` — 287 passed, 0 failed (adds `tests/unit/test_ai_adapter.gd`: disabled default, success path, every error status, busy limit, no score/skill/save access); proxy tests 7 passed; `tools/check_boot.sh` OK.
 
 ---
 

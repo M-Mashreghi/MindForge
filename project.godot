@@ -15,6 +15,9 @@ config/features=PackedStringArray("4.5", "GL Compatibility")
 
 debug/adaptive_log=false
 debug/show_internal_math=false
+ai/enabled=false
+ai/proxy_url="http://127.0.0.1:8787"
+ai/timeout_seconds=8.0
 
 [autoload]
 
@@ -23,6 +26,7 @@ GameState="*res://game/autoload/game_state.gd"
 PlayerProfile="*res://game/autoload/player_profile.gd"
 SaveManager="*res://game/autoload/save_manager.gd"
 Feedback="*res://game/autoload/feedback.gd"
+AiContent="*res://game/autoload/ai_content.gd"
 
 [display]
 
