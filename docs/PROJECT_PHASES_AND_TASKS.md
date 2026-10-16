@@ -1182,7 +1182,7 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 
 ### Task 4.5: Run Summary and Skill-Change Screen
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 4 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1199,13 +1199,19 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(4.5): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(4.5): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `RunSummary.build()` (`game/scripts/scoring/run_summary.gd`): score (and "new best"), rooms cleared, puzzles solved/attempted, hints used, XP gained, level and level progress, and per family solved/attempted/hints plus a trend phrase from the rating change during the run ("Getting sharper", "Holding steady", "Met some tough ones", "Not played this run") with a run headline. Wording describes the run, never the player (tested against a banned-word list).
+- `GameState` keeps a per-puzzle `run_log`, captures the skill state at run start, and builds `last_summary` at run end; the final exit now calls `GameState.complete_run()`, which shows `game/scenes/ui/run_summary.tscn` (Continue returns to the menu).
+- Internal math (ratings before/after, delta, confidence, seed) is in `summary.debug` and shown only when `mindforge/debug/show_internal_math` is on or F3 is pressed in a debug build.
+- Validation: `tools/run_tests.sh` — 214 passed, 0 failed (adds `tests/integration/test_run_summary.gd`); `tools/check_boot.sh` OK.
 
 ---
 

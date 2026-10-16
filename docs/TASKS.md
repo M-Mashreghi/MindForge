@@ -54,7 +54,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 4.2** — Speed, Hint, Attempt and Streak Multipliers — Commit: `task(4.2)` — GitHub: `pushed to origin/main`
 - [x] **Task 4.3** — XP and Profile Progression — Commit: `task(4.3)` — GitHub: `pushed to origin/main`
 - [x] **Task 4.4** — Puzzle Success / Failure Feedback — Commit: `task(4.4)` — GitHub: `pushed to origin/main`
-- [ ] **Task 4.5** — Run Summary and Skill-Change Screen — Commit: `—` — GitHub: `—`
+- [x] **Task 4.5** — Run Summary and Skill-Change Screen — Commit: `task(4.5)` — GitHub: `pushed to origin/main`
 - [ ] **Task 4.6** — Versioned Atomic Save / Load, Migration and Recovery — Commit: `—` — GitHub: `—`
 - [ ] **Task 4.7** — Pause, Restart and Safe Return-to-Menu Flow — Commit: `—` — GitHub: `—`
 - [ ] **Task 4.8** — Basic Audio / Animation Feedback Hooks — Commit: `—` — GitHub: `—`

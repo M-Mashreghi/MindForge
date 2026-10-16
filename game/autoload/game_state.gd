@@ -7,6 +7,8 @@ const RUN_STATE_VERSION := 1
 const DEFAULT_RUN_LENGTH := 3
 const MAIN_MENU_SCENE := "res://game/scenes/ui/main_menu.tscn"
 const DUNGEON_SCENE := "res://game/scenes/dungeon/dungeon.tscn"
+const RUN_SUMMARY_SCENE := "res://game/scenes/ui/run_summary.tscn"
+const RunSummary := preload("res://game/scripts/scoring/run_summary.gd")
 const ScoringEngine := preload("res://game/scripts/scoring/scoring_engine.gd")
 const Progression := preload("res://game/scripts/scoring/progression.gd")
 
@@ -30,6 +32,12 @@ var warmup_enabled: bool = true
 var scoring := ScoringEngine.new()
 ## Score record of the last scored puzzle (for feedback and debugging).
 var last_score: Dictionary = {}
+## One entry per scored puzzle this run ({family, correct, abandoned, hints_used, points, xp}).
+var run_log: Array = []
+## Summary of the last finished run (shown by the run summary screen).
+var last_summary: Dictionary = {}
+var _skills_at_start: Dictionary = {}
+var _best_before_run: int = 0
 
 
 func _ready() -> void:
@@ -51,6 +59,7 @@ func reset() -> void:
 	xp_progress = 0.0
 	streak = 0
 	last_score = {}
+	run_log = []
 
 
 ## Starts a run. The same seed always produces the same initial state.
@@ -61,6 +70,8 @@ func start_run(seed_value: int, length: int = DEFAULT_RUN_LENGTH) -> void:
 	run_length = maxi(1, length)
 	rng.seed = seed_value
 	xp_progress = PlayerProfile.progression.level_progress()
+	_skills_at_start = PlayerProfile.skills.to_dict()
+	_best_before_run = PlayerProfile.progression.best_score
 	EventBus.run_started.emit(run_seed)
 	EventBus.run_state_changed.emit()
 
@@ -72,6 +83,9 @@ func end_run(reason: StringName = &"completed") -> Dictionary:
 	var summary := snapshot()
 	summary["reason"] = reason
 	run_active = false
+	last_summary = RunSummary.build(summary, run_log, _skills_at_start, PlayerProfile.skills.to_dict(),
+		PlayerProfile.progression, _best_before_run)
+	last_summary["reason"] = reason
 	PlayerProfile.progression.record_run(score, reason == &"completed")
 	EventBus.run_ended.emit(summary)
 	EventBus.run_state_changed.emit()
@@ -118,6 +132,9 @@ func apply_puzzle_result(result: Dictionary) -> Dictionary:
 	last_score["xp"] = xp_gain
 	last_score["levels_gained"] = PlayerProfile.add_xp(xp_gain, last_score["correct"])
 	xp_progress = PlayerProfile.progression.level_progress()
+	run_log.append({"family": StringName(result.get("family", &"")), "correct": last_score["correct"],
+		"abandoned": bool(result.get("abandoned", false)), "hints_used": int(result.get("hints_used", 0)),
+		"points": int(last_score["points"]), "xp": xp_gain})
 	EventBus.run_state_changed.emit()
 	return last_score
 
@@ -138,6 +155,12 @@ func begin_new_run(seed_value: int, warmup: bool = true) -> void:
 	warmup_enabled = warmup
 	start_run(seed_value)
 	_change_scene(DUNGEON_SCENE)
+
+
+## Ends the run as completed and shows the run summary screen.
+func complete_run() -> void:
+	end_run(&"completed")
+	_change_scene(RUN_SUMMARY_SCENE)
 
 
 ## Abandons any active run and switches back to the main menu.

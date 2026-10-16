@@ -117,8 +117,7 @@ func _finish_run() -> void:
 	if not _guard.try_begin():
 		return
 	player.input_enabled = false
-	GameState.end_run(&"completed")
-	GameState.return_to_main_menu()
+	GameState.complete_run()
 
 
 ## Interacting at the pedestal opens the room's puzzle in the host. Rooms

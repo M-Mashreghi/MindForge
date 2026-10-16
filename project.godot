@@ -14,6 +14,7 @@ config/features=PackedStringArray("4.5", "GL Compatibility")
 [mindforge]
 
 debug/adaptive_log=false
+debug/show_internal_math=false
 
 [autoload]
 
