@@ -2113,7 +2113,7 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 
 ### Task 7.4: Batch Simulated-Player Harness
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 7 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2130,13 +2130,20 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(7.4): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(7.4): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `LatentPlayer` (`game/scripts/simulation/latent_player.gd`, `sim-player-v1`): simulated players with known per-family ability for the six archetypes (strong, average, struggling, improving, inconsistent, family specialist). Its behaviour model is independent of the algorithm under test: normal-CDF success curve (spread 170) instead of the game's logistic model, per-puzzle noise, hint use when puzzles feel hard, retries with decaying odds, occasional abandonment; it never sees ratings or predictions (source check).
+- `SimulationHarness.run(archetype, seed, rooms, schedule)` (`simulation_harness.gd`, `sim-harness-v1`) plays rooms with the real adaptive stack (a private PlayerProfile instance: warm-up, planner, scheduler, selector, skill model, recovery) over a fixed candidate pool (bundled + procedural puzzles across the difficulty range). Deterministic per (archetype, seed); exports per-room rows and a comparable summary (success/hint/abandon rates, per-family final estimate vs latent ability, error over the last 5 rooms). `schedule = "static"` provides a fixed ramp for Task 7.8. The real player profile is never touched.
+- `tools/simulate_players.gd`: all archetypes x seeds, prints a table and writes `user://simulation/summary.json`.
+- First finding (input for Task 7.5): with the current parameters estimates move too slowly (after 36 rooms a strong player is still estimated around 540 against a latent 800, a struggling one around 465 against 250), largely because a success after several attempts still counts as a near-full success.
+- Validation: `tools/run_tests.sh` — 339 passed, 0 failed (adds `tests/unit/test_simulation_harness.gd`); `tools/simulate_players.gd` runs all 18 simulations in about 3 s; `tools/check_boot.sh` OK.
 
 ---
 
