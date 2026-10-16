@@ -13,7 +13,12 @@ extends RefCounted
 static var _families: Dictionary = {}
 static var _builtins_loaded := false
 
-const BUILTIN_FAMILIES := {}
+const BUILTIN_FAMILIES := {
+	&"pattern": {
+		"validator": "res://game/scripts/puzzles/pattern_family.gd",
+		"renderer": "res://game/scenes/puzzles/pattern/pattern_renderer.tscn",
+	},
+}
 
 
 static func register(family: StringName, validator_script: Script, renderer_scene_path: String) -> void:

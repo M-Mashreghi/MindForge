@@ -118,7 +118,7 @@ GODOT=/path/to/godot tools/run_tests.sh
 | Interact | E / Space / Enter | A |
 | Back / abandon run | Esc | - |
 
-Until the puzzle host arrives (Task 2.2), interacting at the purple pedestal clears a room with a placeholder result and opens its exit door.
+Interact at the purple pedestal to open the room's puzzle; solving it opens the exit door. Esc leaves an open puzzle. Rooms whose puzzle family has no bundled content yet clear with a placeholder result.
 
 ## MVP
 

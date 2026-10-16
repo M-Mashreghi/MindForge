@@ -1,0 +1,383 @@
+{
+  "puzzles": [
+    {
+      "id": "pattern_arith_easy_01",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "arithmetic",
+        "params": {
+          "start": 2,
+          "step": 3
+        },
+        "sequence": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "choices": [
+          12,
+          14,
+          13,
+          15
+        ]
+      },
+      "solution": {
+        "answer": 14
+      },
+      "hints": [
+        {
+          "text": "Compare each number with the one before it.",
+          "cost": 0.1
+        },
+        {
+          "text": "The gap between neighbours is always the same.",
+          "cost": 0.25
+        },
+        {
+          "text": "Each number is 3 more than the previous one.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        25
+      ],
+      "tags": [
+        "sequence",
+        "arithmetic",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "pattern_cycle_easy_01",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 220,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "symbol_cycle",
+        "params": {
+          "cycle": [
+            "circle",
+            "triangle",
+            "square"
+          ],
+          "offset": 0
+        },
+        "sequence": [
+          "circle",
+          "triangle",
+          "square",
+          "circle",
+          "triangle"
+        ],
+        "choices": [
+          "square",
+          "circle",
+          "star"
+        ]
+      },
+      "solution": {
+        "answer": "square"
+      },
+      "hints": [
+        {
+          "text": "Look for a group of symbols that repeats.",
+          "cost": 0.1
+        },
+        {
+          "text": "The same three shapes keep coming back in the same order.",
+          "cost": 0.25
+        },
+        {
+          "text": "After circle and triangle comes square.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        25
+      ],
+      "tags": [
+        "symbol",
+        "cycle",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "pattern_alt_medium_01",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 460,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "alternating",
+        "params": {
+          "start": 5,
+          "steps": [
+            4,
+            -1
+          ]
+        },
+        "sequence": [
+          5,
+          9,
+          8,
+          12,
+          11,
+          15
+        ],
+        "choices": [
+          12,
+          14,
+          16,
+          13
+        ]
+      },
+      "solution": {
+        "answer": 14
+      },
+      "hints": [
+        {
+          "text": "Look at the change from one number to the next.",
+          "cost": 0.1
+        },
+        {
+          "text": "The changes switch between two different amounts.",
+          "cost": 0.25
+        },
+        {
+          "text": "The steps go +4, then -1, then +4 again.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        10,
+        40
+      ],
+      "tags": [
+        "sequence",
+        "alternating",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "pattern_geo_medium_01",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 520,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "geometric",
+        "params": {
+          "start": 3,
+          "ratio": 2
+        },
+        "sequence": [
+          3,
+          6,
+          12,
+          24,
+          48
+        ],
+        "choices": [
+          54,
+          96,
+          64,
+          72
+        ]
+      },
+      "solution": {
+        "answer": 96
+      },
+      "hints": [
+        {
+          "text": "Adding does not explain these jumps.",
+          "cost": 0.1
+        },
+        {
+          "text": "Each number is a multiple of the one before.",
+          "cost": 0.25
+        },
+        {
+          "text": "Each number is twice the previous one.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        10,
+        40
+      ],
+      "tags": [
+        "sequence",
+        "geometric",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "pattern_rec_hard_01",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 720,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "recurrence",
+        "params": {
+          "a": 2,
+          "b": 3
+        },
+        "sequence": [
+          2,
+          3,
+          5,
+          8,
+          13,
+          21
+        ],
+        "choices": [
+          26,
+          24,
+          29,
+          34
+        ]
+      },
+      "solution": {
+        "answer": 34
+      },
+      "hints": [
+        {
+          "text": "The gaps keep growing, but not by a fixed ratio.",
+          "cost": 0.1
+        },
+        {
+          "text": "Try combining the two numbers just before the gap.",
+          "cost": 0.25
+        },
+        {
+          "text": "Each number is the sum of the previous two.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        15,
+        60
+      ],
+      "tags": [
+        "sequence",
+        "recurrence",
+        "hard"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "pattern_cycle_hard_01",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 680,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "symbol_cycle",
+        "params": {
+          "cycle": [
+            "star",
+            "diamond",
+            "hexagon",
+            "ring"
+          ],
+          "offset": 2
+        },
+        "sequence": [
+          "hexagon",
+          "ring",
+          "star",
+          "diamond",
+          "hexagon",
+          "ring"
+        ],
+        "choices": [
+          "diamond",
+          "star",
+          "hexagon",
+          "cross"
+        ]
+      },
+      "solution": {
+        "answer": "star"
+      },
+      "hints": [
+        {
+          "text": "Find where the sequence starts to repeat.",
+          "cost": 0.1
+        },
+        {
+          "text": "The repeating group has four shapes.",
+          "cost": 0.25
+        },
+        {
+          "text": "The group is hexagon, ring, star, diamond.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        15,
+        60
+      ],
+      "tags": [
+        "symbol",
+        "cycle",
+        "hard"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    }
+  ]
+}

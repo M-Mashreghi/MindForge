@@ -7,6 +7,7 @@ extends Node2D
 const ROOM_SCENE := preload("res://game/scenes/rooms/dungeon_room.tscn")
 const Door := preload("res://game/scenes/rooms/door.gd")
 const TransitionGuard := preload("res://game/scripts/dungeon/transition_guard.gd")
+const PuzzleCatalog := preload("res://game/scripts/puzzles/puzzle_catalog.gd")
 const DEMO_ROOM_DEFS: Array[Resource] = [
 	preload("res://game/resources/room_defs/fixture_entrance.tres"),
 	preload("res://game/resources/room_defs/fixture_gallery.tres"),
@@ -22,21 +23,29 @@ signal transition_finished(room_id: StringName)
 
 ## Seconds for each half of the fade; 0 makes transitions instant (tests).
 @export var fade_duration: float = 0.2
+## Seconds the puzzle stays on screen after it ends, so feedback is readable.
+@export var puzzle_close_delay: float = 1.0
 
 @onready var _room_holder: Node2D = $RoomHolder
 @onready var _fade: ColorRect = $FadeLayer/Fade
 @onready var player: CharacterBody2D = $Player
+@onready var puzzle_host: Control = $PuzzleLayer/PuzzleHost
 
 var current_room: Node2D
 var current_index: int = -1
 ## Rooms solved in this run, by fixture index (so retreat keeps progress).
 var _solved_rooms: Dictionary = {}
 var _guard := TransitionGuard.new()
+var catalog: RefCounted
+## Puzzle chosen for each fixture room index, so a retry shows the same one.
+var _room_puzzles: Dictionary = {}
 
 
 func _ready() -> void:
 	_fade.color.a = 0.0
 	player.interact_requested.connect(_on_player_interact)
+	puzzle_host.finished.connect(_on_puzzle_finished)
+	catalog = PuzzleCatalog.load_bank()
 	EventBus.puzzle_resolved.connect(_on_puzzle_resolved)
 	if not GameState.run_active:
 		GameState.start_run(DEMO_SEED, DEMO_ROOM_DEFS.size())
@@ -46,7 +55,10 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
-		GameState.return_to_main_menu()
+		if puzzle_host.is_open:
+			puzzle_host.give_up()
+		else:
+			GameState.return_to_main_menu()
 
 
 func is_transitioning() -> bool:
@@ -109,18 +121,37 @@ func _finish_run() -> void:
 	GameState.return_to_main_menu()
 
 
-## Placeholder until the puzzle host (Task 2.2): interacting with the pedestal
-## reports a successful placeholder result. Correctness will come from puzzle
-## validators, never from the room or the dungeon.
+## Interacting at the pedestal opens the room's puzzle in the host. Rooms
+## whose family has no bundled puzzle yet use a placeholder success so the
+## run stays playable. Correctness always comes from family validators.
 func _on_player_interact() -> void:
-	if current_room == null or current_room.is_solved or _guard.in_progress:
+	if current_room == null or current_room.is_solved or _guard.in_progress or puzzle_host.is_open:
 		return
 	if player.global_position.distance_to(current_room.puzzle_anchor.global_position) > INTERACT_RADIUS:
 		return
 	var room_id: StringName = current_room.get_room_id()
-	var puzzle_id := StringName("placeholder_%s" % room_id)
-	EventBus.puzzle_started.emit(room_id, puzzle_id)
-	EventBus.puzzle_resolved.emit(room_id, puzzle_id, {"correct": true, "placeholder": true})
+	var puzzle: RefCounted = puzzle_for_current_room()
+	if puzzle == null:
+		var puzzle_id := StringName("placeholder_%s" % room_id)
+		EventBus.puzzle_started.emit(room_id, puzzle_id)
+		EventBus.puzzle_resolved.emit(room_id, puzzle_id, {"correct": true, "placeholder": true})
+		return
+	player.input_enabled = false
+	puzzle_host.open(puzzle, room_id)
+
+
+## Deterministic per run: picked with the run RNG the first time it is needed.
+func puzzle_for_current_room() -> RefCounted:
+	if not _room_puzzles.has(current_index):
+		_room_puzzles[current_index] = catalog.pick_for_room(current_room.room_def, GameState.rng)
+	return _room_puzzles[current_index]
+
+
+func _on_puzzle_finished(_result: Dictionary) -> void:
+	if puzzle_close_delay > 0.0:
+		await get_tree().create_timer(puzzle_close_delay).timeout
+	puzzle_host.close()
+	player.input_enabled = true
 
 
 func _on_puzzle_resolved(room_id: StringName, _puzzle_id: StringName, result: Dictionary) -> void:

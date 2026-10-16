@@ -425,7 +425,7 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 
 ### Task 2.4: Pattern Puzzle Deterministic Solver and Validator
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 2 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -442,13 +442,21 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(2.4): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(2.4): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Pattern family `game/scripts/puzzles/pattern_family.gd`, registered as a built-in family. Supported rules with structured parameters: `arithmetic` (start, step != 0), `geometric` (start != 0, |ratio| 2..5), `alternating` (start, two different steps), `recurrence` (a, b; sum of previous two), `symbol_cycle` (2..5 unique known symbols, offset).
+- The solver derives the canonical next term from rule + parameters; the validator rejects unsupported rules, invalid parameters, visible sequences that do not follow the rule (inconsistent), choice lists with no correct option (zero solutions) or duplicates, too-short sequences (symbol cycles must show the full cycle plus one, so the answer is unambiguous), values beyond ±1,000,000, and stored solutions that differ from the solver.
+- Fingerprint mechanics = rule + params + shown length (distractors/choice order excluded).
+- Bundled fixtures `game/resources/puzzle_bank/pattern.json`: 2 easy, 2 medium, 2 hard. Invalid fixtures `tests/fixtures/pattern_invalid.json` (8 cases).
+- `PuzzleCatalog` (`puzzle_catalog.gd`) loads the bank, keeps only valid puzzles and records rejections. The dungeon opens the room's puzzle in `PuzzleHost` at the pedestal (seed-deterministic choice, same puzzle on retry, Esc gives up); rooms without content for their family still use the placeholder.
+- Validation: `tools/run_tests.sh` — 74 passed, 0 failed (adds `tests/unit/test_pattern_family.gd`, `tests/integration/test_dungeon_puzzles.gd`); `tools/check_boot.sh` OK.
 
 ---
 

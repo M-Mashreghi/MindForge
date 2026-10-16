@@ -1,0 +1,482 @@
+{
+  "puzzles": [
+    {
+      "id": "bad_zero_solution",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "arithmetic",
+        "params": {
+          "start": 2,
+          "step": 3
+        },
+        "sequence": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "choices": [
+          12,
+          13,
+          15
+        ]
+      },
+      "solution": {
+        "answer": 14
+      },
+      "hints": [
+        {
+          "text": "Compare each number with the one before it.",
+          "cost": 0.1
+        },
+        {
+          "text": "The gap between neighbours is always the same.",
+          "cost": 0.25
+        },
+        {
+          "text": "Each number is 3 more than the previous one.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        25
+      ],
+      "tags": [
+        "sequence",
+        "arithmetic",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_inconsistent_sequence",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "arithmetic",
+        "params": {
+          "start": 2,
+          "step": 3
+        },
+        "sequence": [
+          2,
+          5,
+          9,
+          11
+        ],
+        "choices": [
+          12,
+          14,
+          13,
+          15
+        ]
+      },
+      "solution": {
+        "answer": 14
+      },
+      "hints": [
+        {
+          "text": "Compare each number with the one before it.",
+          "cost": 0.1
+        },
+        {
+          "text": "The gap between neighbours is always the same.",
+          "cost": 0.25
+        },
+        {
+          "text": "Each number is 3 more than the previous one.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        25
+      ],
+      "tags": [
+        "sequence",
+        "arithmetic",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_unsupported_rule",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "prime_numbers",
+        "params": {
+          "start": 2,
+          "step": 3
+        },
+        "sequence": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "choices": [
+          12,
+          14,
+          13,
+          15
+        ]
+      },
+      "solution": {
+        "answer": 14
+      },
+      "hints": [
+        {
+          "text": "Compare each number with the one before it.",
+          "cost": 0.1
+        },
+        {
+          "text": "The gap between neighbours is always the same.",
+          "cost": 0.25
+        },
+        {
+          "text": "Each number is 3 more than the previous one.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        25
+      ],
+      "tags": [
+        "sequence",
+        "arithmetic",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_wrong_stored_solution",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "arithmetic",
+        "params": {
+          "start": 2,
+          "step": 3
+        },
+        "sequence": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "choices": [
+          12,
+          14,
+          13,
+          15
+        ]
+      },
+      "solution": {
+        "answer": 13
+      },
+      "hints": [
+        {
+          "text": "Compare each number with the one before it.",
+          "cost": 0.1
+        },
+        {
+          "text": "The gap between neighbours is always the same.",
+          "cost": 0.25
+        },
+        {
+          "text": "Each number is 3 more than the previous one.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        25
+      ],
+      "tags": [
+        "sequence",
+        "arithmetic",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_zero_step",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "arithmetic",
+        "params": {
+          "start": 2,
+          "step": 0
+        },
+        "sequence": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "choices": [
+          12,
+          14,
+          13,
+          15
+        ]
+      },
+      "solution": {
+        "answer": 14
+      },
+      "hints": [
+        {
+          "text": "Compare each number with the one before it.",
+          "cost": 0.1
+        },
+        {
+          "text": "The gap between neighbours is always the same.",
+          "cost": 0.25
+        },
+        {
+          "text": "Each number is 3 more than the previous one.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        25
+      ],
+      "tags": [
+        "sequence",
+        "arithmetic",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_duplicate_choices",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "arithmetic",
+        "params": {
+          "start": 2,
+          "step": 3
+        },
+        "sequence": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "choices": [
+          14,
+          14,
+          12
+        ]
+      },
+      "solution": {
+        "answer": 14
+      },
+      "hints": [
+        {
+          "text": "Compare each number with the one before it.",
+          "cost": 0.1
+        },
+        {
+          "text": "The gap between neighbours is always the same.",
+          "cost": 0.25
+        },
+        {
+          "text": "Each number is 3 more than the previous one.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        25
+      ],
+      "tags": [
+        "sequence",
+        "arithmetic",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_too_short",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 180,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "arithmetic",
+        "params": {
+          "start": 2,
+          "step": 3
+        },
+        "sequence": [
+          2,
+          5
+        ],
+        "choices": [
+          12,
+          14,
+          13,
+          15
+        ]
+      },
+      "solution": {
+        "answer": 14
+      },
+      "hints": [
+        {
+          "text": "Compare each number with the one before it.",
+          "cost": 0.1
+        },
+        {
+          "text": "The gap between neighbours is always the same.",
+          "cost": 0.25
+        },
+        {
+          "text": "Each number is 3 more than the previous one.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        25
+      ],
+      "tags": [
+        "sequence",
+        "arithmetic",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_ambiguous_cycle",
+      "family": "pattern",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 220,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "rule": "symbol_cycle",
+        "params": {
+          "cycle": [
+            "circle",
+            "triangle",
+            "square"
+          ],
+          "offset": 0
+        },
+        "sequence": [
+          "circle",
+          "triangle",
+          "square"
+        ],
+        "choices": [
+          "square",
+          "circle",
+          "star"
+        ]
+      },
+      "solution": {
+        "answer": "square"
+      },
+      "hints": [
+        {
+          "text": "Look for a group of symbols that repeats.",
+          "cost": 0.1
+        },
+        {
+          "text": "The same three shapes keep coming back in the same order.",
+          "cost": 0.25
+        },
+        {
+          "text": "After circle and triangle comes square.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        5,
+        25
+      ],
+      "tags": [
+        "symbol",
+        "cycle",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    }
+  ]
+}
