@@ -44,7 +44,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 3.5** — Predicted-Success Model — Commit: `task(3.5)` — GitHub: `pushed to origin/main`
 - [x] **Task 3.6** — Target-Success Band and Difficulty Selector — Commit: `task(3.6)` — GitHub: `pushed to origin/main`
 - [x] **Task 3.7** — Confidence-Aware Updates and Anti-Oscillation — Commit: `task(3.7)` — GitHub: `pushed to origin/main`
-- [ ] **Task 3.8** — Failure Recovery Mode with Hysteresis — Commit: `—` — GitHub: `—`
+- [x] **Task 3.8** — Failure Recovery Mode with Hysteresis — Commit: `task(3.8)` — GitHub: `pushed to origin/main`
 - [ ] **Task 3.9** — Cold-Start Calibration Session — Commit: `—` — GitHub: `—`
 - [ ] **Task 3.10** — Adaptive Scheduler Policy: Fit, Variety and Weakness Guardrails — Commit: `—` — GitHub: `—`
 

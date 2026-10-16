@@ -138,7 +138,10 @@ func _on_player_interact() -> void:
 		return
 	player.input_enabled = false
 	var prediction: Dictionary = PlayerProfile.predict(puzzle)
-	puzzle_host.open(puzzle, room_id, {"context": {"predicted_success": prediction["predicted_success"]}})
+	puzzle_host.open(puzzle, room_id, {"context": {
+		"predicted_success": prediction["predicted_success"],
+		"hints_available": puzzle.hints.size(),
+	}})
 
 
 ## Deterministic per run: picked with the run RNG the first time it is needed.

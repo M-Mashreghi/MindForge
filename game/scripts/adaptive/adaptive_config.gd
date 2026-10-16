@@ -64,3 +64,13 @@ var confidence_drop: float = 0.15
 ## Smoothing of consecutive target difficulties per family (Task 3.7).
 var target_smoothing: float = 0.6
 var max_target_step: float = 80.0
+
+## Recovery mode with hysteresis (Task 3.8). Enter on repeated failure,
+## repeated hint exhaustion or repeated abandonment; leave only after a
+## stable run of successes and a minimum number of recovery rooms.
+var recovery_window: int = 4
+var recovery_enter_failures: int = 3
+var recovery_enter_hint_exhaustion: int = 2
+var recovery_enter_abandons: int = 2
+var recovery_exit_successes: int = 3
+var recovery_min_rooms: int = 3

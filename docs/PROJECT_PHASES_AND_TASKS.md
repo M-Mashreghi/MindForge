@@ -928,7 +928,7 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 
 ### Task 3.8: Failure Recovery Mode with Hysteresis
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 3 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -945,13 +945,20 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(3.8): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(3.8): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `RecoveryMode` (`game/scripts/adaptive/recovery_mode.gd`), thresholds in `adaptive_config.gd`. Enters on 3 failures within the last 4 results, 2 consecutive results that used every hint, or 2 consecutive abandons. One failure never triggers it, and noisy ~60% success does not either.
+- Hysteresis: exits only after 3 consecutive successes and at least 3 results in recovery; evidence is cleared on every transition, so old failures cannot re-trigger it right after exit.
+- While active, standard/challenge rooms use the easier recovery band and boss rooms soften to the challenge band (no abrupt trivialization); `prefers_familiar()` tells the scheduler to favour known mechanics (used in Task 3.10).
+- `PlayerProfile` feeds every result into it (hint count passed in the puzzle context), records `recovery_transition` and a snapshot with each update, and resets it when a run starts.
+- Validation: `tools/run_tests.sh` — 170 passed, 0 failed (adds `tests/unit/test_recovery_mode.gd`); `tools/check_boot.sh` OK.
 
 ---
 
