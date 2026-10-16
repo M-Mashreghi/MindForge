@@ -1932,7 +1932,7 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 
 ### Task 6.10: Validated AI Puzzle Cache and Version Invalidation
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 6 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1949,13 +1949,19 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(6.10): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(6.10): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `AiCache` (`game/scripts/ai/ai_cache.gd`, `user://ai_cache.json`, cache version 1): stores only AI puzzles that pass the content pipeline, keyed by fingerprint, each with model, prompt/schema/pipeline/solver versions and a timestamp; newest 200 kept; atomic save (temp file, then replace).
+- Version invalidation: on load, entries created under different prompt/schema/pipeline/solver versions are revalidated with the current pipeline; those that no longer pass are dropped, the rest get refreshed versions (a different model alone does not invalidate). Corrupt cache files are ignored. `load_into(catalog)` re-admits entries through the pipeline.
+- No secrets or telemetry: entries keep puzzle content and provenance only (whitelisted fields); a test checks the file for key names and player data.
+- Validation: `tools/run_tests.sh` — 318 passed, 0 failed (adds `tests/unit/test_ai_cache.gd`); `tools/check_boot.sh` OK.
 
 ---
 
