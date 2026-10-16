@@ -2149,7 +2149,7 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 
 ### Task 7.5: Adaptive Convergence, Oscillation and Recovery Metrics
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 7 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2166,13 +2166,20 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(7.5): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(7.5): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `AdaptiveMetrics.compute(rows)` (`game/scripts/simulation/adaptive_metrics.gd`, `adaptive-metrics-v1`), per family and overall: band occupancy (predicted success inside the standard band), true fit (latent success 0.55-0.90), convergence room, final error, oscillation (mean target change), sign flips, overshoot over the 75%-success difficulty, recovery time.
+- Regression thresholds (`tests/unit/test_adaptive_metrics.gd`, 45 rooms, seeds 1-2): strong players reach >= 650 in every family, struggling stay <= 480, average within 500 ± 150, specialist pattern at least 150 above logic, improving players followed within 150, oscillation <= 40, sign flips <= 0.7, standard-band occupancy >= 0.5, recovery episodes <= 8 rooms.
+- The thresholds caught a real failure in v1 (strong players stuck near 540), so the adaptive parameters were re-balanced to `adaptive-v2` (`adaptive_config.gd`): K 90 -> 14, per-puzzle cap 45, confidence gain 0.05, puzzle trust floor 0.85, correct floor 0.45, extra attempts -0.3 each (max 0.55), hint penalty 0.6 x cost (max 0.35). The repeat-attempt rule now only skips re-rating a puzzle seen within the last two results (immediate retries), not a later reappearance. Unit tests that pinned v1 numbers now read the config values; docs (`ADAPTIVE_DIFFICULTY.md`, `ADAPTIVE_EVALUATION.md`, README) updated.
+- After tuning (seeds 1-2): strong ~730/800, average ~500-610, struggling ~330-410 vs latent ~250 (retries and hints inflate success; the sim defines latent ability as unassisted first-try ability), specialist pattern ~700 vs logic ~430, oscillation ~17-30 points.
+- Validation: `tools/run_tests.sh` — 347 passed, 0 failed; `tools/check_boot.sh` OK.
 
 ---
 

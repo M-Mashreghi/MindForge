@@ -1,6 +1,9 @@
 extends "res://tests/test_case.gd"
 
 const PerformanceEvent := preload("res://game/scripts/adaptive/performance_event.gd")
+const AdaptiveConfig := preload("res://game/scripts/adaptive/adaptive_config.gd")
+
+var cfg := AdaptiveConfig.new()
 
 const BAND := [10, 40]
 
@@ -18,8 +21,9 @@ func test_correctness_dominates_every_secondary_signal() -> void:
 	var best_incorrect := _score({"correct": false, "attempts": 1, "response_ms": 2000,
 		"details": {"matched": 9, "total": 10}})
 	check(worst_correct > best_incorrect, "slowest, hint-heavy correct (%s) beats best incorrect (%s)" % [worst_correct, best_incorrect])
-	check(worst_correct >= 0.6, "correct floor")
-	check(best_incorrect <= 0.2, "incorrect ceiling")
+	check(worst_correct >= cfg.correct_floor, "correct floor")
+	check(best_incorrect <= cfg.incorrect_partial_max, "incorrect ceiling")
+	check(cfg.correct_floor > cfg.incorrect_partial_max, "config keeps correctness dominant")
 
 
 func test_secondary_signals_are_bounded_and_ordered() -> void:
@@ -29,7 +33,7 @@ func test_secondary_signals_are_bounded_and_ordered() -> void:
 	var second_try := _score({"correct": true, "attempts": 2, "response_ms": 15000})
 	check(clean > one_hint and one_hint > all_hints, "more hints, lower score")
 	check(clean > second_try, "extra attempt lowers score")
-	check(is_equal_approx(clean - all_hints, 0.25) or clean - all_hints < 0.25 + 0.0001, "hint penalty capped")
+	check(clean - all_hints <= cfg.hint_penalty_max + 0.0001, "hint penalty capped")
 
 
 func test_slow_answer_penalty_is_small_and_capped() -> void:

@@ -58,7 +58,8 @@ func test_confidence_grows_with_consistent_evidence_and_drops_on_surprise() -> v
 	for i in 10:
 		model.apply(p, &"logic", p.rating(&"logic") - 100.0, {"observed_score": 1.0})
 	var steady: float = p.confidence(&"logic")
-	check(steady > 0.4, "confidence rises with expected outcomes (%s)" % steady)
+	# adaptive-v2 grows confidence slowly so new players keep a high K longer.
+	check(steady > 0.2, "confidence rises with expected outcomes (%s)" % steady)
 	model.apply(p, &"logic", p.rating(&"logic") - 300.0, {"observed_score": 0.0})
 	check(p.confidence(&"logic") < steady, "a big surprise lowers confidence")
 	for i in 200:

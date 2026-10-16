@@ -203,17 +203,17 @@ The adaptive system should be evaluated with:
 
 See `ADAPTIVE_EVALUATION.md`.
 
-## 16. Implementation (v1, `adaptive-v1`)
+## 16. Implementation (`adaptive-v2`)
 
 All modules live in `game/scripts/adaptive/`; every tunable value is in `adaptive_config.gd`.
 
 | Concern | Module | v1 behaviour |
 |---|---|---|
 | Skill state | `skill_profile.gd` | overall + family `{rating 0..1000, confidence 0..0.95, observations}`, neutral prior 500, no cross-family inference |
-| Performance | `performance_event.gd` | correct >= 0.6, incorrect <= 0.2; capped attempt/hint/slow penalties; timing ignored with accommodations, without a time band, or when unreliable |
-| Base update | `elo.gd` | `expected = 1/(1+10^((d-s)/250))`, delta capped at 30 per puzzle |
+| Performance | `performance_event.gd` | correct >= 0.45, incorrect <= 0.2; extra attempts -0.3 each (max 0.55), hints -0.6 x cost (max 0.35), slow -0.1 max; timing ignored with accommodations, without a time band, or when unreliable |
+| Base update | `elo.gd` | `expected = 1/(1+10^((d-s)/250))`, delta capped at 45 per puzzle |
 | Family/overall | `skill_model.gd` | family full K, overall 0.35 K, other families untouched; before/after records |
-| Confidence-aware K | `skill_model.gd` | K 56 -> 14 as confidence rises; x(0.6 + 0.4 x puzzle confidence) |
+| Confidence-aware K | `skill_model.gd` | K 90 -> 14 as confidence rises (confidence gain 0.05, so new profiles keep a high K longer); x(0.85 + 0.15 x puzzle confidence) |
 | Prediction | `success_predictor.gd` | same logistic, clamped 0.01..0.99, exact inverse |
 | Target bands | `difficulty_selector.gd` | recovery 0.85-0.93, standard 0.70-0.80, challenge 0.55-0.68, boss 0.45-0.60; targets smoothed (60%, max 80 per room); fallbacks `in_band` / `nearest_outside_band` / `no_content` |
 | Recovery | `recovery_mode.gd` | enter: 3 fails in 4, 2 hint exhaustions, 2 abandons; exit: 3 straight successes after >= 3 rooms |
@@ -221,3 +221,7 @@ All modules live in `game/scripts/adaptive/`; every tunable value is in `adaptiv
 | Scheduling | `adaptive_scheduler.gd` | fit + novelty + variety + coverage + weakness guardrail + recovery familiarity + seeded jitter, with reasons |
 
 `PlayerProfile` (autoload) applies every validated puzzle result and owns the scheduler state. Set `mindforge/debug/adaptive_log` to `true` in Project Settings to print each scheduling decision with its reasons.
+
+### adaptive-v1 -> adaptive-v2 (simulation-driven re-balance, Task 7.5)
+
+The simulated-player harness showed v1 adapting far too slowly: after 36 rooms a strong player (latent ~800) was still rated ~540, so strong players were trapped at easy content. v2 raises the starting K and the per-puzzle cap, keeps K high longer for new profiles, trusts uncalibrated puzzles more, and makes a success on a second or third attempt count clearly below expectation (multiple-choice retries are cheap). A retry of a puzzle seen within the last two results is still not re-rated, but meeting a puzzle again later in the run is. Regression thresholds live in `tests/unit/test_adaptive_metrics.gd`.

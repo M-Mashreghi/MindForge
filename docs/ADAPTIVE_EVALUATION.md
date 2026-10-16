@@ -89,3 +89,10 @@ A balance release should be blocked when:
 - oscillation exceeds a configured threshold,
 - accessibility timing causes unjustified skill penalties,
 - puzzle calibration is non-reproducible.
+
+## Implementation
+
+- Simulated players: `game/scripts/simulation/latent_player.gd` (six archetypes, independent normal-CDF behaviour model).
+- Harness: `game/scripts/simulation/simulation_harness.gd`; `tools/simulate_players.gd` runs every archetype over fixed seeds.
+- Metrics: `game/scripts/simulation/adaptive_metrics.gd` (band occupancy, true fit, convergence, final error, oscillation, sign flips, overshoot, recovery time; per family and overall).
+- Regression thresholds: `tests/unit/test_adaptive_metrics.gd` (strong not trapped low, struggling not overrated, average near the middle, families independent, improving players followed, bounded oscillation, target band hit, short recovery).

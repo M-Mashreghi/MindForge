@@ -3,7 +3,7 @@ extends RefCounted
 ## number so tests and balance experiments can override them; the defaults
 ## are design hypotheses to calibrate from telemetry.
 
-const ALGORITHM_VERSION := "adaptive-v1"
+const ALGORITHM_VERSION := "adaptive-v2"
 
 ## Rating scale (docs/ADAPTIVE_DIFFICULTY.md section 2).
 var skill_min: float = 0.0
@@ -14,13 +14,13 @@ var confidence_max: float = 0.95
 ## Performance normalization (Task 3.2). A correct answer scores at least
 ## `correct_floor`; an incorrect one at most `incorrect_partial_max`, so
 ## correctness always dominates every secondary signal.
-var correct_floor: float = 0.6
+var correct_floor: float = 0.45
 var incorrect_partial_max: float = 0.2
-var attempt_penalty: float = 0.1
-var attempt_penalty_max: float = 0.2
+var attempt_penalty: float = 0.3
+var attempt_penalty_max: float = 0.55
 ## Fraction of the puzzle's total hint cost subtracted (hint costs are 0..1 each).
-var hint_penalty_scale: float = 0.4
-var hint_penalty_max: float = 0.25
+var hint_penalty_scale: float = 0.6
+var hint_penalty_max: float = 0.35
 ## Timing only counts when it is meaningful and no accommodation is active.
 var slow_penalty_max: float = 0.1
 ## Responses slower than this multiple of the band's upper bound (or faster
@@ -35,7 +35,7 @@ var logistic_scale: float = 250.0
 ## confidence-aware k_max..k_min range below (Task 3.7).
 var k_factor: float = 40.0
 ## Hard cap on rating movement from a single puzzle.
-var max_delta_per_event: float = 30.0
+var max_delta_per_event: float = 45.0
 
 ## Family vs overall updates (Task 3.4): the puzzle's family moves with the
 ## full K, overall moves conservatively with this fraction of it.
@@ -53,12 +53,12 @@ var target_bands: Dictionary = {
 ## Confidence-aware updates (Task 3.7). K shrinks from k_max (no confidence)
 ## to k_min (full confidence). Puzzles with uncalibrated difficulty count
 ## less: K is multiplied by puzzle_trust_floor + (1 - floor) * confidence.
-var k_max: float = 56.0
+var k_max: float = 90.0
 var k_min: float = 14.0
-var puzzle_trust_floor: float = 0.6
+var puzzle_trust_floor: float = 0.85
 ## Confidence grows with evidence that matches expectation and shrinks with
 ## surprises (|observed - expected|).
-var confidence_gain: float = 0.12
+var confidence_gain: float = 0.05
 var confidence_drop: float = 0.15
 
 ## Smoothing of consecutive target difficulties per family (Task 3.7).
