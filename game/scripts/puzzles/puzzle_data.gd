@@ -28,6 +28,8 @@ var max_attempts: int
 var fingerprint: String
 ## Family-provided mechanic name (variety and familiarity scheduling).
 var mechanic: String
+## Groups near-repeats (same mechanics shape, different numbers).
+var near_signature: String
 ## Normalized copy of the source data (safe to hand to family validators).
 var data: Dictionary
 
@@ -100,3 +102,4 @@ func _fill(d: Dictionary, computed_fingerprint: String) -> void:
 	max_attempts = int(d.get("max_attempts", DEFAULT_MAX_ATTEMPTS))
 	fingerprint = computed_fingerprint
 	mechanic = PuzzleRegistry.validator(family).mechanic_label(d)
+	near_signature = PuzzleRegistry.validator(family).near_signature(d)

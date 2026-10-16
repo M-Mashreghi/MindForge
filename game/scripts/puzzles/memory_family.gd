@@ -94,6 +94,12 @@ func ambiguity(puzzle: Dictionary) -> PackedStringArray:
 	return PackedStringArray()
 
 
+## Near-repeat signature: same mode, grid and length.
+func near_signature(puzzle: Dictionary) -> String:
+	var prompt: Dictionary = puzzle["prompt"]
+	return "memory:%s:%sx%s:%d" % [prompt["mode"], prompt["grid"]["cols"], prompt["grid"]["rows"], (prompt["target"] as Array).size()]
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	var cells: Array = puzzle["prompt"]["target"]
 	return PackedStringArray([", ".join(cells.map(func(c): return str(int(c) + 1)))])

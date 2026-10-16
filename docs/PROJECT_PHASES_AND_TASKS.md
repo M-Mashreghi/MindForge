@@ -1897,7 +1897,7 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 
 ### Task 6.9: Generated-Content Fingerprint, Deduplication and Variety Gate
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 6 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1914,13 +1914,19 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(6.9): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(6.9): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Generated content (procedural or AI) is admitted with `PuzzleCatalog.admit_generated()`, which runs the content pipeline: the puzzle is fingerprinted (SHA-256 of family mechanics) before it can be cached or scheduled, and exact duplicates of bundled or earlier generated content are rejected at the `fingerprint` stage.
+- Near repeats: each family now provides `near_signature()` (pattern: rule + step/ratio/cycle shape regardless of start or length; logic: item count + clue-type mix; memory: mode + grid + length), stored as `PuzzleData.near_signature` and in the run history. `VarietyTracker` penalises a near repeat seen in the last 3 rooms (-0.3 each, relaxed in recovery) on top of the existing mechanic/family cooldowns.
+- Traceability: provenance keeps model, request id, prompt/schema/pipeline/solver versions; `PuzzleCatalog.invalidate(filter)` removes every puzzle whose provenance matches (e.g. a model or prompt version) and releases its fingerprints.
+- Validation: `tools/run_tests.sh` — 313 passed, 0 failed (adds `tests/unit/test_generated_content_gate.gd`); fingerprint snapshot unchanged; `tools/check_boot.sh` OK.
 
 ---
 

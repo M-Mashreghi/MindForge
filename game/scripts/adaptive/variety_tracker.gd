@@ -8,6 +8,7 @@ extends RefCounted
 ##   mechanic seen in the last `mechanic_cooldown` rooms         -> -0.25 each
 ##   same family as the last room                                 -> -0.2
 ##   same family as the last two rooms                            -> another -0.2
+##   near repeat (same shape, new numbers) in the last 3 rooms    -> -0.3 each
 ##
 ## In recovery, familiar mechanics are welcome, so the mechanic cooldown is
 ## waived and the fingerprint cooldown is shortened (a just-failed puzzle is
@@ -19,6 +20,9 @@ var mechanic_cooldown: int = 2
 var fingerprint_penalty: float = 1.0
 var mechanic_penalty: float = 0.25
 var family_penalty: float = 0.2
+## Near repeats (same mechanics shape, different numbers) seen recently.
+var near_repeat_cooldown: int = 3
+var near_repeat_penalty: float = 0.3
 
 
 ## `history` entries: {"family", "fingerprint", "mechanic"}, newest last.
@@ -31,6 +35,12 @@ func evaluate(puzzle: RefCounted, history: Array, recovery_active: bool = false)
 		novelty -= fingerprint_penalty
 		reasons.append("puzzle seen in the last %d rooms" % fp_window)
 	var variety := 0.0
+	if not recovery_active and "near_signature" in puzzle and puzzle.near_signature != "":
+		var near := _tail(history, near_repeat_cooldown).filter(
+			func(h): return h.get("near", "") == puzzle.near_signature and h["fingerprint"] != puzzle.fingerprint).size()
+		if near > 0:
+			variety -= near_repeat_penalty * near
+			reasons.append("near-repeat of a recent puzzle")
 	if not recovery_active:
 		var repeats := _tail(history, mechanic_cooldown).filter(func(h): return h["mechanic"] == puzzle.mechanic).size()
 		if repeats > 0:

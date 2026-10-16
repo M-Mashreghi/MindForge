@@ -34,5 +34,9 @@ func ambiguity(_puzzle: Dictionary) -> PackedStringArray:
 	return PackedStringArray()
 
 
+func near_signature(_puzzle: Dictionary) -> String:
+	return "doubling"
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	return PackedStringArray([str(solve(puzzle["prompt"])["answer"])])

@@ -101,6 +101,26 @@ func ambiguity(puzzle: Dictionary) -> PackedStringArray:
 	return PackedStringArray() if matches == 1 else PackedStringArray(["pattern: %d choices match the answer" % matches])
 
 
+## Near-repeat signature: same rule with the same step/ratio/cycle shape,
+## whatever the starting value or length (e.g. +3 sequences from 2 and 7).
+func near_signature(puzzle: Dictionary) -> String:
+	var prompt: Dictionary = puzzle["prompt"]
+	var p: Dictionary = prompt["params"]
+	var shape: Variant
+	match prompt["rule"]:
+		"arithmetic":
+			shape = p.get("step")
+		"geometric":
+			shape = p.get("ratio")
+		"alternating":
+			shape = p.get("steps")
+		"symbol_cycle":
+			shape = (p.get("cycle", []) as Array).size()
+		_:
+			shape = ""
+	return "pattern:%s:%s" % [prompt["rule"], CanonicalJson.stringify(shape)]
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	var solved: Variant = solve(puzzle["prompt"])
 	return PackedStringArray([str(solved["answer"])]) if solved else PackedStringArray()

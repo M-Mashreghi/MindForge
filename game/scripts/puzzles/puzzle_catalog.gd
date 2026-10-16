@@ -57,6 +57,35 @@ func add_entry(raw: Variant, file: String = "", index: int = -1) -> bool:
 	return true
 
 
+## Admits a generated (procedural or AI) puzzle dictionary through the same
+## pipeline. Returns the accepted PuzzleData or null.
+func admit_generated(raw: Dictionary, origin: String) -> RefCounted:
+	if not add_entry(raw, origin, -1):
+		return null
+	return puzzles[-1]
+
+
+## Removes every puzzle whose provenance matches all key/values in
+## `provenance_filter` (e.g. {"model": "x"} or {"prompt_version": "ai-prompt-v1"}).
+## Returns the removed puzzle ids. Used to invalidate generated content.
+func invalidate(provenance_filter: Dictionary) -> Array:
+	var removed: Array = []
+	var kept: Array = []
+	for p in puzzles:
+		var matches := not provenance_filter.is_empty()
+		for key in provenance_filter:
+			if p.provenance.get(key) != provenance_filter[key]:
+				matches = false
+		if matches:
+			removed.append(p.id)
+			by_fingerprint.erase(p.fingerprint)
+			_ids.erase(p.id)
+		else:
+			kept.append(p)
+	puzzles = kept
+	return removed
+
+
 func by_family(family: StringName) -> Array:
 	return puzzles.filter(func(p): return p.family == family)
 

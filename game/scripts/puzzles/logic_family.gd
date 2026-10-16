@@ -94,6 +94,13 @@ func ambiguity(puzzle: Dictionary) -> PackedStringArray:
 	return PackedStringArray() if count == 1 else PackedStringArray(["logic: %s solutions" % ("no" if count == 0 else "multiple")])
 
 
+## Near-repeat signature: same item count and the same mix of clue types.
+func near_signature(puzzle: Dictionary) -> String:
+	var types: Array = (puzzle["prompt"]["clues"] as Array).map(func(c): return str(c["type"]))
+	types.sort()
+	return "logic:%d:%s" % [(puzzle["prompt"]["items"] as Array).size(), ",".join(types)]
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	var order: Array = puzzle["solution"].get("order", [])
 	return PackedStringArray([", ".join(order.map(func(i): return str(i).capitalize()))])

@@ -160,7 +160,8 @@ func schedule(room_def: Resource, puzzles: Array, rng: RandomNumberGenerator) ->
 
 ## Adds a presented puzzle to the run history (variety and novelty).
 func note_presented(puzzle: RefCounted) -> void:
-	schedule_history.append({"family": puzzle.family, "fingerprint": puzzle.fingerprint, "mechanic": puzzle.mechanic})
+	schedule_history.append({"family": puzzle.family, "fingerprint": puzzle.fingerprint, "mechanic": puzzle.mechanic,
+		"near": puzzle.near_signature})
 
 
 func last_update() -> Dictionary:

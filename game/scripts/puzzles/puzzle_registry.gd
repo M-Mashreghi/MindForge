@@ -11,6 +11,7 @@ extends RefCounted
 ##   answer_tokens(puzzle: Dictionary) -> PackedStringArray  # for hint-leak checks
 ##   mechanic_label(puzzle: Dictionary) -> String        # e.g. "pattern:geometric", for scheduling
 ##   ambiguity(puzzle: Dictionary) -> PackedStringArray  # uniqueness problems (content pipeline)
+##   near_signature(puzzle: Dictionary) -> String        # near-repeat grouping (variety)
 
 static var _families: Dictionary = {}
 static var _builtins_loaded := false
