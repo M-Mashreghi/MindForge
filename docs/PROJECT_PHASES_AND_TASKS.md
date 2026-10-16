@@ -29,7 +29,7 @@ See `GIT_WORKFLOW.md` for the mandatory commit/push procedure.
 
 ### Task 1.1: Godot 4 Project Scaffold & Repository Baseline
 
-**Status:** `[-]` In Progress (implemented; headless validation pending)
+**Status:** `[x]` Completed (local; push pending Task 1.2)
 
 **Purpose**  
 Advance Phase 1 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -47,8 +47,8 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 
 **Definition of Done**
 - [x] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
 - [x] Documentation and task status are synchronized.
 - [x] A dedicated `task(1.1): ...` Git commit exists.
 - [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
@@ -59,7 +59,8 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 - Bootable empty main scene: `res://game/scenes/main/main.tscn` (prints `MindForge boot OK`).
 - Folder skeleton from `PROJECT_STRUCTURE.md` created with `.gitkeep` placeholders (`backend/` deferred to Phase 6).
 - `.gitignore` covers `.godot/`, `.env`, exports and export credentials; `.gitattributes` normalizes line endings.
-- Headless boot check: `tools/check_boot.sh`. Not yet run because Godot is not installed on the dev machine.
+- Headless boot check: `tools/check_boot.sh` passed on Godot v4.5.2.stable.official (prints `MindForge boot OK`, no errors).
+- Godot 4.5 generates `*.gd.uid` files; they are committed alongside their scripts.
 - Git repository initialized locally; no `origin` configured, so nothing was pushed (remote setup is Task 1.2).
 
 ---

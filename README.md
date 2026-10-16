@@ -96,7 +96,7 @@ AI-generated puzzles must pass deterministic validation before reaching the play
 
 ## Engine Version
 
-MindForge is pinned to **Godot 4.5 (stable)**, standard (non-.NET) build, using the GL Compatibility renderer. `project.godot` declares this in `config/features`. Upgrade the pin only in a dedicated task.
+MindForge is pinned to **Godot 4.5 (stable)**, verified with 4.5.2, standard (non-.NET) build, using the GL Compatibility renderer. `project.godot` declares this in `config/features`. Upgrade the pin only in a dedicated task.
 
 Headless boot check (loads the project and runs the main scene for two frames):
 
