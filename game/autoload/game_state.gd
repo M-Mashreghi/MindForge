@@ -8,6 +8,7 @@ const DEFAULT_RUN_LENGTH := 3
 const MAIN_MENU_SCENE := "res://game/scenes/ui/main_menu.tscn"
 const DUNGEON_SCENE := "res://game/scenes/dungeon/dungeon.tscn"
 const ScoringEngine := preload("res://game/scripts/scoring/scoring_engine.gd")
+const Progression := preload("res://game/scripts/scoring/progression.gd")
 
 var run_active: bool = false
 var run_seed: int = 0
@@ -18,8 +19,9 @@ var current_room_id: StringName = &""
 var rooms_cleared: int = 0
 var run_length: int = DEFAULT_RUN_LENGTH
 var score: int = 0
+## XP earned in this run (lifetime XP lives in PlayerProfile.progression).
 var xp: int = 0
-## Progress toward the next XP level, 0..1. Written by progression (Task 4.3).
+## Progress through the player's current XP level, 0..1 (for the HUD).
 var xp_progress: float = 0.0
 var streak: int = 0
 ## Player choice from the menu: run warm-up (calibration) rooms for a new
@@ -58,6 +60,7 @@ func start_run(seed_value: int, length: int = DEFAULT_RUN_LENGTH) -> void:
 	run_seed = seed_value
 	run_length = maxi(1, length)
 	rng.seed = seed_value
+	xp_progress = PlayerProfile.progression.level_progress()
 	EventBus.run_started.emit(run_seed)
 	EventBus.run_state_changed.emit()
 
@@ -69,6 +72,7 @@ func end_run(reason: StringName = &"completed") -> Dictionary:
 	var summary := snapshot()
 	summary["reason"] = reason
 	run_active = false
+	PlayerProfile.progression.record_run(score, reason == &"completed")
 	EventBus.run_ended.emit(summary)
 	EventBus.run_state_changed.emit()
 	return summary
@@ -109,6 +113,11 @@ func apply_puzzle_result(result: Dictionary) -> Dictionary:
 	last_score = scoring.score(result, {"streak": streak})
 	score += int(last_score["points"])
 	streak = streak + 1 if last_score["correct"] else 0
+	var xp_gain := Progression.xp_for(result, int(last_score["points"]))
+	xp += xp_gain
+	last_score["xp"] = xp_gain
+	last_score["levels_gained"] = PlayerProfile.add_xp(xp_gain, last_score["correct"])
+	xp_progress = PlayerProfile.progression.level_progress()
 	EventBus.run_state_changed.emit()
 	return last_score
 

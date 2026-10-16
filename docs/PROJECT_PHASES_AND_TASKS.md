@@ -1110,7 +1110,7 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 
 ### Task 4.3: XP and Profile Progression
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 4 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1127,13 +1127,20 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(4.3): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(4.3): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `Progression` (`game/scripts/scoring/progression.gd`): lifetime XP, level, best score, completed runs, puzzles solved. XP per puzzle rewards effort and completion: solved 10 + points/10 (max 40), attempted-but-unsolved 3, abandoned 0. Level n needs 100 + 50 x (n - 1) XP to advance.
+- Separate from adaptive skill: progression never reads or writes ratings (tested, including a source check); the docs and code state that a level is not a measure of cognitive skill.
+- `GameState` adds run XP per scored result and shows level progress on the HUD bar (`xp_progress`); `PlayerProfile.progression` holds lifetime values and records best score / completed runs at run end.
+- Versioned `to_dict()` / `load_dict()` (clamped); written to disk by the save model in Task 4.6.
+- Validation: `tools/run_tests.sh` — 205 passed, 0 failed (adds `tests/unit/test_progression.gd`); `tools/check_boot.sh` OK.
 
 ---
 

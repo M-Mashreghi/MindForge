@@ -13,6 +13,7 @@ const RecoveryMode := preload("res://game/scripts/adaptive/recovery_mode.gd")
 const CalibrationSession := preload("res://game/scripts/adaptive/calibration_session.gd")
 const AdaptiveScheduler := preload("res://game/scripts/adaptive/adaptive_scheduler.gd")
 const DifficultySelector := preload("res://game/scripts/adaptive/difficulty_selector.gd")
+const Progression := preload("res://game/scripts/scoring/progression.gd")
 const DEBUG_LOG_SETTING := "mindforge/debug/adaptive_log"
 
 const PROFILE_ID := &"local"
@@ -20,6 +21,8 @@ const HISTORY_LIMIT := 50
 
 var config: RefCounted = AdaptiveConfig.new()
 var skills: RefCounted = SkillProfile.new(config)
+## Lifetime XP / level / best score: separate from skill ratings.
+var progression: RefCounted = Progression.new()
 var model: RefCounted = SkillModel.new(config)
 var predictor: RefCounted = SuccessPredictor.new(config)
 ## Run-level failure-recovery state (reset when a run starts).
@@ -48,6 +51,7 @@ func _ready() -> void:
 
 func reset() -> void:
 	skills.reset()
+	progression.reset()
 	history.clear()
 	last_prediction = {}
 	recovery.reset()
@@ -55,6 +59,13 @@ func reset() -> void:
 	solved_mechanics.clear()
 	_reset_run_state()
 	EventBus.profile_changed.emit(PROFILE_ID)
+
+
+## Adds XP to lifetime progression. Returns levels gained.
+func add_xp(amount: int, solved: bool = false) -> int:
+	var gained: int = progression.add_xp(amount, solved)
+	EventBus.profile_changed.emit(PROFILE_ID)
+	return gained
 
 
 ## Predicted success for `puzzle` with the current profile; remembered as
