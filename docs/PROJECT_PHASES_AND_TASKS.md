@@ -2006,7 +2006,7 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 
 ### Task 7.1: Local Telemetry Event Schema with Adaptive Provenance
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 7 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2023,13 +2023,20 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(7.1): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(7.1): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `TelemetryEvent` (`game/scripts/telemetry/telemetry_event.gd`, event schema version 1): one `puzzle_completed` / `puzzle_abandoned` event per finished puzzle with puzzle id, content and schema version, source, family, mechanic, fingerprint, target/calibrated difficulty, difficulty confidence, outcome, response time, timing-accommodation flag, hints, attempts, predicted success, skill and confidence before/after, a `rating_skipped` marker, recovery state, score/XP awarded, and the adaptive, scoring and content-pipeline versions.
+- Privacy: the only identifier is a random 64-bit per-app-session id; no names, e-mail, location or device ids (tested).
+- `validate()` checks every field's presence and type (JSON floats accepted for whole numbers), rejects unknown fields and unsupported schema versions, so analysis and calibration can skip malformed events.
+- Documented in `docs/SAVE_AND_TELEMETRY.md`.
+- Validation: `tools/run_tests.sh` — 327 passed, 0 failed (adds `tests/unit/test_telemetry_event.gd`); `tools/check_boot.sh` OK.
 
 ---
 

@@ -87,6 +87,8 @@ Local-first example:
 }
 ```
 
+Implementation: `game/scripts/telemetry/telemetry_event.gd` (event schema 1) builds `puzzle_completed` / `puzzle_abandoned` events with the fields above plus room id/type, mechanic, fingerprint, attempts, hint cost, score and XP awarded, recovery state, a `rating_skipped` marker for repeat attempts, and scoring/pipeline versions. `validate()` rejects missing, mistyped, unknown or wrong-version fields. The only identifier is a random per-session id.
+
 ## Provenance
 
 Balancing telemetry must be sufficient to reproduce:
