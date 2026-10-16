@@ -462,7 +462,7 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 
 ### Task 2.5: Logic Puzzle Renderer and Input Flow
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 2 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -479,13 +479,20 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(2.5): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(2.5): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Logic renderer `game/scenes/puzzles/logic/logic_renderer.tscn` for the v1 `ordering` template: clue list, numbered slot row, item palette (symbol shape + name), Reset and Submit.
+- Clue text is generated from structured clues (`before`, `adjacent`, `not_adjacent`, `at`, `not_at`; 1-based slot numbers for players), so no stored prose is trusted.
+- Player choices live in `game/scripts/puzzles/logic_board.gd`, a pure board model (place / move / clear / reset / complete) independent of the solver.
+- Explicit interaction: item buttons fill the next empty slot, pressing a filled slot empties it, Submit is enabled only when every slot is filled and emits `{"order": [...]}`; a state line shows progress and ✓ / ✗ feedback text.
+- Validation: `tools/run_tests.sh` — 79 passed, 0 failed (adds `tests/integration/test_logic_renderer.gd`); `tools/check_boot.sh` OK.
 
 ---
 

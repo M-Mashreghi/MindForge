@@ -1,0 +1,56 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/scenes/puzzles/logic/logic_renderer.gd" id="1_logic"]
+
+[node name="LogicRenderer" type="VBoxContainer"]
+theme_override_constants/separation = 18
+script = ExtResource("1_logic")
+
+[node name="Instruction" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Arrange the items so every clue is true."
+horizontal_alignment = 1
+
+[node name="ClueList" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SlotRow" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="ItemRow" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="StateLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Place every item, then submit."
+horizontal_alignment = 1
+
+[node name="Actions" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="ResetButton" type="Button" parent="Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Reset"
+
+[node name="SubmitButton" type="Button" parent="Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Submit"
