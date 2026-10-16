@@ -89,6 +89,17 @@ Local-first example:
 
 Implementation: `game/scripts/telemetry/telemetry_event.gd` (event schema 1) builds `puzzle_completed` / `puzzle_abandoned` events with the fields above plus room id/type, mechanic, fingerprint, attempts, hint cost, score and XP awarded, recovery state, a `rating_skipped` marker for repeat attempts, and scoring/pipeline versions. `validate()` rejects missing, mistyped, unknown or wrong-version fields. The only identifier is a random per-session id.
 
+## Puzzle Analytics (analytics-v1)
+
+`game/scripts/telemetry/puzzle_analytics.gd` summarizes local telemetry for balancing; run it with
+`godot --headless --path . -s res://tools/telemetry_report.gd [-- --json=user://telemetry/report.json]`.
+
+- Per family and overall: count, success rate, hint-use rate, mean hints, mean attempts, abandonment rate, and median completion time of solved puzzles.
+- Events recorded with `timing_accommodation_active` form a separate cohort, so accommodated times never skew the standard numbers.
+- Per-puzzle stats plus the five most-abandoned puzzles (at least three events each).
+- Malformed events are counted and skipped.
+- These are engagement and difficulty signals, not measures of cognitive ability; the report says so, and nothing here changes skill ratings.
+
 ## Provenance
 
 Balancing telemetry must be sufficient to reproduce:
