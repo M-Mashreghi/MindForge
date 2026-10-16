@@ -65,7 +65,25 @@ func _ready() -> void:
 	if not GameState.run_plan.is_empty():
 		# Generated runs also get locally generated puzzles near the player's level.
 		generated_content = ContentPool.extend(catalog, GameState.run_seed, PlayerProfile.skills)
+		# Optional AI content: cached puzzles now, fresh ones in the
+		# background. Rooms never wait for it.
+		AiContent.load_cached_into(catalog)
+		AiContent.start_pregeneration(catalog, ai_targets())
 	_show_room(0, false)
+
+
+## Pre-generation targets near the player's level (AI families only).
+func ai_targets() -> Array:
+	var targets: Array = []
+	for family in [&"pattern", &"logic"]:
+		var rating: float = PlayerProfile.skills.rating(family)
+		for offset in [-60.0, 60.0]:
+			targets.append({"family": family, "difficulty": clampf(rating + offset, 100.0, 900.0)})
+	return targets
+
+
+func _exit_tree() -> void:
+	AiContent.cancel_pregeneration()
 
 
 static func build_room_defs(plan: Dictionary) -> Array:

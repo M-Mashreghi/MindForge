@@ -11,11 +11,19 @@ extends Node
 ##         invalid_response | rejected
 
 const AiContract := preload("res://game/scripts/ai/ai_contract.gd")
+const AiIntake := preload("res://game/scripts/ai/ai_intake.gd")
+const AiCache := preload("res://game/scripts/ai/ai_cache.gd")
+
+## Emitted when a pre-generation batch ends: {"generation", "requested",
+## "accepted", "quarantined", "failed", "stale"}.
+signal pregeneration_finished(stats: Dictionary)
 
 const ENABLED_SETTING := "mindforge/ai/enabled"
 const URL_SETTING := "mindforge/ai/proxy_url"
 const TIMEOUT_SETTING := "mindforge/ai/timeout_seconds"
 const MAX_IN_FLIGHT := 2
+## Attempts per pre-generation target (1 retry after a timeout/network error).
+const MAX_ATTEMPTS := 2
 
 ## Off by default: the game is complete without AI.
 var enabled: bool = false
@@ -26,6 +34,11 @@ var timeout_seconds: float = 8.0
 var transport: Callable
 var in_flight: int = 0
 var _counter: int = 0
+## Bumped by cancel_pregeneration(); results from older generations are discarded.
+var generation: int = 0
+var intake := AiIntake.new()
+var cache: RefCounted = AiCache.new()
+var _active_http: Array[HTTPRequest] = []
 
 
 func _ready() -> void:
@@ -91,15 +104,82 @@ static func interpret(response: Dictionary, out: Dictionary) -> Dictionary:
 	return out
 
 
+## Starts background generation for `targets` ([{family, difficulty}]) into
+## `catalog`. Never awaited by gameplay: rooms keep using whatever the
+## catalog holds (bundled + procedural), so latency never blocks a room
+## transition. Accepted puzzles also go to the validated cache.
+func start_pregeneration(catalog: RefCounted, targets: Array) -> int:
+	generation += 1
+	if enabled:
+		_pregenerate.call_deferred(catalog, targets, generation)
+	return generation
+
+
+## Cancels in-flight requests and marks every running batch as stale.
+func cancel_pregeneration() -> void:
+	generation += 1
+	for http in _active_http:
+		if is_instance_valid(http):
+			http.cancel_request()
+			http.request_completed.emit(HTTPRequest.RESULT_REQUEST_FAILED, 0, PackedStringArray(), PackedByteArray())
+	_active_http.clear()
+
+
+## Loads the validated cache into `catalog` (when AI is enabled).
+func load_cached_into(catalog: RefCounted) -> int:
+	if not enabled:
+		return 0
+	cache.load_cache()
+	return cache.load_into(catalog)
+
+
+func _pregenerate(catalog: RefCounted, targets: Array, my_generation: int) -> void:
+	var stats := {"generation": my_generation, "requested": 0, "accepted": 0, "quarantined": 0, "failed": 0, "stale": false}
+	for target in targets:
+		var family := StringName(target.get("family", ""))
+		if not family in AiContract.FAMILIES:
+			continue
+		var difficulty := float(target.get("difficulty", 500.0))
+		var reply := {}
+		for attempt in MAX_ATTEMPTS:
+			stats["requested"] += 1
+			reply = await request_proposal(family, difficulty)
+			if my_generation != generation:
+				break
+			if reply["status"] != "timeout" and reply["status"] != "network_error":
+				break
+		if my_generation != generation:
+			stats["stale"] = true
+			break
+		if not reply.get("ok", false):
+			stats["failed"] += 1
+			continue
+		var known := {"ids": {}, "fingerprints": {}}
+		for p in catalog.puzzles:
+			known["ids"][p.id] = true
+			known["fingerprints"][p.fingerprint] = p.id
+		var out: Dictionary = intake.intake(reply, difficulty, known)
+		if out["accepted"] and catalog.admit_generated(out["raw"], "ai") != null:
+			stats["accepted"] += 1
+			cache.add(out["raw"])
+		else:
+			stats["quarantined"] += 1
+	if stats["accepted"] > 0 and not stats["stale"]:
+		cache.save_cache()
+	pregeneration_finished.emit(stats)
+
+
 func _http_transport(url: String, body: String, timeout: float) -> Dictionary:
 	var http := HTTPRequest.new()
 	http.timeout = timeout
 	add_child(http)
+	_active_http.append(http)
 	var err := http.request(url, ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
 	if err != OK:
 		http.queue_free()
 		return {"code": 0, "body": "", "error": "request_failed"}
 	var done: Array = await http.request_completed
+	_active_http.erase(http)
 	http.queue_free()
 	var result: int = done[0]
 	if result == HTTPRequest.RESULT_TIMEOUT:

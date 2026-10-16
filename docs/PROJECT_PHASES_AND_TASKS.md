@@ -1967,7 +1967,7 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 
 ### Task 6.11: Async Pre-Generation, Timeout and Offline Fallback
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 6 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1984,13 +1984,21 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(6.11): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(6.11): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `AiContent.start_pregeneration(catalog, targets)` runs in the background (deferred coroutine, never awaited by gameplay). Generated runs ask for pattern and logic puzzles at the player's rating ±60; accepted puzzles go through `AiIntake` (solver-first, features, pipeline, quarantine) into the run catalog and the validated cache. Cached AI puzzles are loaded at run start.
+- Latency never blocks rooms: room selection always uses whatever the catalog holds; until AI content arrives, bundled and procedural puzzles generated around the player's level (Task 5.4-5.6) keep the target difficulty close.
+- Bounded timeouts and retries: each target gets at most 2 attempts (one retry after timeout/network error), each with the adapter's timeout; batches report requested/accepted/quarantined/failed counts via `pregeneration_finished`.
+- Stale requests: `cancel_pregeneration()` (called when the dungeon leaves the tree) cancels HTTP requests and marks running batches stale; their results are discarded.
+- `docs/AI_CONTENT_POLICY.md` gains an implementation map of Phase 6.
+- Validation: `tools/run_tests.sh` — 323 passed, 0 failed (adds `tests/integration/test_ai_pregeneration.gd`: a puzzle opens instantly while slow AI requests run, accepted content reaches catalog and cache, bounded retries, stale results discarded, nothing happens when AI is off); `tools/ai_smoke_test.gd` OK; `tools/check_boot.sh` OK.
 
 ---
 

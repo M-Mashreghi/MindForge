@@ -118,3 +118,20 @@ Validated AI puzzles may be cached with:
 - solver version.
 
 Cached content must be revalidated when incompatible schema/validator versions change.
+
+## Implementation (Phase 6)
+
+| Step | Module |
+|---|---|
+| Contract, prompt and versions | `game/scripts/ai/ai_contract.gd` (`ai-prompt-v1`, `ai-schema-v1`) |
+| Optional proxy (keys stay server side) | `backend/` (`python -m backend.app.server`; mock provider without a key) |
+| Godot adapter (typed results, off by default) | `game/autoload/ai_content.gd` (`mindforge/ai/enabled`) |
+| Solver-first building | `game/scripts/ai/ai_puzzle_builder.gd` |
+| Grounded hints with local fallback | `game/scripts/ai/ai_hints.gd` |
+| Text sanitizer and tone gate | `game/scripts/ai/ai_text_sanitizer.gd` |
+| Feature-based difficulty, full pipeline, quarantine | `game/scripts/ai/ai_intake.gd` |
+| Fingerprints, near repeats, invalidation | `PuzzleCatalog.admit_generated()` / `invalidate()`, `near_signature()` |
+| Validated cache with version invalidation | `game/scripts/ai/ai_cache.gd` (`user://ai_cache.json`) |
+| Background pre-generation, retries, stale cancellation | `AiContent.start_pregeneration()` |
+
+To try it: start the proxy, set `mindforge/ai/enabled` to `true` in Project Settings, and play a new run. `tools/ai_smoke_test.gd` checks the whole path against a running proxy.
