@@ -21,6 +21,9 @@ var xp: int = 0
 ## Progress toward the next XP level, 0..1. Written by progression (Task 4.3).
 var xp_progress: float = 0.0
 var streak: int = 0
+## Player choice from the menu: run warm-up (calibration) rooms for a new
+## profile. Kept across runs.
+var warmup_enabled: bool = true
 
 
 func _ready() -> void:
@@ -99,7 +102,8 @@ func make_run_seed() -> int:
 
 
 ## Starts a run from `seed_value` and switches to the dungeon scene.
-func begin_new_run(seed_value: int) -> void:
+func begin_new_run(seed_value: int, warmup: bool = true) -> void:
+	warmup_enabled = warmup
 	start_run(seed_value)
 	_change_scene(DUNGEON_SCENE)
 

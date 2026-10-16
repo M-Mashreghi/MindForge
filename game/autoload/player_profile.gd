@@ -10,6 +10,7 @@ const PerformanceEvent := preload("res://game/scripts/adaptive/performance_event
 const AdaptiveConfig := preload("res://game/scripts/adaptive/adaptive_config.gd")
 const SuccessPredictor := preload("res://game/scripts/adaptive/success_predictor.gd")
 const RecoveryMode := preload("res://game/scripts/adaptive/recovery_mode.gd")
+const CalibrationSession := preload("res://game/scripts/adaptive/calibration_session.gd")
 
 const PROFILE_ID := &"local"
 const HISTORY_LIMIT := 50
@@ -20,6 +21,8 @@ var model: RefCounted = SkillModel.new(config)
 var predictor: RefCounted = SuccessPredictor.new(config)
 ## Run-level failure-recovery state (reset when a run starts).
 var recovery: RefCounted = RecoveryMode.new(config)
+## Cold-start warm-up (runs in the first run until the profile is calibrated).
+var calibration: RefCounted = CalibrationSession.new(config)
 ## Prediction for the puzzle currently or most recently presented.
 var last_prediction: Dictionary = {}
 ## Recent skill update records (newest last), for telemetry/debugging.
@@ -28,7 +31,7 @@ var history: Array = []
 
 func _ready() -> void:
 	EventBus.puzzle_resolved.connect(_on_puzzle_resolved)
-	EventBus.run_started.connect(func(_seed): recovery.reset())
+	EventBus.run_started.connect(_on_run_started)
 
 
 func reset() -> void:
@@ -36,6 +39,7 @@ func reset() -> void:
 	history.clear()
 	last_prediction = {}
 	recovery.reset()
+	calibration = CalibrationSession.new(config)
 	EventBus.profile_changed.emit(PROFILE_ID)
 
 
@@ -68,11 +72,26 @@ func record_result(result: Dictionary) -> Dictionary:
 		record["predicted_success"] = context["predicted_success"]
 	record["recovery_transition"] = recovery.record(result, int(context.get("hints_available", 0)))
 	record["recovery"] = recovery.snapshot()
+	if calibration.record(StringName(result["family"]), result, performance["observed_score"]):
+		skills.calibrated = true
+	record["calibration"] = calibration.snapshot()
 	history.append(record)
 	if history.size() > HISTORY_LIMIT:
 		history.pop_front()
 	EventBus.profile_changed.emit(PROFILE_ID)
 	return record
+
+
+## A run starts: reset run-level recovery and, for an uncalibrated profile,
+## start the warm-up unless the player turned it off.
+func _on_run_started(_seed: int) -> void:
+	recovery.reset()
+	if skills.calibrated:
+		calibration = CalibrationSession.new(config)
+	elif GameState.warmup_enabled:
+		calibration.start()
+	else:
+		calibration.skip()
 
 
 func _on_puzzle_resolved(_room_id: StringName, _puzzle_id: StringName, result: Dictionary) -> void:

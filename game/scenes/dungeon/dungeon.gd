@@ -148,7 +148,11 @@ func _on_player_interact() -> void:
 func puzzle_for_current_room() -> RefCounted:
 	if not _room_puzzles.has(current_index):
 		var used: Array = _room_puzzles.values().filter(func(p): return p != null).map(func(p): return p.fingerprint)
-		_room_puzzles[current_index] = catalog.pick_for_room(current_room.room_def, GameState.rng, used)
+		var warmup_family: StringName = PlayerProfile.calibration.next_family()
+		if warmup_family != &"":
+			_room_puzzles[current_index] = PlayerProfile.calibration.pick(catalog.by_family(warmup_family), used)
+		else:
+			_room_puzzles[current_index] = catalog.pick_for_room(current_room.room_def, GameState.rng, used)
 	return _room_puzzles[current_index]
 
 

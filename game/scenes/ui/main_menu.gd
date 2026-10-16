@@ -8,6 +8,7 @@ extends Control
 @onready var _exit_button: Button = %ExitButton
 @onready var _settings_panel: Control = %SettingsPanel
 @onready var _settings_back_button: Button = %SettingsBackButton
+@onready var _warmup_toggle: CheckButton = %WarmupToggle
 
 var _starting := false
 
@@ -18,6 +19,7 @@ func _ready() -> void:
 	_exit_button.pressed.connect(_on_exit_pressed)
 	_settings_back_button.pressed.connect(_on_settings_back_pressed)
 	_settings_panel.visible = false
+	_warmup_toggle.button_pressed = GameState.warmup_enabled
 	_new_run_button.grab_focus()
 
 
@@ -33,7 +35,7 @@ func _on_new_run_pressed() -> void:
 		return
 	_starting = true
 	_new_run_button.disabled = true
-	GameState.begin_new_run(GameState.make_run_seed())
+	GameState.begin_new_run(GameState.make_run_seed(), _warmup_toggle.button_pressed)
 
 
 func _on_settings_pressed() -> void:

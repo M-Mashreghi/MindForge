@@ -74,3 +74,8 @@ var recovery_enter_hint_exhaustion: int = 2
 var recovery_enter_abandons: int = 2
 var recovery_exit_successes: int = 3
 var recovery_min_rooms: int = 3
+
+## Cold-start calibration (Task 3.9): one gentle warm-up room per family,
+## aimed below the neutral prior so it feels like a warm-up, not an exam.
+var calibration_families: Array = [&"pattern", &"logic", &"memory"]
+var calibration_target_difficulty: float = 350.0
