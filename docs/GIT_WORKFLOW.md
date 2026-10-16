@@ -52,6 +52,16 @@ git diff --stat
 
 5. inspect the staged diff before committing.
 
+## Pre-Commit Script
+
+After staging, run:
+
+```bash
+tools/precommit_check.sh
+```
+
+It prints the branch, remote and staged diff stat, and fails on staged whitespace errors, a staged `.env` / export credentials file, or added lines that look like a real secret. Set `GODOT=/path/to/godot` to also run the headless boot check (`tools/check_boot.sh`).
+
 ## Staging
 
 Stage only files that belong to the current task.

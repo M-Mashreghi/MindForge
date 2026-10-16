@@ -13,8 +13,8 @@ A completed task should record its commit hash and push status.
 
 ## Phase 1 — Foundation, Repository Workflow & Playable 2D Skeleton
 
-- [x] **Task 1.1** — Godot 4 Project Scaffold & Repository Baseline — Commit: `aa38f6c` + verification commit (local) — GitHub: `not pushed (no origin; see Task 1.2)` — Headless boot check passed on Godot 4.5.2
-- [ ] **Task 1.2** — GitHub Remote & Per-Task Commit Workflow Baseline — Commit: `—` — GitHub: `—`
+- [x] **Task 1.1** — Godot 4 Project Scaffold & Repository Baseline — Commit: `84e17b1`, `0090a0e` — GitHub: `pushed with Task 1.2` — Headless boot check passed on Godot 4.5.2
+- [x] **Task 1.2** — GitHub Remote & Per-Task Commit Workflow Baseline — Commit: `task(1.2)` — GitHub: `pushed to origin/main`
 - [ ] **Task 1.3** — Autoload Game State and Event Bus — Commit: `—` — GitHub: `—`
 - [ ] **Task 1.4** — Main Menu, New Run and Exit Flow — Commit: `—` — GitHub: `—`
 - [ ] **Task 1.5** — Top-Down Player Controller — Commit: `—` — GitHub: `—`

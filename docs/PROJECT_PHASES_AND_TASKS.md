@@ -29,7 +29,7 @@ See `GIT_WORKFLOW.md` for the mandatory commit/push procedure.
 
 ### Task 1.1: Godot 4 Project Scaffold & Repository Baseline
 
-**Status:** `[x]` Completed (local; push pending Task 1.2)
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 1 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -51,7 +51,7 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 - [x] No new runtime errors in the affected playable flow.
 - [x] Documentation and task status are synchronized.
 - [x] A dedicated `task(1.1): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
 - [x] Scope does not spill into the next task.
 
 **Implementation Notes**
@@ -61,13 +61,13 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 - `.gitignore` covers `.godot/`, `.env`, exports and export credentials; `.gitattributes` normalizes line endings.
 - Headless boot check: `tools/check_boot.sh` passed on Godot v4.5.2.stable.official (prints `MindForge boot OK`, no errors).
 - Godot 4.5 generates `*.gd.uid` files; they are committed alongside their scripts.
-- Git repository initialized locally; no `origin` configured, so nothing was pushed (remote setup is Task 1.2).
+- Git repository initialized locally, then rebased onto the existing GitHub history and pushed in Task 1.2.
 
 ---
 
 ### Task 1.2: GitHub Remote & Per-Task Commit Workflow Baseline
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 1 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -84,13 +84,19 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(1.2): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(1.2): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `origin` set to the user-provided `https://github.com/M-Mashreghi/MindForge.git`; branch `main`.
+- GitHub already held the uploaded docs (`eaeb3af`, `b0297fc`). The local Task 1.1 commits were rebased onto that history instead of force-pushing; the only conflicts were identical docs and `.gitattributes` (local LF-normalizing version kept).
+- Added `tools/precommit_check.sh` (staged whitespace check, `.env`/credential guard, secret pattern scan, optional headless boot) and documented it in `GIT_WORKFLOW.md`.
+- Push verified by matching `git rev-parse HEAD` and `git rev-parse @{u}`.
 
 ---
 
