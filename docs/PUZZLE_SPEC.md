@@ -15,13 +15,17 @@
   "difficulty_confidence": 0.0,
   "prompt": {},
   "solution": {},
-  "hints": ["...", "..."],
+  "hints": [{"text": "light hint", "cost": 0.1}, {"text": "stronger hint", "cost": 0.3}],
   "time_band_seconds": [10, 35],
   "tags": ["sequence"],
   "fingerprint": "...",
-  "provenance": {}
+  "provenance": {"author": "..."},
+  "max_attempts": 3,
+  "presentation": {}
 }
 ```
+
+Implementation: `game/scripts/puzzles/puzzle_schema.gd` checks the common fields (bounds, versions, hint ordering by non-decreasing cost, provenance) and then the family validator registered in `puzzle_registry.gd`. `PuzzleData.parse()` returns an instance only when every check passes. `max_attempts` (default 3) and `presentation` (display-only settings such as timing) are optional. `fingerprint` is optional in source files; when present it must match the computed one.
 
 ## Required Invariants
 

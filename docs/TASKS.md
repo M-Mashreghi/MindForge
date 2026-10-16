@@ -24,7 +24,7 @@ A completed task should record its commit hash and push status.
 
 ## Phase 2 — Puzzle Framework & Three Puzzle Families
 
-- [ ] **Task 2.1** — Common Puzzle Resource Schema and Interface — Commit: `—` — GitHub: `—`
+- [x] **Task 2.1** — Common Puzzle Resource Schema and Interface — Commit: `task(2.1)` — GitHub: `pushed to origin/main`
 - [ ] **Task 2.2** — Puzzle Host Scene and Result Contract — Commit: `—` — GitHub: `—`
 - [ ] **Task 2.3** — Pattern Puzzle Renderer and Input Flow — Commit: `—` — GitHub: `—`
 - [ ] **Task 2.4** — Pattern Puzzle Deterministic Solver and Validator — Commit: `—` — GitHub: `—`

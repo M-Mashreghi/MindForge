@@ -319,7 +319,7 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 
 ### Task 2.1: Common Puzzle Resource Schema and Interface
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 2 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -336,13 +336,20 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(2.1): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(2.1): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Common schema `game/scripts/puzzles/puzzle_schema.gd` (schema v2): id, family, schema/content version, source (`local|procedural|ai`), seed (required for procedural), target/calibrated difficulty (0..1000), difficulty confidence (0..1), prompt, canonical solution, hints `{text, cost}` ordered by non-decreasing cost, time band, tags, provenance (author or generator), optional `max_attempts`, `presentation` and `fingerprint`.
+- `PuzzleData.parse()` (`puzzle_data.gd`) normalizes JSON numbers, validates, then builds a read-only instance; malformed data returns errors and no instance. `identity()` gives the block used by results/telemetry; `effective_difficulty()` prefers calibrated difficulty.
+- Family interface via `puzzle_registry.gd`: each family registers a deterministic validator (`validate`, `solve`, `check_response`, `mechanics`, `answer_tokens`) and a renderer scene. Generic code holds no family answer logic.
+- Fingerprint: SHA-256 of canonical JSON (`canonical_json.gd`, sorted keys, int/float-normalized) over the family's mechanics, so wording/presentation does not change identity.
+- Validation: `tools/run_tests.sh` — 51 passed, 0 failed (adds `tests/unit/test_puzzle_schema.gd` with a test-only `doubling` family in `tests/fixtures/`); `tools/check_boot.sh` OK.
 
 ---
 
