@@ -1074,7 +1074,7 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 
 ### Task 4.2: Speed, Hint, Attempt and Streak Multipliers
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 4 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1091,13 +1091,20 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(4.2): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(4.2): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Individually testable multipliers in `scoring_engine.gd`, each with explicit caps: speed 0.9..1.1 (1.1 in the faster half of the time band, 1.0 inside it, down to 0.9 at twice the band), hint 0.5..1.0 (1 - 0.5 x hint cost), attempt 1.0 / 0.75 / 0.5, streak 1.0..1.5 (+0.1 per prior correct answer, max 5).
+- Speed is never dominant: its range (±10%) is smaller than the difficulty range, and a slow hard puzzle outscores a fast easy one (tested). Timing accommodations, missing time bands and unreliable times make the speed multiplier exactly 1.0.
+- With the 0.25..3.0 product clamp, scores are never negative and never above 300 per puzzle, even for out-of-range inputs.
+- Documented in the engine header and `docs/GAME_DESIGN.md`.
+- Validation: `tools/run_tests.sh` — 199 passed, 0 failed (extends `tests/unit/test_scoring.gd`); `tools/check_boot.sh` OK.
 
 ---
 

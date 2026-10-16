@@ -51,7 +51,7 @@ A completed task should record its commit hash and push status.
 ## Phase 4 — Scoring, Progression, Save & Player Feedback
 
 - [x] **Task 4.1** — Deterministic Scoring Formula — Commit: `task(4.1)` — GitHub: `pushed to origin/main`
-- [ ] **Task 4.2** — Speed, Hint, Attempt and Streak Multipliers — Commit: `—` — GitHub: `—`
+- [x] **Task 4.2** — Speed, Hint, Attempt and Streak Multipliers — Commit: `task(4.2)` — GitHub: `pushed to origin/main`
 - [ ] **Task 4.3** — XP and Profile Progression — Commit: `—` — GitHub: `—`
 - [ ] **Task 4.4** — Puzzle Success / Failure Feedback — Commit: `—` — GitHub: `—`
 - [ ] **Task 4.5** — Run Summary and Skill-Change Screen — Commit: `—` — GitHub: `—`
