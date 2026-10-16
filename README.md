@@ -9,10 +9,10 @@ MindForge watches how you play and keeps every room near the edge of your abilit
 
 ![Godot 4.5](https://img.shields.io/badge/Godot-4.5-478CBF?logo=godotengine&logoColor=white)
 ![GDScript](https://img.shields.io/badge/language-GDScript-355570)
-![Tests](https://img.shields.io/badge/tests-277%20passing-2ea44f)
+![Tests](https://img.shields.io/badge/tests-363%20passing-2ea44f)
 ![Offline first](https://img.shields.io/badge/offline-first-8a63d2)
 ![Assets](https://img.shields.io/badge/assets-100%25%20code--generated-f0a500)
-![Progress](https://img.shields.io/badge/roadmap-phase%205%20of%208-blue)
+![Progress](https://img.shields.io/badge/roadmap-phase%207%20of%208-blue)
 
 <img src="docs/images/boss_stage.png" alt="A two-stage guardian trial in a boss room" width="820">
 
@@ -91,7 +91,7 @@ Open the next room ← Reward score & XP ← Pick the next puzzle in the target 
 
 ### 🎯 Adaptive difficulty that stays fair
 - **Per-family skill** (pattern, logic, memory) plus an overall rating, each with **confidence** and an observation count. Being strong at one family never inflates another.
-- **Elo-style updates** with confidence-aware K: newcomers settle quickly, experienced players move gradually, and every puzzle is capped at ±45 rating points. Parameters were tuned with simulated players (Phase 7).
+- **Elo-style updates** with confidence-aware K: newcomers settle quickly, experienced players move gradually, and every puzzle is capped at ±45 rating points. Parameters were tuned with simulated players and are guarded by balance regression fixtures.
 - **Predicted-success targeting**: standard rooms aim for 70–80 %; breather, challenge and boss rooms have their own bands.
 - **Anti-oscillation**: consecutive targets are smoothed and step-capped, so one lucky answer or one slip never swings the dungeon.
 - **Recovery mode with hysteresis**: after repeated failures the game eases off (without trivialising) and returns to normal only after a stable success streak.
@@ -122,6 +122,18 @@ Open the next room ← Reward score & XP ← Pick the next puzzle in the target 
 ### 💾 Robust saving
 - **Versioned atomic saves**: write a temp file, verify it, keep a backup, then replace.
 - **Migrations**, **corruption recovery** from backup, and a guarantee that a save from a newer version is never overwritten.
+
+### 🤖 Optional AI puzzles, solver first
+- **Off by default.** The game is complete offline; AI content is an optional extra behind `mindforge/ai/enabled`.
+- **Keys never ship in the client.** A small Python proxy in [`backend/`](backend/README.md) holds the key and calls Claude (or a mock provider for development).
+- **The model proposes, the solver decides.** Proposals follow a strict JSON contract, are rebuilt by the deterministic solver, and go through the full content pipeline; anything malformed, unsafe, ambiguous or duplicated is rejected or quarantined.
+- **Grounded hints and a versioned cache**, with pre-generation in the background and a local fallback whenever the proxy is slow or down.
+
+### 📊 Measured, not guessed
+- **Local telemetry only**: one schema-checked event per puzzle, with no personal data and nothing uploaded. Press **F9** for a read-only debug overlay.
+- **Simulated players** with known ability test the adaptive engine for convergence, oscillation and recovery.
+- **Empirical calibration** estimates each puzzle's real difficulty from play data, without touching its authored target.
+- **Adaptive vs static**: with the same simulated players, adaptive puts 53% of rooms in the right challenge range against 23% for a fixed ramp, and too-hard rooms fall from 49% to 10% ([report](docs/reports/adaptive_vs_static.md)).
 
 ---
 
@@ -175,7 +187,7 @@ flowchart LR
     S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 -.-> X([Rejected with<br/>stage + reason])
 ```
 
-The LLM is never the answer key: in the AI phase it may only propose structured parameters, and the deterministic solver derives and verifies the solution.
+The LLM is never the answer key: it may only propose structured parameters, and the deterministic solver derives and verifies the solution.
 
 ---
 
@@ -228,10 +240,13 @@ On Windows with winget, the executable is under `%LOCALAPPDATA%\Microsoft\WinGet
 The project ships with its own headless test runner and repository tools:
 
 ```bash
-GODOT=/path/to/godot tools/run_tests.sh          # 277 headless unit + integration tests
+GODOT=/path/to/godot tools/run_tests.sh          # 363 headless unit + integration tests
 GODOT=/path/to/godot tools/check_boot.sh         # project boots without parser/runtime errors
 GODOT=/path/to/godot tools/validate_puzzles.sh   # whole puzzle bank through the content pipeline
 GODOT=/path/to/godot tools/precommit_check.sh    # all of the above + whitespace and secret checks
+godot --headless --path . -s res://tools/simulate_players.gd     # simulated players, all archetypes
+godot --headless --path . -s res://tools/compare_schedules.gd    # adaptive vs static report
+godot --headless --path . -s res://tools/telemetry_report.gd     # analytics from local telemetry
 ```
 
 What the tests cover includes:
@@ -242,6 +257,8 @@ What the tests cover includes:
 - **Accessibility**: 1× and 3× memory timing give identical correctness; accommodations neutralise timing in both skill and score.
 - **Saving**: round trips, migration, corrupted saves with and without a backup, refusal to overwrite newer saves.
 - **Gameplay flow**: menu focus, room transitions without double-firing, pause / restart / abandon, boss trials and the run summary.
+- **AI path**: malformed, unsafe, unsolvable, ambiguous or duplicate proposals are rejected or quarantined; hints are grounded in the solver; the game falls back to local content when the proxy is off or failing.
+- **Balance**: simulated players with known ability check convergence, oscillation and recovery, and frozen balance fixtures fail on unintended shifts.
 
 Headless tools never read or write the player's real save file.
 
@@ -252,7 +269,7 @@ Headless tools never read or write the player's real save file.
 ```text
 MindForge/
 ├── game/
-│   ├── autoload/            # EventBus, GameState, PlayerProfile, SaveManager, Feedback
+│   ├── autoload/            # EventBus, GameState, PlayerProfile, SaveManager, Feedback, AiContent, Telemetry
 │   ├── scenes/
 │   │   ├── dungeon/         # dungeon flow, player controller
 │   │   ├── rooms/           # reusable room + doors (locked / unlocked / solved)
@@ -262,12 +279,16 @@ MindForge/
 │   │   ├── adaptive/        # skill profile, Elo, predictor, selector, recovery, calibration, scheduler, planner
 │   │   ├── puzzles/         # schema, families, catalog, content pipeline, hint ladder, generators/
 │   │   ├── dungeon/         # dungeon generator, boss trials, room metadata
-│   │   └── scoring/         # scoring engine, XP progression, run summary
+│   │   ├── scoring/         # scoring engine, XP progression, run summary
+│   │   ├── ai/              # AI contract, solver-first builder, grounded hints, sanitizer, intake, cache
+│   │   ├── telemetry/       # event schema, analytics, difficulty calibration
+│   │   └── simulation/      # latent players, harness, metrics, adaptive-vs-static, balance fixtures
 │   └── resources/
 │       ├── puzzle_bank/     # bundled pattern / logic / memory puzzles (JSON)
 │       └── room_defs/       # fixture rooms
+├── backend/                 # optional Python AI proxy (mock and Anthropic providers; keys stay server-side)
 ├── tests/                   # headless runner, unit + integration tests, fixtures
-├── tools/                   # run_tests, check_boot, validate_puzzles, precommit_check, capture_screenshots
+├── tools/                   # test, boot, validation, simulation, calibration, analytics and report tools
 └── docs/                    # design, architecture, adaptive spec, puzzle spec, task ledger, images
 ```
 
@@ -282,11 +303,11 @@ MindForge/
 | 3 | Player modeling and adaptive difficulty | ✅ Done |
 | 4 | Scoring, progression, save and player feedback | ✅ Done |
 | 5 | Procedural dungeon and content scheduling | ✅ Done |
-| 6 | AI puzzle generation behind a safe, solver-first pipeline | ⏳ Next |
-| 7 | Telemetry, simulated players and difficulty calibration | 📋 Planned |
-| 8 | Polish, accessibility options, CI/CD and release | 📋 Planned |
+| 6 | AI puzzle generation behind a safe, solver-first pipeline | ✅ Done |
+| 7 | Telemetry, simulated players and difficulty calibration | ✅ Done |
+| 8 | Polish, accessibility options, CI/CD and release | ⏳ Next |
 
-Every task has a dedicated, tested commit: 44 of 72 tasks are complete. See [`docs/TASKS.md`](docs/TASKS.md) for the full ledger and [`docs/PROJECT_PHASES_AND_TASKS.md`](docs/PROJECT_PHASES_AND_TASKS.md) for each task's contract and implementation notes.
+Every task has a dedicated, tested commit: 64 of 72 tasks are complete. See [`docs/TASKS.md`](docs/TASKS.md) for the full ledger and [`docs/PROJECT_PHASES_AND_TASKS.md`](docs/PROJECT_PHASES_AND_TASKS.md) for each task's contract and implementation notes.
 
 ---
 
@@ -308,9 +329,10 @@ Every task has a dedicated, tested commit: 44 of 72 tasks are complete. See [`do
 | [Game design](docs/GAME_DESIGN.md) | fantasy, core loop, scoring, failure, accessibility |
 | [Architecture](docs/ARCHITECTURE.md) | systems and dependency rules |
 | [Adaptive difficulty](docs/ADAPTIVE_DIFFICULTY.md) | skill model, bands, recovery, implementation table |
-| [Adaptive evaluation](docs/ADAPTIVE_EVALUATION.md) | simulation archetypes and release gates |
+| [Adaptive evaluation](docs/ADAPTIVE_EVALUATION.md) | simulation archetypes, release gates, findings |
+| [Adaptive vs static report](docs/reports/adaptive_vs_static.md) | reproducible comparison of the two schedules |
 | [Puzzle spec](docs/PUZZLE_SPEC.md) | schema, result contract, hints, content pipeline |
-| [Save and telemetry](docs/SAVE_AND_TELEMETRY.md) | save format, atomic writes, privacy |
+| [Save and telemetry](docs/SAVE_AND_TELEMETRY.md) | save format, atomic writes, telemetry events, analytics, privacy |
 | [AI content policy](docs/AI_CONTENT_POLICY.md) | what AI may and may not do |
 | [Git workflow](docs/GIT_WORKFLOW.md) | per-task commits and pre-commit checks |
 | [Task ledger](docs/TASKS.md) | progress for all 72 tasks |
