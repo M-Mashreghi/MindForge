@@ -1862,7 +1862,7 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 
 ### Task 6.8: AI Puzzle Validation, Difficulty Plausibility and Quarantine
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 6 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1879,13 +1879,19 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(6.8): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(6.8): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `AiIntake.intake()` (`game/scripts/ai/ai_intake.gd`) is the only path from an AI reply to playable content: solver-first build -> deterministic difficulty -> full content pipeline (schema, bounds, solver, family, ambiguity, fingerprint/duplicates, safety, hint leak). Anything that fails is quarantined; nothing is activated silently.
+- Difficulty plausibility: `feature_difficulty()` estimates difficulty from deterministic complexity features (pattern rule, step/ratio size, cycle length, visible length; logic item count and relational vs direct clues), checked against the bundled puzzles (within 300 points of authored difficulty). The puzzle's target difficulty comes from these features with zero confidence; the AI estimate is kept as provenance, and a gap over 250 is flagged. Content whose features are more than 350 from the requested difficulty is quarantined as `off_target`.
+- Quarantine entries are structured: request id, model, family, stage, code (`declared_answer_conflict`, `not_unique`, `off_target`, `duplicate`, ...), messages, proposal fingerprint and all versions (newest 200 kept).
+- Validation: `tools/run_tests.sh` — 310 passed, 0 failed (adds `tests/unit/test_ai_intake.gd`); `tools/check_boot.sh` OK.
 
 ---
 
