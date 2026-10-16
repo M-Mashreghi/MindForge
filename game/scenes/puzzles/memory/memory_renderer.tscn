@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/scenes/puzzles/memory/memory_renderer.gd" id="1_memory"]
+
+[node name="MemoryRenderer" type="VBoxContainer"]
+theme_override_constants/separation = 18
+script = ExtResource("1_memory")
+
+[node name="StateLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Watch the glowing cells."
+horizontal_alignment = 1
+
+[node name="GridCenter" type="CenterContainer" parent="."]
+layout_mode = 2
+
+[node name="Grid" type="GridContainer" parent="GridCenter"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="Actions" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="UndoButton" type="Button" parent="Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Undo"
+
+[node name="SubmitButton" type="Button" parent="Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Submit"

@@ -536,7 +536,7 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 
 ### Task 2.7: Memory Puzzle Renderer and Timing Flow
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 2 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -553,13 +553,19 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(2.7): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(2.7): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Memory renderer `game/scenes/puzzles/memory/memory_renderer.tscn`: grid of cells with explicit phases SHOW (target cells light up with a star shape, one at a time in `sequence` mode, together in `positions` mode), CONCEAL (blank), ANSWER (pick cells; pick order shown as numbers, Undo, Submit when the right number is picked) and FEEDBACK (✓ / ✗; a non-final miss clears picks and returns to ANSWER).
+- Timing schedule is a pure function (`game/scripts/puzzles/memory_timing.gd`) of `presentation` (`show_ms`, `gap_ms`, `conceal_ms`) and the host's accessibility `timing_scale` (0.5..4). The canonical target cells are never altered, so timing does not change puzzle identity.
+- Response contract: `{"cells": [picked cell indices in pick order]}`. Input is disabled while showing/concealing.
+- Validation: `tools/run_tests.sh` — 92 passed, 0 failed (adds `tests/integration/test_memory_renderer.gd`: schedule shape, scaled timing keeps cells, phase transitions, answer flow, positions toggling); `tools/check_boot.sh` OK.
 
 ---
 
