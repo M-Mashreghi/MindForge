@@ -65,6 +65,32 @@ func reset() -> void:
 	EventBus.profile_changed.emit(PROFILE_ID)
 
 
+## Everything that is saved, as plain data (see SaveManager).
+func export_state() -> Dictionary:
+	return {
+		"skills": skills.to_dict(),
+		"progression": progression.to_dict(),
+		"settings": settings.duplicate(),
+		"solved_mechanics": solved_mechanics.keys(),
+	}
+
+
+## Restores saved state; missing parts fall back to defaults.
+func import_state(data: Dictionary) -> void:
+	skills.load_dict(data.get("skills", {}))
+	progression.load_dict(data.get("progression", {}))
+	settings = DEFAULT_SETTINGS.duplicate()
+	var saved_settings: Variant = data.get("settings", {})
+	if typeof(saved_settings) == TYPE_DICTIONARY:
+		for key in DEFAULT_SETTINGS:
+			if saved_settings.has(key) and typeof(saved_settings[key]) == typeof(DEFAULT_SETTINGS[key]):
+				settings[key] = saved_settings[key]
+	solved_mechanics.clear()
+	for mechanic in data.get("solved_mechanics", []):
+		solved_mechanics[str(mechanic)] = true
+	EventBus.profile_changed.emit(PROFILE_ID)
+
+
 func setting(key: String) -> Variant:
 	return settings.get(key, DEFAULT_SETTINGS.get(key))
 

@@ -21,6 +21,7 @@ debug/show_internal_math=false
 EventBus="*res://game/autoload/event_bus.gd"
 GameState="*res://game/autoload/game_state.gd"
 PlayerProfile="*res://game/autoload/player_profile.gd"
+SaveManager="*res://game/autoload/save_manager.gd"
 
 [display]
 

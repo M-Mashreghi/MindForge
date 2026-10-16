@@ -1217,7 +1217,7 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 
 ### Task 4.6: Versioned Atomic Save / Load, Migration and Recovery
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 4 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1234,13 +1234,22 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(4.6): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(4.6): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `SaveManager` autoload (`game/autoload/save_manager.gd`), save schema 1 in `user://profile.save`: skills, progression (Task 4.3), settings and solved mechanics via `PlayerProfile.export_state()` / `import_state()` (settings type-checked on load).
+- Atomic replacement: write `.tmp` -> read back and validate -> copy current to `.bak` -> replace.
+- Migration hooks (`migrations` dictionary, v0 -> v1 example for the pre-release layout), validation of structure and game id, corrupted file kept as `.corrupt` with recovery from `.bak` (then immediately re-saved), fresh profile when nothing is usable.
+- Unsupported future version: never applied and never overwritten; saving is refused for the session (`read_only`).
+- Autosave at run end, on window close and on settings changes outside a run; headless tools and the test runner never touch the real save file.
+- Documented in `docs/SAVE_AND_TELEMETRY.md`.
+- Validation: `tools/run_tests.sh` — 224 passed, 0 failed (adds `tests/unit/test_save_manager.gd`: round trip, backup, migration, corrupted with/without backup, invalid structure, future version, new profile, setting types); `tools/check_boot.sh` OK.
 
 ---
 

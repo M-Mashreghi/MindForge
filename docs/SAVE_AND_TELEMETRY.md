@@ -31,6 +31,20 @@ Maintain a lightweight backup/recovery path for corrupted saves.
 
 Never silently discard a newer unsupported save schema.
 
+## Implementation (save schema 1)
+
+`SaveManager` (`game/autoload/save_manager.gd`) writes `user://profile.save` as JSON:
+
+```json
+{"save_schema_version": 1, "game": "MindForge", "adaptive_algorithm_version": "adaptive-v1",
+ "profile": {"skills": {...}, "progression": {...}, "settings": {...}, "solved_mechanics": [...]}}
+```
+
+- Save: write `profile.save.tmp`, read it back and validate, copy the current file to `profile.save.bak`, then replace the current file.
+- Load: migrate older schemas step by step (`migrations`, v0 -> v1 included), validate, apply. A corrupted file is kept as `profile.save.corrupt` and the backup is tried; with no usable backup the profile starts fresh.
+- A save with a newer schema is not applied and is never overwritten: saving is disabled (`read_only`) for that session.
+- When: at run end, on quit, and when settings change outside a run. Headless tools and tests never read or write the real save.
+
 ## Run State
 
 When run persistence is supported, store:
