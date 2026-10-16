@@ -20,7 +20,7 @@ if [ $STATUS -ne 0 ]; then
 	echo "run_tests: FAILED (exit code $STATUS)" >&2
 	exit 1
 fi
-if echo "$OUTPUT" | grep -qE "SCRIPT ERROR|Parse Error|ERROR:"; then
+if echo "$OUTPUT" | grep -qE "SCRIPT ERROR|Parse Error|ERROR:|ObjectDB instances leaked"; then
 	echo "run_tests: FAILED (errors in output)" >&2
 	exit 1
 fi

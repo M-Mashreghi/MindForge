@@ -219,6 +219,7 @@ On Windows with winget, the executable is under `%LOCALAPPDATA%\Microsoft\WinGet
 | Navigate menus and puzzles | Arrow keys + Enter | D-pad + A |
 | Pause (resume, restart, abandon) / leave a puzzle | Esc | – |
 | Toggle internal numbers on the summary (debug builds) | F3 | – |
+| Toggle the adaptive debug overlay (debug builds) | F9 | – |
 
 ---
 

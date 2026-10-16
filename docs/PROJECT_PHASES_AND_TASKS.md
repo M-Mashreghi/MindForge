@@ -2077,7 +2077,7 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 
 ### Task 7.3: Developer Skill / Difficulty Debug Overlay
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 7 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2094,13 +2094,20 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(7.3): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(7.3): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Debug overlay `game/scenes/ui/debug_overlay.tscn` in the dungeon: overall and per-family skill with confidence and observations, last predicted success and puzzle difficulty, room base type -> target band, target success and target difficulty with the selector reason, the picked puzzle with its scheduler score and top reasons, planner reasons, and recovery state.
+- Disabled in normal play: shown only when `mindforge/debug/overlay` is on (off by default) or toggled with F9 in debug builds (README controls updated).
+- Read-only: it only reads PlayerProfile and never calls state-changing methods (tested by profile comparison and a source check); signal connections use bound methods so they end with the node.
+- Test hygiene: `tools/run_tests.sh` now also fails on ObjectDB leak warnings (a pending timer in a test was the last one).
+- Validation: `tools/run_tests.sh` — 334 passed, 0 failed (adds `tests/integration/test_debug_overlay.gd`); `tools/check_boot.sh` OK.
 
 ---
 

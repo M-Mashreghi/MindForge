@@ -15,6 +15,7 @@ config/features=PackedStringArray("4.5", "GL Compatibility")
 
 debug/adaptive_log=false
 debug/show_internal_math=false
+debug/overlay=false
 ai/enabled=false
 ai/proxy_url="http://127.0.0.1:8787"
 ai/timeout_seconds=8.0
