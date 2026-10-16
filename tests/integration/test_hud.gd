@@ -35,6 +35,8 @@ func test_formats_out_of_range_values_safely() -> void:
 
 
 func test_hud_reads_game_state_changes() -> void:
+	# Reduced motion shows final values at once (no count-up animation).
+	tree.root.get_node("PlayerProfile").set_setting("reduced_motion", true)
 	var hud: CanvasLayer = await add_to_root(HUD_SCENE.instantiate())
 	gs.start_run(1, 3)
 	gs.enter_room(&"a", 1)

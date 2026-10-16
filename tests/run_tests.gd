@@ -5,7 +5,7 @@ extends SceneTree
 ## with code 1 if any test fails.
 
 const TEST_DIRS := ["res://tests/unit", "res://tests/integration"]
-const AUTOLOADS := ["EventBus", "GameState", "PlayerProfile", "SaveManager"]
+const AUTOLOADS := ["EventBus", "GameState", "PlayerProfile", "SaveManager", "Feedback"]
 
 
 func _initialize() -> void:
@@ -36,6 +36,11 @@ func _run() -> void:
 					for message in test.failures:
 						printerr("FAIL %s::%s: %s" % [file, method_name, message])
 	print("tests: %d passed, %d failed" % [passed, failed])
+	# Let audio playbacks started by tests finish releasing before exit.
+	if root.has_node("Feedback"):
+		root.get_node("Feedback")._exit_tree()
+	for i in 3:
+		await process_frame
 	quit(1 if failed > 0 else 0)
 
 

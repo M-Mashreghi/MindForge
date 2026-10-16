@@ -77,6 +77,7 @@ func request_transition(index: int, arrive_at_exit: bool = false) -> bool:
 
 
 func _run_transition(index: int, arrive_at_exit: bool) -> void:
+	Feedback.play(&"room_transition")
 	await _fade_to(1.0)
 	_show_room(index, arrive_at_exit)
 	await _fade_to(0.0)

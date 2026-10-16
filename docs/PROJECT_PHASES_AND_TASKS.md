@@ -1291,7 +1291,7 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 
 ### Task 4.8: Basic Audio / Animation Feedback Hooks
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 4 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1308,13 +1308,20 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(4.8): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(4.8): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `Feedback` autoload (`game/autoload/feedback.gd`): the central hook for SFX and motion. It plays a sound for every `EventBus.feedback_requested` kind and for explicit `play()` calls (room transition, door, UI click, score tick); `pulse()` and `count_up()` are the shared animation helpers (exit door pulse on solve, HUD streak pulse, HUD score count-up).
+- Placeholder audio only: every sound is a short sine/noise tone synthesized in code at startup (16-bit mono WAV), routed through an `SFX` bus; no third-party assets (README "Assets and Licensing").
+- Master volume: `PlayerProfile` setting `master_volume` drives the Master bus (0 mutes). Reduced motion: `pulse()` does nothing and `count_up()` shows the final value at once.
+- Main menu Settings now has a Reduced motion toggle and a Volume slider (saved via the settings autosave from Task 4.6).
+- Validation: `tools/run_tests.sh` — 234 passed, 0 failed (adds `tests/integration/test_feedback_hooks.gd`; HUD/menu tests updated); `tools/check_boot.sh` OK.
 
 ---
 

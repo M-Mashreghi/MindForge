@@ -9,6 +9,8 @@ extends Control
 @onready var _settings_panel: Control = %SettingsPanel
 @onready var _settings_back_button: Button = %SettingsBackButton
 @onready var _warmup_toggle: CheckButton = %WarmupToggle
+@onready var _reduced_motion_toggle: CheckButton = %ReducedMotionToggle
+@onready var _volume_slider: HSlider = %VolumeSlider
 
 var _starting := false
 
@@ -20,6 +22,10 @@ func _ready() -> void:
 	_settings_back_button.pressed.connect(_on_settings_back_pressed)
 	_settings_panel.visible = false
 	_warmup_toggle.button_pressed = GameState.warmup_enabled
+	_reduced_motion_toggle.button_pressed = PlayerProfile.reduced_motion()
+	_volume_slider.value = float(PlayerProfile.setting("master_volume"))
+	_reduced_motion_toggle.toggled.connect(func(on): PlayerProfile.set_setting("reduced_motion", on))
+	_volume_slider.value_changed.connect(_on_volume_changed)
 	_new_run_button.grab_focus()
 
 
@@ -38,10 +44,15 @@ func _on_new_run_pressed() -> void:
 	GameState.begin_new_run(GameState.make_run_seed(), _warmup_toggle.button_pressed)
 
 
+func _on_volume_changed(value: float) -> void:
+	PlayerProfile.set_setting("master_volume", value)
+	Feedback.play(&"ui_click")
+
+
 func _on_settings_pressed() -> void:
 	_menu.visible = false
 	_settings_panel.visible = true
-	_settings_back_button.grab_focus()
+	_reduced_motion_toggle.grab_focus()
 
 
 func _on_settings_back_pressed() -> void:

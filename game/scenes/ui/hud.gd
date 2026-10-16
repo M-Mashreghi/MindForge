@@ -15,11 +15,27 @@ func _ready() -> void:
 	refresh()
 
 
+var _shown_score: int = 0
+var _shown_streak: int = 0
+
+
 func refresh() -> void:
-	var text := format_values(GameState.snapshot())
+	var state := GameState.snapshot()
+	var text := format_values(state)
 	_room_label.text = text["room"]
 	_cleared_label.text = text["cleared"]
-	_score_label.text = text["score"]
+	var new_score := maxi(0, int(state.get("score", 0)))
+	if new_score > _shown_score:
+		# Score gains count up (instant with reduced motion).
+		Feedback.count_up(_score_label, _shown_score, new_score)
+		Feedback.play(&"score_tick")
+	else:
+		_score_label.text = text["score"]
+	_shown_score = new_score
+	var new_streak := maxi(0, int(state.get("streak", 0)))
+	if new_streak > _shown_streak:
+		Feedback.pulse(_streak_label.get_parent())
+	_shown_streak = new_streak
 	_xp_label.text = text["xp"]
 	_xp_bar.value = text["xp_progress"]
 	_streak_label.text = text["streak"]

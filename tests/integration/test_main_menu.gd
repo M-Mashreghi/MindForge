@@ -23,7 +23,7 @@ func test_settings_placeholder_opens_and_returns_focus() -> void:
 	(menu.find_child("SettingsButton") as Button).pressed.emit()
 	await tree.process_frame
 	check((menu.find_child("SettingsPanel") as Control).visible, "settings panel shown")
-	check_eq(menu.get_viewport().gui_get_focus_owner().name, &"SettingsBackButton", "Back focused")
+	check_eq(menu.get_viewport().gui_get_focus_owner().name, &"ReducedMotionToggle", "first setting focused")
 	(menu.find_child("SettingsBackButton") as Button).pressed.emit()
 	await tree.process_frame
 	check((menu.find_child("Menu") as Control).visible, "menu shown again")

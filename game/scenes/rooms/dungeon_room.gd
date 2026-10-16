@@ -50,6 +50,7 @@ func mark_solved() -> void:
 	is_solved = true
 	_refresh_door_states()
 	solved.emit()
+	Feedback.pulse(exit_door)
 
 
 ## Exit stays locked until success; the entry is open only for retreat rooms.

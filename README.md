@@ -127,6 +127,10 @@ GODOT=/path/to/godot tools/validate_puzzles.sh --write-fingerprints   # after in
 
 Interact at the purple pedestal to open the room's puzzle; solving it opens the exit door. Esc leaves an open puzzle. Rooms whose puzzle family has no bundled content yet clear with a placeholder result.
 
+## Assets and Licensing
+
+All art is drawn in code (shapes, placeholder style boxes) and all sound effects are short tones generated in code at startup (`game/autoload/feedback.gd`). The repository ships no third-party art, audio or fonts; the UI uses Godot's built-in default font.
+
 ## MVP
 
 The first portfolio-ready release should contain:
