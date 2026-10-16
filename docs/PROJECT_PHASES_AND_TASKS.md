@@ -1146,7 +1146,7 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 
 ### Task 4.4: Puzzle Success / Failure Feedback
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 4 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1163,13 +1163,20 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(4.4): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(4.4): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Hook point: `EventBus.feedback_requested(kind, data)` with kinds `puzzle_success`, `puzzle_retry`, `puzzle_failure`, `hint_used`, `room_completed`. `PuzzleHost` emits the puzzle/hint kinds, the dungeon emits room completion. Audio (Task 4.8) subscribes to the same signal.
+- No answer leakage: feedback data carries only outcome information (points, XP, attempts left, hint level, abandoned/final flags); a test plays a puzzle through hint, wrong answer and correct answer and checks no event contains answer keys or the answer value.
+- `FeedbackBanner` (`game/scenes/ui/feedback_banner.tscn`) in the dungeon shows short messages with a symbol (✓ ↻ ✗ ? ★), plus "+points / +XP" on success.
+- Settings in `PlayerProfile.settings` (`reduced_motion`, `master_volume`). With reduced motion the banner's nonessential pop-in animation is skipped.
+- Validation: `tools/run_tests.sh` — 210 passed, 0 failed (adds `tests/integration/test_feedback.gd`); `tools/check_boot.sh` OK.
 
 ---
 

@@ -175,6 +175,8 @@ func _on_puzzle_resolved(room_id: StringName, _puzzle_id: StringName, result: Di
 		_solved_rooms[current_index] = true
 		current_room.mark_solved()
 		GameState.mark_room_cleared()
+		EventBus.feedback_requested.emit(&"room_completed", {"room_index": current_index,
+			"final": current_index >= DEMO_ROOM_DEFS.size() - 1})
 
 
 func _fade_to(alpha: float) -> void:

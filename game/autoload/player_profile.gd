@@ -23,6 +23,9 @@ var config: RefCounted = AdaptiveConfig.new()
 var skills: RefCounted = SkillProfile.new(config)
 ## Lifetime XP / level / best score: separate from skill ratings.
 var progression: RefCounted = Progression.new()
+## Player settings (accessibility and audio). Defaults are the safe choices.
+const DEFAULT_SETTINGS := {"reduced_motion": false, "master_volume": 0.8}
+var settings: Dictionary = DEFAULT_SETTINGS.duplicate()
 var model: RefCounted = SkillModel.new(config)
 var predictor: RefCounted = SuccessPredictor.new(config)
 ## Run-level failure-recovery state (reset when a run starts).
@@ -52,6 +55,7 @@ func _ready() -> void:
 func reset() -> void:
 	skills.reset()
 	progression.reset()
+	settings = DEFAULT_SETTINGS.duplicate()
 	history.clear()
 	last_prediction = {}
 	recovery.reset()
@@ -59,6 +63,19 @@ func reset() -> void:
 	solved_mechanics.clear()
 	_reset_run_state()
 	EventBus.profile_changed.emit(PROFILE_ID)
+
+
+func setting(key: String) -> Variant:
+	return settings.get(key, DEFAULT_SETTINGS.get(key))
+
+
+func set_setting(key: String, value: Variant) -> void:
+	settings[key] = value
+	EventBus.profile_changed.emit(PROFILE_ID)
+
+
+func reduced_motion() -> bool:
+	return bool(setting("reduced_motion"))
 
 
 ## Adds XP to lifetime progression. Returns levels gained.

@@ -87,6 +87,7 @@ func request_hint() -> void:
 	label.add_theme_font_size_override("font_size", 20)
 	_hint_list.add_child(label)
 	_refresh_hint_button()
+	EventBus.feedback_requested.emit(&"hint_used", {"level": hint["level"], "remaining": hint_ladder.remaining()})
 
 
 func _refresh_hint_button() -> void:
@@ -119,6 +120,8 @@ func _on_response_submitted(response: Dictionary) -> void:
 		_status.text = "Out of attempts."
 	else:
 		_status.text = "Not quite. Attempts left: %d" % attempts_left()
+	if not final:
+		EventBus.feedback_requested.emit(&"puzzle_retry", {"attempts_left": attempts_left()})
 	if final:
 		_finish(correct, false, check)
 
@@ -140,6 +143,10 @@ func _finish(correct: bool, abandoned: bool, check: Dictionary) -> void:
 	})
 	finished.emit(result)
 	EventBus.puzzle_resolved.emit(room_id, puzzle.id, result)
+	# Feedback carries only outcome information, never the answer.
+	EventBus.feedback_requested.emit(&"puzzle_success" if correct else &"puzzle_failure",
+		{"abandoned": abandoned, "points": GameState.last_score.get("points", 0) if correct else 0,
+		"xp": GameState.last_score.get("xp", 0)})
 
 
 ## Removes the renderer and hides the host (after the caller saw the result).

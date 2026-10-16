@@ -19,3 +19,7 @@ signal puzzle_resolved(room_id: StringName, puzzle_id: StringName, result: Dicti
 signal profile_changed(profile_id: StringName)
 ## Any run value read by presentation (HUD) changed.
 signal run_state_changed
+## Something the player should see or hear feedback for. `kind` is one of
+## puzzle_success, puzzle_retry, puzzle_failure, hint_used, room_completed.
+## `data` never contains answers.
+signal feedback_requested(kind: StringName, data: Dictionary)
