@@ -498,7 +498,7 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 
 ### Task 2.6: Logic Puzzle Deterministic Solver and Uniqueness Validator
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 2 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -515,13 +515,22 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(2.6): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(2.6): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Logic family `game/scripts/puzzles/logic_family.gd`, registered as a built-in family (renderer from Task 2.5). v1 template `ordering` with 3..6 unique symbol items and 1..10 clues of types `before`, `adjacent`, `not_adjacent`, `at`, `not_at`.
+- Solver: exhaustive deterministic search over all arrangements (at most 720), so solution counts are exact. `solve()` returns the order only when exactly one exists.
+- Validator rejects unsupported templates/clue types, unknown or duplicate items, out-of-range positions, unsatisfiable clue sets (zero solutions), ambiguous ones (more than one solution) and stored solutions that differ from the solver.
+- `check_response()` accepts an arrangement that uses every item once and satisfies every clue (= the unique solution), and reports how many clues were broken.
+- Fingerprint mechanics = template + sorted items + sorted canonical clues (presentation order excluded).
+- Bundled fixtures `game/resources/puzzle_bank/logic.json` (2 easy, 2 medium, 2 hard; uniqueness verified both by the generator and by the Godot solver in tests). Invalid fixtures `tests/fixtures/logic_invalid.json` (8 cases). The second fixture room now opens a real logic puzzle.
+- Validation: `tools/run_tests.sh` — 86 passed, 0 failed (adds `tests/unit/test_logic_family.gd`); `tools/check_boot.sh` OK.
 
 ---
 

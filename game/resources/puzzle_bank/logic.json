@@ -1,0 +1,465 @@
+{
+  "puzzles": [
+    {
+      "id": "logic_order_easy_01",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 200,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "circle",
+          "triangle",
+          "square"
+        ],
+        "clues": [
+          {
+            "type": "at",
+            "a": "square",
+            "position": 0
+          },
+          {
+            "type": "before",
+            "a": "triangle",
+            "b": "circle"
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "square",
+          "triangle",
+          "circle"
+        ]
+      },
+      "hints": [
+        {
+          "text": "Start with the clue that names an exact slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Once the first slot is fixed, only two places are left.",
+          "cost": 0.25
+        },
+        {
+          "text": "Square goes first.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        10,
+        40
+      ],
+      "tags": [
+        "ordering",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "logic_order_easy_02",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 240,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "star",
+          "diamond",
+          "ring"
+        ],
+        "clues": [
+          {
+            "type": "adjacent",
+            "a": "star",
+            "b": "ring"
+          },
+          {
+            "type": "at",
+            "a": "ring",
+            "position": 2
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "diamond",
+          "star",
+          "ring"
+        ]
+      },
+      "hints": [
+        {
+          "text": "One item has a fixed slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "The item next to the fixed one must be in the middle.",
+          "cost": 0.25
+        },
+        {
+          "text": "Ring is last, so Star is in the middle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        10,
+        40
+      ],
+      "tags": [
+        "ordering",
+        "easy"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "logic_order_medium_01",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 470,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "circle",
+          "triangle",
+          "square",
+          "star"
+        ],
+        "clues": [
+          {
+            "type": "before",
+            "a": "circle",
+            "b": "triangle"
+          },
+          {
+            "type": "adjacent",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "at",
+            "a": "star",
+            "position": 0
+          },
+          {
+            "type": "before",
+            "a": "triangle",
+            "b": "square"
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "star",
+          "circle",
+          "triangle",
+          "square"
+        ]
+      },
+      "hints": [
+        {
+          "text": "One item is fixed in the first slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Triangle and Square must stand side by side.",
+          "cost": 0.25
+        },
+        {
+          "text": "Star is first and Circle comes before Triangle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        20,
+        70
+      ],
+      "tags": [
+        "ordering",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "logic_order_medium_02",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 530,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "hexagon",
+          "diamond",
+          "cross",
+          "ring"
+        ],
+        "clues": [
+          {
+            "type": "not_adjacent",
+            "a": "hexagon",
+            "b": "diamond"
+          },
+          {
+            "type": "before",
+            "a": "cross",
+            "b": "ring"
+          },
+          {
+            "type": "at",
+            "a": "diamond",
+            "position": 3
+          },
+          {
+            "type": "not_at",
+            "a": "cross",
+            "position": 0
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "hexagon",
+          "cross",
+          "ring",
+          "diamond"
+        ]
+      },
+      "hints": [
+        {
+          "text": "Place the item with a fixed slot first.",
+          "cost": 0.1
+        },
+        {
+          "text": "Hexagon cannot stand next to Diamond in the last slot.",
+          "cost": 0.25
+        },
+        {
+          "text": "Diamond is last, so Hexagon goes first.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        20,
+        70
+      ],
+      "tags": [
+        "ordering",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "logic_order_hard_01",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 720,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "circle",
+          "triangle",
+          "square",
+          "star",
+          "diamond"
+        ],
+        "clues": [
+          {
+            "type": "before",
+            "a": "star",
+            "b": "circle"
+          },
+          {
+            "type": "adjacent",
+            "a": "circle",
+            "b": "triangle"
+          },
+          {
+            "type": "not_adjacent",
+            "a": "triangle",
+            "b": "star"
+          },
+          {
+            "type": "at",
+            "a": "square",
+            "position": 2
+          },
+          {
+            "type": "before",
+            "a": "diamond",
+            "b": "circle"
+          },
+          {
+            "type": "before",
+            "a": "star",
+            "b": "diamond"
+          },
+          {
+            "type": "before",
+            "a": "circle",
+            "b": "triangle"
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "star",
+          "diamond",
+          "square",
+          "circle",
+          "triangle"
+        ]
+      },
+      "hints": [
+        {
+          "text": "Fix the middle slot first.",
+          "cost": 0.1
+        },
+        {
+          "text": "Circle and Triangle stand side by side.",
+          "cost": 0.25
+        },
+        {
+          "text": "Star is first and Triangle is last.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        30,
+        120
+      ],
+      "tags": [
+        "ordering",
+        "hard"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "logic_order_hard_02",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 760,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "ring",
+          "cross",
+          "hexagon",
+          "star",
+          "triangle"
+        ],
+        "clues": [
+          {
+            "type": "adjacent",
+            "a": "ring",
+            "b": "cross"
+          },
+          {
+            "type": "before",
+            "a": "hexagon",
+            "b": "star"
+          },
+          {
+            "type": "not_adjacent",
+            "a": "star",
+            "b": "triangle"
+          },
+          {
+            "type": "at",
+            "a": "cross",
+            "position": 4
+          },
+          {
+            "type": "not_at",
+            "a": "hexagon",
+            "position": 0
+          },
+          {
+            "type": "before",
+            "a": "triangle",
+            "b": "hexagon"
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "triangle",
+          "hexagon",
+          "star",
+          "ring",
+          "cross"
+        ]
+      },
+      "hints": [
+        {
+          "text": "Start from the item fixed in the last slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Its neighbour must be in slot 4.",
+          "cost": 0.25
+        },
+        {
+          "text": "Cross is last and Ring is fourth.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        30,
+        120
+      ],
+      "tags": [
+        "ordering",
+        "hard"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    }
+  ]
+}

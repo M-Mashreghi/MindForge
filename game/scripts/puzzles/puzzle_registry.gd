@@ -18,6 +18,10 @@ const BUILTIN_FAMILIES := {
 		"validator": "res://game/scripts/puzzles/pattern_family.gd",
 		"renderer": "res://game/scenes/puzzles/pattern/pattern_renderer.tscn",
 	},
+	&"logic": {
+		"validator": "res://game/scripts/puzzles/logic_family.gd",
+		"renderer": "res://game/scenes/puzzles/logic/logic_renderer.tscn",
+	},
 }
 
 

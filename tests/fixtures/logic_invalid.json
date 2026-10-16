@@ -1,0 +1,617 @@
+{
+  "puzzles": [
+    {
+      "id": "bad_unsatisfiable",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 470,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "circle",
+          "triangle",
+          "square",
+          "star"
+        ],
+        "clues": [
+          {
+            "type": "before",
+            "a": "circle",
+            "b": "triangle"
+          },
+          {
+            "type": "adjacent",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "at",
+            "a": "star",
+            "position": 0
+          },
+          {
+            "type": "before",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "at",
+            "a": "circle",
+            "position": 0
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "star",
+          "circle",
+          "triangle",
+          "square"
+        ]
+      },
+      "hints": [
+        {
+          "text": "One item is fixed in the first slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Triangle and Square must stand side by side.",
+          "cost": 0.25
+        },
+        {
+          "text": "Star is first and Circle comes before Triangle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        20,
+        70
+      ],
+      "tags": [
+        "ordering",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_ambiguous",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 470,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "circle",
+          "triangle",
+          "square",
+          "star"
+        ],
+        "clues": [
+          {
+            "type": "at",
+            "a": "star",
+            "position": 0
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "star",
+          "circle",
+          "triangle",
+          "square"
+        ]
+      },
+      "hints": [
+        {
+          "text": "One item is fixed in the first slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Triangle and Square must stand side by side.",
+          "cost": 0.25
+        },
+        {
+          "text": "Star is first and Circle comes before Triangle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        20,
+        70
+      ],
+      "tags": [
+        "ordering",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_unknown_clue",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 470,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "circle",
+          "triangle",
+          "square",
+          "star"
+        ],
+        "clues": [
+          {
+            "type": "before",
+            "a": "circle",
+            "b": "triangle"
+          },
+          {
+            "type": "adjacent",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "at",
+            "a": "star",
+            "position": 0
+          },
+          {
+            "type": "before",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "far_from",
+            "a": "circle",
+            "b": "star"
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "star",
+          "circle",
+          "triangle",
+          "square"
+        ]
+      },
+      "hints": [
+        {
+          "text": "One item is fixed in the first slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Triangle and Square must stand side by side.",
+          "cost": 0.25
+        },
+        {
+          "text": "Star is first and Circle comes before Triangle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        20,
+        70
+      ],
+      "tags": [
+        "ordering",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_unknown_item",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 470,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "circle",
+          "triangle",
+          "square",
+          "star"
+        ],
+        "clues": [
+          {
+            "type": "before",
+            "a": "circle",
+            "b": "triangle"
+          },
+          {
+            "type": "adjacent",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "at",
+            "a": "star",
+            "position": 0
+          },
+          {
+            "type": "before",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "before",
+            "a": "moon",
+            "b": "star"
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "star",
+          "circle",
+          "triangle",
+          "square"
+        ]
+      },
+      "hints": [
+        {
+          "text": "One item is fixed in the first slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Triangle and Square must stand side by side.",
+          "cost": 0.25
+        },
+        {
+          "text": "Star is first and Circle comes before Triangle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        20,
+        70
+      ],
+      "tags": [
+        "ordering",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_position_range",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 470,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "circle",
+          "triangle",
+          "square",
+          "star"
+        ],
+        "clues": [
+          {
+            "type": "before",
+            "a": "circle",
+            "b": "triangle"
+          },
+          {
+            "type": "adjacent",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "at",
+            "a": "star",
+            "position": 0
+          },
+          {
+            "type": "before",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "not_at",
+            "a": "star",
+            "position": 7
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "star",
+          "circle",
+          "triangle",
+          "square"
+        ]
+      },
+      "hints": [
+        {
+          "text": "One item is fixed in the first slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Triangle and Square must stand side by side.",
+          "cost": 0.25
+        },
+        {
+          "text": "Star is first and Circle comes before Triangle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        20,
+        70
+      ],
+      "tags": [
+        "ordering",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_wrong_stored_solution",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 470,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "circle",
+          "triangle",
+          "square",
+          "star"
+        ],
+        "clues": [
+          {
+            "type": "before",
+            "a": "circle",
+            "b": "triangle"
+          },
+          {
+            "type": "adjacent",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "at",
+            "a": "star",
+            "position": 0
+          },
+          {
+            "type": "before",
+            "a": "triangle",
+            "b": "square"
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "star",
+          "triangle",
+          "circle",
+          "square"
+        ]
+      },
+      "hints": [
+        {
+          "text": "One item is fixed in the first slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Triangle and Square must stand side by side.",
+          "cost": 0.25
+        },
+        {
+          "text": "Star is first and Circle comes before Triangle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        20,
+        70
+      ],
+      "tags": [
+        "ordering",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_duplicate_items",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 470,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "ordering",
+        "items": [
+          "circle",
+          "circle",
+          "square",
+          "star"
+        ],
+        "clues": [
+          {
+            "type": "before",
+            "a": "circle",
+            "b": "triangle"
+          },
+          {
+            "type": "adjacent",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "at",
+            "a": "star",
+            "position": 0
+          },
+          {
+            "type": "before",
+            "a": "triangle",
+            "b": "square"
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "star",
+          "circle",
+          "triangle",
+          "square"
+        ]
+      },
+      "hints": [
+        {
+          "text": "One item is fixed in the first slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Triangle and Square must stand side by side.",
+          "cost": 0.25
+        },
+        {
+          "text": "Star is first and Circle comes before Triangle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        20,
+        70
+      ],
+      "tags": [
+        "ordering",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    },
+    {
+      "id": "bad_template",
+      "family": "logic",
+      "schema_version": 2,
+      "content_version": 1,
+      "source": "local",
+      "seed": null,
+      "target_difficulty": 470,
+      "calibrated_difficulty": null,
+      "difficulty_confidence": 0.0,
+      "prompt": {
+        "template": "grid",
+        "items": [
+          "circle",
+          "triangle",
+          "square",
+          "star"
+        ],
+        "clues": [
+          {
+            "type": "before",
+            "a": "circle",
+            "b": "triangle"
+          },
+          {
+            "type": "adjacent",
+            "a": "triangle",
+            "b": "square"
+          },
+          {
+            "type": "at",
+            "a": "star",
+            "position": 0
+          },
+          {
+            "type": "before",
+            "a": "triangle",
+            "b": "square"
+          }
+        ]
+      },
+      "solution": {
+        "order": [
+          "star",
+          "circle",
+          "triangle",
+          "square"
+        ]
+      },
+      "hints": [
+        {
+          "text": "One item is fixed in the first slot.",
+          "cost": 0.1
+        },
+        {
+          "text": "Triangle and Square must stand side by side.",
+          "cost": 0.25
+        },
+        {
+          "text": "Star is first and Circle comes before Triangle.",
+          "cost": 0.5
+        }
+      ],
+      "time_band_seconds": [
+        20,
+        70
+      ],
+      "tags": [
+        "ordering",
+        "medium"
+      ],
+      "provenance": {
+        "author": "mindforge-design",
+        "bank": "v1"
+      }
+    }
+  ]
+}
