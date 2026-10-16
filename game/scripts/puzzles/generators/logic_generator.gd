@@ -159,6 +159,11 @@ static func _hints(order: Array, clues: Array, rng: RandomNumberGenerator) -> Ar
 	]
 
 
+## Local hint ladder for any solved ordering (used for AI fallbacks).
+static func local_hints(order: Array, clues: Array, rng: RandomNumberGenerator) -> Array:
+	return _hints(order, clues, rng)
+
+
 static func _shuffle(rng: RandomNumberGenerator, items: Array) -> void:
 	for i in range(items.size() - 1, 0, -1):
 		var j := rng.randi_range(0, i)

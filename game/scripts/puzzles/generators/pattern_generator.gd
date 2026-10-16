@@ -176,6 +176,20 @@ static func _hints(spec: Dictionary) -> Array:
 	]
 
 
+## Shared helpers for other solver-first builders (AI proposals use them so
+## AI content gets the same visible terms, distractors and local hints).
+func visible_terms(spec: Dictionary, shown: int) -> Array:
+	return _visible_terms(spec, shown)
+
+
+func choices_for(rng: RandomNumberGenerator, spec: Dictionary, sequence: Array, answer: Variant) -> Array:
+	return _choices(rng, spec, sequence, answer)
+
+
+static func local_hints(spec: Dictionary) -> Array:
+	return _hints(spec)
+
+
 static func _shuffle(rng: RandomNumberGenerator, items: Array) -> void:
 	for i in range(items.size() - 1, 0, -1):
 		var j := rng.randi_range(0, i)

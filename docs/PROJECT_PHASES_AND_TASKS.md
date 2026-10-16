@@ -1722,7 +1722,7 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 
 ### Task 6.4: Solver-First AI Pattern Puzzle Generation
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 6 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1739,13 +1739,19 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(6.4): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(6.4): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `AiPuzzleBuilder` (`game/scripts/ai/ai_puzzle_builder.gd`) turns a parsed AI proposal into a puzzle solver-first. For pattern proposals the AI provides only rule + parameters + visible length; the deterministic pattern solver derives every visible term and the canonical answer, distractors and local hints are built by the game (shared helpers from `PatternGenerator`), and the result is a normal puzzle (`source: ai`) for the content pipeline.
+- A `declared_answer` that differs from the solver rejects the proposal (`declared_answer_conflict`); invalid parameters, unknown rules or extra params are rejected. The AI's difficulty estimate is kept only as provenance; the target difficulty comes from the request (plausibility checks in Task 6.8).
+- Provenance records model, request id, prompt/schema/pipeline/solver versions. Building is deterministic for the same proposal and request id.
+- Validation: `tools/run_tests.sh` — 291 passed, 0 failed (adds `tests/unit/test_ai_pattern_builder.gd`, including a full content-pipeline pass); `tools/check_boot.sh` OK.
 
 ---
 
