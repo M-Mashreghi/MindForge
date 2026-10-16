@@ -7,7 +7,8 @@ extends RefCounted
 ##   coverage     bonus for a family not seen recently
 ##   weakness     small bonus for the weakest family, turned into a penalty
 ##                when the last two picks already drilled it
-##   familiarity  in recovery, bonus for mechanics the player has solved
+##   familiarity  in recovery, bonus for mechanics the player has solved;
+##                in stretch (challenge/boss) rooms, a smaller bonus for new ones
 ##   jitter       small seeded noise, so the closest puzzle is not always picked
 ##
 ## Fully deterministic for a given RNG state. Every decision carries
@@ -29,7 +30,8 @@ func _init(adaptive_config: RefCounted = null) -> void:
 ##   profile (SkillProfile), puzzles (Array of PuzzleData), room_type (StringName band key),
 ##   family (StringName, "" = any), history (Array of {"family", "fingerprint", "mechanic"},
 ##   newest last), solved_mechanics (Dictionary), recovery_active (bool),
-##   previous_targets (Dictionary family -> target difficulty), rng (RandomNumberGenerator)
+##   stretch (bool), previous_targets (Dictionary family -> target difficulty),
+##   rng (RandomNumberGenerator)
 ## Returns {} when there is no content, otherwise the decision.
 func choose(request: Dictionary) -> Dictionary:
 	var profile: RefCounted = request["profile"]
@@ -126,9 +128,14 @@ func _score(entry: Dictionary, decision: Dictionary, family: StringName, recent:
 			c["weakness"] = config.schedule_weakness_bonus
 			reasons.append("practise weakest family")
 	c["familiarity"] = 0.0
-	if request.get("recovery_active", false) and request.get("solved_mechanics", {}).has(puzzle.mechanic):
+	var known: bool = request.get("solved_mechanics", {}).has(puzzle.mechanic)
+	if request.get("recovery_active", false) and known:
 		c["familiarity"] = config.schedule_familiar_bonus
 		reasons.append("recovery: familiar mechanic")
+	elif request.get("stretch", false) and not known:
+		# Challenge/boss rooms lean toward mechanics not mastered yet.
+		c["familiarity"] = config.schedule_familiar_bonus * 0.5
+		reasons.append("stretch: new mechanic")
 	var total := 0.0
 	for key in c:
 		total += c[key]

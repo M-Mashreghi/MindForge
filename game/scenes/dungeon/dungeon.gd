@@ -143,6 +143,8 @@ func _on_player_interact() -> void:
 	var room_id: StringName = current_room.get_room_id()
 	var puzzle: RefCounted = puzzle_for_current_room()
 	if puzzle == null:
+		# Graceful degradation: nothing fits, so the room clears with a
+		# placeholder result (the planner recorded "no_content").
 		var puzzle_id := StringName("placeholder_%s" % room_id)
 		EventBus.puzzle_started.emit(room_id, puzzle_id)
 		EventBus.puzzle_resolved.emit(room_id, puzzle_id, {"correct": true, "placeholder": true})

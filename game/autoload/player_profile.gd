@@ -14,6 +14,7 @@ const CalibrationSession := preload("res://game/scripts/adaptive/calibration_ses
 const AdaptiveScheduler := preload("res://game/scripts/adaptive/adaptive_scheduler.gd")
 const DifficultySelector := preload("res://game/scripts/adaptive/difficulty_selector.gd")
 const Progression := preload("res://game/scripts/scoring/progression.gd")
+const RoomPlanner := preload("res://game/scripts/adaptive/room_planner.gd")
 const DEBUG_LOG_SETTING := "mindforge/debug/adaptive_log"
 
 const PROFILE_ID := &"local"
@@ -121,25 +122,36 @@ func predict(puzzle: RefCounted) -> Dictionary:
 ## Chooses the puzzle for a room with the adaptive scheduler and records it
 ## as presented. Returns null when no content fits.
 func schedule(room_def: Resource, puzzles: Array, rng: RandomNumberGenerator) -> RefCounted:
-	var base_type: StringName = DifficultySelector.room_type_name(room_def.room_type)
-	var decision: Dictionary = scheduler.choose({
-		"profile": skills,
-		"puzzles": puzzles,
-		"room_type": recovery.room_type_for(base_type),
-		"family": room_def.puzzle_family,
-		"history": schedule_history,
-		"solved_mechanics": solved_mechanics,
-		"recovery_active": recovery.active,
-		"previous_targets": previous_targets,
-		"rng": rng,
-	})
-	last_schedule = decision
+	var room_plan: Dictionary = RoomPlanner.plan(room_def, puzzles, recovery)
+	var reasons: PackedStringArray = room_plan["reasons"]
+	var decision: Dictionary = {}
+	if not room_plan["candidates"].is_empty():
+		decision = scheduler.choose({
+			"profile": skills,
+			"puzzles": room_plan["candidates"],
+			"room_type": room_plan["band"],
+			"family": room_plan["family"],
+			"history": schedule_history,
+			"solved_mechanics": solved_mechanics,
+			"recovery_active": recovery.active,
+			"stretch": room_plan["stretch"],
+			"previous_targets": previous_targets,
+			"rng": rng,
+		})
+	if not decision.is_empty() and decision["selector_reason"] != "in_band":
+		reasons.append("ideal_difficulty_unavailable: %s" % decision["selector_reason"])
+	var planner := {"room_id": room_plan["room_id"], "base_type": room_plan["base_type"],
+		"band": room_plan["band"], "reasons": reasons}
+	last_schedule = decision.duplicate() if not decision.is_empty() else {}
+	last_schedule["planner"] = planner
+	if ProjectSettings.get_setting(DEBUG_LOG_SETTING, false):
+		print("planner: %s | %s" % [planner["room_id"], "; ".join(reasons)])
+		if not decision.is_empty():
+			print(AdaptiveScheduler.explain(decision))
 	if decision.is_empty():
 		return null
 	previous_targets[decision["family"]] = decision["target_difficulty"]
 	note_presented(decision["puzzle"])
-	if ProjectSettings.get_setting(DEBUG_LOG_SETTING, false):
-		print(AdaptiveScheduler.explain(decision))
 	return decision["puzzle"]
 
 
