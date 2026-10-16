@@ -9,6 +9,7 @@ const Door := preload("res://game/scenes/rooms/door.gd")
 const TransitionGuard := preload("res://game/scripts/dungeon/transition_guard.gd")
 const PuzzleCatalog := preload("res://game/scripts/puzzles/puzzle_catalog.gd")
 const DungeonGenerator := preload("res://game/scripts/dungeon/dungeon_generator.gd")
+const ContentPool := preload("res://game/scripts/puzzles/content_pool.gd")
 const DEMO_ROOM_DEFS: Array[Resource] = [
 	preload("res://game/resources/room_defs/fixture_entrance.tres"),
 	preload("res://game/resources/room_defs/fixture_gallery.tres"),
@@ -36,6 +37,8 @@ signal transition_finished(room_id: StringName)
 var current_room: Node2D
 ## RoomDefs for this run, in order.
 var room_defs: Array = []
+## {"added", "rejected"} counts of procedurally generated puzzles this run.
+var generated_content: Dictionary = {}
 var current_index: int = -1
 ## Rooms solved in this run, by fixture index (so retreat keeps progress).
 var _solved_rooms: Dictionary = {}
@@ -54,6 +57,9 @@ func _ready() -> void:
 	if not GameState.run_active:
 		GameState.start_run(DEMO_SEED, DEMO_ROOM_DEFS.size())
 	room_defs = build_room_defs(GameState.run_plan)
+	if not GameState.run_plan.is_empty():
+		# Generated runs also get locally generated puzzles near the player's level.
+		generated_content = ContentPool.extend(catalog, GameState.run_seed, PlayerProfile.skills)
 	_show_room(0, false)
 
 

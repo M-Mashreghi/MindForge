@@ -1435,7 +1435,7 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 
 ### Task 5.4: Local Procedural Pattern Generator
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 5 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1452,13 +1452,19 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(5.4): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(5.4): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `PatternGenerator` (`game/scripts/puzzles/generators/pattern_generator.gd`, `pattern-gen-v1`): picks structured rule parameters from a seed and a requested difficulty using feature tiers (easy: small arithmetic steps, 3-symbol cycles; medium: larger/negative steps, alternating steps, doubling, 3-4 symbol cycles; hard: x2/x3 geometric, mixed-sign alternating, recurrence, 4-symbol cycles; expert: recurrence with larger seeds, 5-symbol cycles, shorter sequences).
+- Solver-first: the visible sequence and the answer are produced term by term by the deterministic pattern solver; the generator adds plausible distractors and rule-based hints (first hint generic), records `source: procedural`, seed and generator provenance, and validates the result with `PuzzleData.parse()`. Invalid output is rejected and another sub-seed is tried (up to 6).
+- `ContentPool.extend()` (`game/scripts/puzzles/content_pool.gd`) generates 7 puzzles per family with a generator around the player's family rating (offsets -200..+200) into the run's catalog, through the normal catalog checks (schema, validator, duplicate fingerprints). Generated runs from the menu use it; fixture runs do not.
+- Validation: `tools/run_tests.sh` — 258 passed, 0 failed (adds `tests/unit/test_pattern_generator.gd`: 160 seed/difficulty combinations all valid, solver-derived answers present exactly once, determinism, tier features, no first-hint leaks, pool near player level and deterministic); `tools/check_boot.sh` OK.
 
 ---
 

@@ -64,7 +64,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 5.1** — Seeded Dungeon Run Generator — Commit: `task(5.1)` — GitHub: `pushed to origin/main`
 - [x] **Task 5.2** — Difficulty-Aware Room Planner — Commit: `task(5.2)` — GitHub: `pushed to origin/main`
 - [x] **Task 5.3** — Puzzle-Family Rotation and Anti-Repetition — Commit: `task(5.3)` — GitHub: `pushed to origin/main`
-- [ ] **Task 5.4** — Local Procedural Pattern Generator — Commit: `—` — GitHub: `—`
+- [x] **Task 5.4** — Local Procedural Pattern Generator — Commit: `task(5.4)` — GitHub: `pushed to origin/main`
 - [ ] **Task 5.5** — Local Procedural Logic Generator — Commit: `—` — GitHub: `—`
 - [ ] **Task 5.6** — Local Procedural Memory Generator — Commit: `—` — GitHub: `—`
 - [ ] **Task 5.7** — Puzzle Solvability, Ambiguity and Content Quality Pipeline — Commit: `—` — GitHub: `—`
