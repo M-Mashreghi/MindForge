@@ -16,6 +16,7 @@ const PatternGenerator := preload("res://game/scripts/puzzles/generators/pattern
 const LogicGenerator := preload("res://game/scripts/puzzles/generators/logic_generator.gd")
 const CanonicalJson := preload("res://game/scripts/puzzles/canonical_json.gd")
 const AiTextSanitizer := preload("res://game/scripts/ai/ai_text_sanitizer.gd")
+const AiHints := preload("res://game/scripts/ai/ai_hints.gd")
 
 const TIME_BANDS := {"easy": [8, 35], "medium": [12, 50], "hard": [20, 80], "expert": [25, 100]}
 
@@ -54,7 +55,7 @@ func build_pattern(proposal: Dictionary, meta: Dictionary) -> Dictionary:
 	if prompt["choices"].is_empty():
 		return _fail(["could not build answer choices"])
 	var raw := _base(proposal, meta, "pattern", prompt, solved)
-	raw["hints"] = PatternGenerator.local_hints(spec).duplicate(true)
+	_apply_hints(raw, proposal, PatternGenerator.local_hints(spec).duplicate(true))
 	raw["tags"] = ["ai", spec["rule"]]
 	return {"ok": true, "raw": raw, "errors": PackedStringArray()}
 
@@ -75,7 +76,7 @@ func build_logic(proposal: Dictionary, meta: Dictionary) -> Dictionary:
 	if proposal.has("declared_answer") and not CanonicalJson.equal(proposal["declared_answer"], solved["order"]):
 		return _fail(["declared_answer_conflict: the AI's answer differs from the deterministic solver"])
 	var raw := _base(proposal, meta, "logic", prompt, solved)
-	raw["hints"] = LogicGenerator.local_hints(solved["order"], prompt["clues"], _rng(meta, "hints")).duplicate(true)
+	_apply_hints(raw, proposal, LogicGenerator.local_hints(solved["order"], prompt["clues"], _rng(meta, "hints")).duplicate(true))
 	raw["tags"] = ["ai", "ordering"]
 	return {"ok": true, "raw": raw, "errors": PackedStringArray()}
 
@@ -114,6 +115,16 @@ func _base(proposal: Dictionary, meta: Dictionary, family: String, prompt: Dicti
 		"time_band_seconds": TIME_BANDS[tier],
 		"provenance": provenance,
 	}
+
+
+## AI hints are used only when grounded in the built puzzle; otherwise the
+## local ladder stays (the reason is kept in provenance).
+static func _apply_hints(raw: Dictionary, proposal: Dictionary, local: Array) -> void:
+	var grounded := AiHints.ground(proposal.get("hints"), raw, local)
+	raw["hints"] = grounded["hints"]
+	raw["provenance"]["hint_source"] = grounded["source"]
+	if grounded["reason"] != "":
+		raw["provenance"]["hint_fallback_reason"] = grounded["reason"]
 
 
 static func _rng(meta: Dictionary, salt: String) -> RandomNumberGenerator:

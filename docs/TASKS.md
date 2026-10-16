@@ -77,7 +77,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 6.3** — Godot AI Content Adapter — Commit: `task(6.3)` — GitHub: `pushed to origin/main`
 - [x] **Task 6.4** — Solver-First AI Pattern Puzzle Generation — Commit: `task(6.4)` — GitHub: `pushed to origin/main`
 - [x] **Task 6.5** — Solver-First AI Logic Puzzle Generation — Commit: `task(6.5)` — GitHub: `pushed to origin/main`
-- [ ] **Task 6.6** — Grounded AI Hint and Explanation Generation — Commit: `—` — GitHub: `—`
+- [x] **Task 6.6** — Grounded AI Hint and Explanation Generation — Commit: `task(6.6)` — GitHub: `pushed to origin/main`
 - [x] **Task 6.7** — AI Text Sanitization and Content Safety Gate — Commit: `task(6.7)` — GitHub: `pushed to origin/main`
 - [ ] **Task 6.8** — AI Puzzle Validation, Difficulty Plausibility and Quarantine — Commit: `—` — GitHub: `—`
 - [ ] **Task 6.9** — Generated-Content Fingerprint, Deduplication and Variety Gate — Commit: `—` — GitHub: `—`

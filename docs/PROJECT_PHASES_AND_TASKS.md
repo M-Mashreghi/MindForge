@@ -1792,7 +1792,7 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 
 ### Task 6.6: Grounded AI Hint and Explanation Generation
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 6 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1809,13 +1809,19 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(6.6): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(6.6): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `AiHints.ground()` (`game/scripts/ai/ai_hints.gd`): AI-written hints are used only when grounded in the already-validated puzzle (structure + canonical solution): exactly 3 hints, each through the AI text gate, no duplicates, only the strongest (third) hint may reveal the answer, and every number or symbol name a hint mentions must exist in the puzzle (visible terms, parameters, items, slots or solution), so a hint cannot describe a different puzzle. The game assigns the light-to-strong costs (0.1 / 0.25 / 0.5).
+- Fallback: on any failure the deterministic local hint ladder is kept; provenance records `hint_source` and `hint_fallback_reason`.
+- Explanations stay sanitized presentation text (Task 6.7).
+- Validation: `tools/run_tests.sh` — 305 passed, 0 failed (adds `tests/unit/test_ai_hints.gd`); `tools/ai_smoke_test.gd` OK against the mock proxy; `tools/check_boot.sh` OK.
 
 ---
 
