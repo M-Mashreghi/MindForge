@@ -680,7 +680,7 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 
 ### Task 3.1: Player Skill Profile with Confidence and Observation Counts
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 3 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -697,13 +697,21 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(3.1): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(3.1): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `SkillProfile` (`game/scripts/adaptive/skill_profile.gd`): overall + `pattern` / `logic` / `memory` entries, each `{rating, confidence, observations}`. Ratings bounded to 0..1000, confidence to 0..0.95, observations >= 0 (`adaptive_config.gd`).
+- Deterministic cold start: every entry at the neutral prior 500 with zero confidence and observations.
+- Explicit no-inference rule: a family without evidence (including unknown families) reads as the prior; it is never derived from another family.
+- Migration-friendly `to_dict()` / `load_dict()` with profile and algorithm versions: missing entries fall back to the prior, values are clamped, unknown extra families are kept.
+- `PlayerProfile` autoload (`game/autoload/player_profile.gd`) holds the in-memory profile (saving is Task 4.6).
+- Validation: `tools/run_tests.sh` — 119 passed, 0 failed (adds `tests/unit/test_skill_profile.gd`); `tools/check_boot.sh` OK.
 
 ---
 

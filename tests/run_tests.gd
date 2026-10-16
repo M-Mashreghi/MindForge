@@ -5,7 +5,7 @@ extends SceneTree
 ## with code 1 if any test fails.
 
 const TEST_DIRS := ["res://tests/unit", "res://tests/integration"]
-const AUTOLOADS := ["EventBus", "GameState"]
+const AUTOLOADS := ["EventBus", "GameState", "PlayerProfile"]
 
 
 func _initialize() -> void:
@@ -57,3 +57,5 @@ func _cleanup_root() -> void:
 	await process_frame
 	if root.has_node("GameState"):
 		root.get_node("GameState").reset()
+	if root.has_node("PlayerProfile"):
+		root.get_node("PlayerProfile").reset()
