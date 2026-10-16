@@ -15,6 +15,7 @@ const LogicFamily := preload("res://game/scripts/puzzles/logic_family.gd")
 const PatternGenerator := preload("res://game/scripts/puzzles/generators/pattern_generator.gd")
 const LogicGenerator := preload("res://game/scripts/puzzles/generators/logic_generator.gd")
 const CanonicalJson := preload("res://game/scripts/puzzles/canonical_json.gd")
+const AiTextSanitizer := preload("res://game/scripts/ai/ai_text_sanitizer.gd")
 
 const TIME_BANDS := {"easy": [8, 35], "medium": [12, 50], "hard": [20, 80], "expert": [25, 100]}
 
@@ -87,7 +88,18 @@ func _base(proposal: Dictionary, meta: Dictionary, family: String, prompt: Dicti
 	provenance["request_id"] = request_id
 	provenance["ai_difficulty_estimate"] = proposal.get("difficulty_estimate", null)
 	var tier := PatternGenerator.tier_for(target)
+	# Only sanitized AI text is kept; rejected text is dropped and noted.
+	var presentation := {}
+	for key in ["flavor", "explanation"]:
+		if proposal.has(key):
+			var clean := AiTextSanitizer.sanitize(proposal[key])
+			if clean["ok"]:
+				presentation[key] = clean["text"]
+			else:
+				provenance["dropped_%s" % key] = clean["reason"]
+	provenance["text_sanitizer"] = AiTextSanitizer.SANITIZER_VERSION
 	return {
+		"presentation": presentation,
 		"id": "ai_%s_%s" % [family, str(hash([request_id, CanonicalJson.stringify(prompt)])).replace("-", "n")],
 		"family": family,
 		"schema_version": 2,

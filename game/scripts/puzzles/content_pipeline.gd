@@ -9,7 +9,8 @@ extends RefCounted
 ##   family       family validator (rules, stored solution = solver)
 ##   ambiguity    exactly one intended solution
 ##   fingerprint  stored fingerprint matches; not a duplicate of known content
-##   safety       hint/prompt text is plain, short and free of markup/links
+##   safety       hint/prompt/flavor text passes the shared text gate (plain,
+##                short, no markup/links/e-mail, within the tone policy)
 ##   hint_leak    the first hint does not reveal the answer
 ##
 ## Rejections are structured ({stage, code, message}) for telemetry/debugging.
@@ -19,13 +20,12 @@ const PuzzleSchema := preload("res://game/scripts/puzzles/puzzle_schema.gd")
 const PuzzleRegistry := preload("res://game/scripts/puzzles/puzzle_registry.gd")
 const PuzzleData := preload("res://game/scripts/puzzles/puzzle_data.gd")
 const HintLadder := preload("res://game/scripts/puzzles/hint_ladder.gd")
+const AiTextSanitizer := preload("res://game/scripts/ai/ai_text_sanitizer.gd")
 
 const PIPELINE_VERSION := "content-pipeline-v1"
 const STAGES := ["schema", "bounds", "solver", "family", "ambiguity", "fingerprint", "safety", "hint_leak"]
 const MAX_PROMPT_BYTES := 4096
 const MAX_TEXT_LENGTH := 160
-## Small, deliberately conservative blocklist; Phase 6 adds a full gate.
-const BLOCKED_WORDS := ["kill", "suicide", "hate", "porn", "nazi"]
 
 
 ## `known` = {"ids": Dictionary, "fingerprints": Dictionary(fp -> id)} of
@@ -95,22 +95,10 @@ static func validate(raw: Variant, known: Dictionary = {}) -> Dictionary:
 	return out
 
 
-## "" when the text is acceptable, otherwise the problem.
+## "" when the text is acceptable, otherwise the problem. Uses the same
+## rules as the AI text gate, so every source meets one standard.
 static func text_problem(text: String) -> String:
-	if text.length() > MAX_TEXT_LENGTH:
-		return "text longer than %d characters" % MAX_TEXT_LENGTH
-	for ch in text:
-		if ch.unicode_at(0) < 32:
-			return "control character"
-	if "[" in text or "]" in text or "<" in text or ">" in text:
-		return "markup characters"
-	var lowered := text.to_lower()
-	if "http" in lowered or "www." in lowered or "://" in lowered:
-		return "link"
-	for word in BLOCKED_WORDS:
-		if RegEx.create_from_string("\\b%s" % word).search(lowered) != null:
-			return "blocked word"
-	return ""
+	return AiTextSanitizer.problem(text, MAX_TEXT_LENGTH)
 
 
 ## Player-visible strings: hint texts plus any string inside the prompt.
@@ -119,6 +107,11 @@ static func _texts(puzzle: Dictionary) -> PackedStringArray:
 	for hint in puzzle["hints"]:
 		out.append(str(hint["text"]))
 	_collect(puzzle["prompt"], out)
+	var presentation: Variant = puzzle.get("presentation", {})
+	if typeof(presentation) == TYPE_DICTIONARY:
+		for key in ["flavor", "explanation"]:
+			if presentation.has(key):
+				out.append(str(presentation[key]))
 	return out
 
 

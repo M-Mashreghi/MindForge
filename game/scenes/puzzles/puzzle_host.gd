@@ -65,7 +65,8 @@ func open(puzzle_data: RefCounted, for_room: StringName = &"", host_options: Dic
 	_renderer.setup(puzzle, _options)
 	_renderer.response_submitted.connect(_on_response_submitted)
 	_title.text = str(host_options.get("title", "%s puzzle" % str(puzzle.family).capitalize()))
-	_status.text = ""
+	# Flavor text is only present after passing the text gate.
+	_status.text = str(puzzle.presentation.get("flavor", ""))
 	is_open = true
 	visible = true
 	_refresh_hint_button()
