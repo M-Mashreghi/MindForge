@@ -1255,7 +1255,7 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 
 ### Task 4.7: Pause, Restart and Safe Return-to-Menu Flow
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 4 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1272,13 +1272,20 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(4.7): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(4.7): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Pause menu `game/scenes/ui/pause_menu.tscn` (runs while the tree is paused): Resume, Restart run, Abandon run. Esc in the dungeon opens it (or leaves an open puzzle); Esc inside it goes back a step.
+- Safe abandon: a confirmation step ("This run's score is lost. XP you already earned is kept.") with "Keep playing" focused by default; only confirming ends the run as `abandoned` and returns to the menu.
+- Restart: `GameState.restart_run()` ends the attempt as `restarted` and starts again from the same seed and length, so run state and the RNG stream are identical; puzzle choices also depend on the player profile, which keeps what was learned (documented in code).
+- No partial state during scene changes: `GameState` collapses scene-change requests while one is pending and unpauses first; pausing is blocked during room transitions and pending scene changes; saves stay atomic (Task 4.6).
+- Validation: `tools/run_tests.sh` — 229 passed, 0 failed (adds `tests/integration/test_pause_flow.gd`); `tools/check_boot.sh` OK.
 
 ---
 

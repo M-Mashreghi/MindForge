@@ -123,7 +123,7 @@ GODOT=/path/to/godot tools/validate_puzzles.sh --write-fingerprints   # after in
 |---|---|---|
 | Move | WASD / arrow keys | Left stick / d-pad |
 | Interact | E / Space / Enter | A |
-| Back / abandon run | Esc | - |
+| Pause (resume, restart, abandon) / leave a puzzle | Esc | - |
 
 Interact at the purple pedestal to open the room's puzzle; solving it opens the exit door. Esc leaves an open puzzle. Rooms whose puzzle family has no bundled content yet clear with a placeholder result.
 

@@ -37,6 +37,7 @@ var run_log: Array = []
 ## Summary of the last finished run (shown by the run summary screen).
 var last_summary: Dictionary = {}
 var _skills_at_start: Dictionary = {}
+var _scene_change_pending := false
 var _best_before_run: int = 0
 
 
@@ -170,8 +171,37 @@ func return_to_main_menu() -> void:
 	_change_scene(MAIN_MENU_SCENE)
 
 
+## Restarts the current run from the same seed: the run state (seed, RNG,
+## rooms) is identical to the first start. Puzzle choices also depend on the
+## player profile, which keeps what was learned in the restarted attempt.
+func restart_run() -> void:
+	var seed_value := run_seed
+	var length := run_length
+	if run_active:
+		end_run(&"restarted")
+	start_run(seed_value, length)
+	_change_scene(DUNGEON_SCENE)
+
+
+func is_changing_scene() -> bool:
+	return _scene_change_pending
+
+
+## Scene changes are deferred and collapsed: while one is pending, further
+## requests are ignored, so repeated input cannot start two changes or
+## change scenes in the middle of another. The tree is unpaused first.
 func _change_scene(path: String) -> void:
-	get_tree().change_scene_to_file.call_deferred(path)
+	if _scene_change_pending:
+		return
+	_scene_change_pending = true
+	get_tree().paused = false
+	_do_change_scene.call_deferred(path)
+
+
+func _do_change_scene(path: String) -> void:
+	get_tree().change_scene_to_file(path)
+	await get_tree().process_frame
+	_scene_change_pending = false
 
 
 ## Plain-data copy of the run state (for summaries, saves and tests).

@@ -2,7 +2,7 @@ extends Node2D
 ## Dungeon scene: shows the current room, places the player and runs room
 ## transitions. The room sequence is a fixed, deterministic fixture list until
 ## the seeded dungeon generator (Phase 5) replaces it.
-## Cancel (Escape) abandons the run and returns to the main menu.
+## Cancel (Escape) leaves an open puzzle, otherwise opens the pause menu.
 
 const ROOM_SCENE := preload("res://game/scenes/rooms/dungeon_room.tscn")
 const Door := preload("res://game/scenes/rooms/door.gd")
@@ -30,6 +30,7 @@ signal transition_finished(room_id: StringName)
 @onready var _fade: ColorRect = $FadeLayer/Fade
 @onready var player: CharacterBody2D = $Player
 @onready var puzzle_host: Control = $PuzzleLayer/PuzzleHost
+@onready var pause_menu: CanvasLayer = $PauseMenu
 
 var current_room: Node2D
 var current_index: int = -1
@@ -57,8 +58,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		if puzzle_host.is_open:
 			puzzle_host.give_up()
-		else:
-			GameState.return_to_main_menu()
+		elif not pause_menu.is_open and not _guard.in_progress:
+			pause_menu.open()
 
 
 func is_transitioning() -> bool:

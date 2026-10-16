@@ -56,7 +56,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 4.4** — Puzzle Success / Failure Feedback — Commit: `task(4.4)` — GitHub: `pushed to origin/main`
 - [x] **Task 4.5** — Run Summary and Skill-Change Screen — Commit: `task(4.5)` — GitHub: `pushed to origin/main`
 - [x] **Task 4.6** — Versioned Atomic Save / Load, Migration and Recovery — Commit: `task(4.6)` — GitHub: `pushed to origin/main`
-- [ ] **Task 4.7** — Pause, Restart and Safe Return-to-Menu Flow — Commit: `—` — GitHub: `—`
+- [x] **Task 4.7** — Pause, Restart and Safe Return-to-Menu Flow — Commit: `task(4.7)` — GitHub: `pushed to origin/main`
 - [ ] **Task 4.8** — Basic Audio / Animation Feedback Hooks — Commit: `—` — GitHub: `—`
 
 ## Phase 5 — Procedural Dungeon & Content Scheduling
