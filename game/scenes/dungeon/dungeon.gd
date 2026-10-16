@@ -1,13 +1,14 @@
 extends Node2D
 ## Dungeon scene: shows the current room, places the player and runs room
-## transitions. The room sequence is a fixed, deterministic fixture list until
-## the seeded dungeon generator (Phase 5) replaces it.
+## transitions. Rooms come from the run's generated plan
+## (GameState.run_plan); without a plan the fixed fixture rooms are used.
 ## Cancel (Escape) leaves an open puzzle, otherwise opens the pause menu.
 
 const ROOM_SCENE := preload("res://game/scenes/rooms/dungeon_room.tscn")
 const Door := preload("res://game/scenes/rooms/door.gd")
 const TransitionGuard := preload("res://game/scripts/dungeon/transition_guard.gd")
 const PuzzleCatalog := preload("res://game/scripts/puzzles/puzzle_catalog.gd")
+const DungeonGenerator := preload("res://game/scripts/dungeon/dungeon_generator.gd")
 const DEMO_ROOM_DEFS: Array[Resource] = [
 	preload("res://game/resources/room_defs/fixture_entrance.tres"),
 	preload("res://game/resources/room_defs/fixture_gallery.tres"),
@@ -33,6 +34,8 @@ signal transition_finished(room_id: StringName)
 @onready var pause_menu: CanvasLayer = $PauseMenu
 
 var current_room: Node2D
+## RoomDefs for this run, in order.
+var room_defs: Array = []
 var current_index: int = -1
 ## Rooms solved in this run, by fixture index (so retreat keeps progress).
 var _solved_rooms: Dictionary = {}
@@ -50,7 +53,14 @@ func _ready() -> void:
 	EventBus.puzzle_resolved.connect(_on_puzzle_resolved)
 	if not GameState.run_active:
 		GameState.start_run(DEMO_SEED, DEMO_ROOM_DEFS.size())
+	room_defs = build_room_defs(GameState.run_plan)
 	_show_room(0, false)
+
+
+static func build_room_defs(plan: Dictionary) -> Array:
+	if plan.is_empty():
+		return DEMO_ROOM_DEFS.duplicate()
+	return plan["rooms"].map(func(entry): return DungeonGenerator.room_def(entry))
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -91,7 +101,7 @@ func _show_room(index: int, arrive_at_exit: bool) -> void:
 		_room_holder.remove_child(current_room)
 		current_room.queue_free()
 	var room := ROOM_SCENE.instantiate()
-	room.room_def = DEMO_ROOM_DEFS[index]
+	room.room_def = room_defs[index]
 	_room_holder.add_child(room)
 	room.position = ((get_viewport_rect().size - room.room_def.size) / 2.0).round()
 	if _solved_rooms.has(index):
@@ -107,7 +117,7 @@ func _on_door_reached(door: Area2D) -> void:
 	if not door.is_passable() or _guard.in_progress:
 		return
 	if door.role == Door.Role.EXIT:
-		if current_index >= DEMO_ROOM_DEFS.size() - 1:
+		if current_index >= room_defs.size() - 1:
 			_finish_run()
 		else:
 			request_transition(current_index + 1)
@@ -177,7 +187,7 @@ func _on_puzzle_resolved(room_id: StringName, _puzzle_id: StringName, result: Di
 		current_room.mark_solved()
 		GameState.mark_room_cleared()
 		EventBus.feedback_requested.emit(&"room_completed", {"room_index": current_index,
-			"final": current_index >= DEMO_ROOM_DEFS.size() - 1})
+			"final": current_index >= room_defs.size() - 1})
 
 
 func _fade_to(alpha: float) -> void:

@@ -9,6 +9,7 @@ const MAIN_MENU_SCENE := "res://game/scenes/ui/main_menu.tscn"
 const DUNGEON_SCENE := "res://game/scenes/dungeon/dungeon.tscn"
 const RUN_SUMMARY_SCENE := "res://game/scenes/ui/run_summary.tscn"
 const RunSummary := preload("res://game/scripts/scoring/run_summary.gd")
+const DungeonGenerator := preload("res://game/scripts/dungeon/dungeon_generator.gd")
 const ScoringEngine := preload("res://game/scripts/scoring/scoring_engine.gd")
 const Progression := preload("res://game/scripts/scoring/progression.gd")
 
@@ -20,6 +21,9 @@ var room_index: int = -1
 var current_room_id: StringName = &""
 var rooms_cleared: int = 0
 var run_length: int = DEFAULT_RUN_LENGTH
+## Structural room plan for the run (DungeonGenerator); empty = the
+## dungeon's built-in fixture rooms (used by tests and direct scene runs).
+var run_plan: Dictionary = {}
 var score: int = 0
 ## XP earned in this run (lifetime XP lives in PlayerProfile.progression).
 var xp: int = 0
@@ -55,6 +59,7 @@ func reset() -> void:
 	current_room_id = &""
 	rooms_cleared = 0
 	run_length = DEFAULT_RUN_LENGTH
+	run_plan = {}
 	score = 0
 	xp = 0
 	xp_progress = 0.0
@@ -64,11 +69,13 @@ func reset() -> void:
 
 
 ## Starts a run. The same seed always produces the same initial state.
-func start_run(seed_value: int, length: int = DEFAULT_RUN_LENGTH) -> void:
+## `plan` is a DungeonGenerator plan; when given, its length is used.
+func start_run(seed_value: int, length: int = DEFAULT_RUN_LENGTH, plan: Dictionary = {}) -> void:
 	reset()
 	run_active = true
 	run_seed = seed_value
-	run_length = maxi(1, length)
+	run_plan = plan
+	run_length = maxi(1, int(plan["length"]) if not plan.is_empty() else length)
 	rng.seed = seed_value
 	xp_progress = PlayerProfile.progression.level_progress()
 	_skills_at_start = PlayerProfile.skills.to_dict()
@@ -154,7 +161,7 @@ func make_run_seed() -> int:
 ## Starts a run from `seed_value` and switches to the dungeon scene.
 func begin_new_run(seed_value: int, warmup: bool = true) -> void:
 	warmup_enabled = warmup
-	start_run(seed_value)
+	start_run(seed_value, DEFAULT_RUN_LENGTH, DungeonGenerator.generate(seed_value))
 	_change_scene(DUNGEON_SCENE)
 
 
@@ -177,9 +184,10 @@ func return_to_main_menu() -> void:
 func restart_run() -> void:
 	var seed_value := run_seed
 	var length := run_length
+	var had_plan := not run_plan.is_empty()
 	if run_active:
 		end_run(&"restarted")
-	start_run(seed_value, length)
+	start_run(seed_value, length, DungeonGenerator.generate(seed_value, length) if had_plan else {})
 	_change_scene(DUNGEON_SCENE)
 
 
@@ -214,6 +222,7 @@ func snapshot() -> Dictionary:
 		"current_room_id": current_room_id,
 		"rooms_cleared": rooms_cleared,
 		"run_length": run_length,
+		"plan_version": run_plan.get("generator_version", "fixtures"),
 		"score": score,
 		"xp": xp,
 		"xp_progress": xp_progress,

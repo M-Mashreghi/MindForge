@@ -1329,7 +1329,7 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 
 ### Task 5.1: Seeded Dungeon Run Generator
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 5 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1346,13 +1346,20 @@ Advance Phase 5 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(5.1): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(5.1): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `DungeonGenerator.generate(seed, length)` (`game/scripts/dungeon/dungeon_generator.gd`, `dungeon-gen-v1`): a structural run plan of 3..12 rooms (default 7) with id, name, room type, size, spawn point, puzzle anchor, door/retreat rules and floor colour. The first three rooms are standard (they host the warm-ups), later rooms mix standard and challenge, and the last room is a boss room (for runs of 5+ rooms). No retreat from boss rooms.
+- Deterministic: the generator uses its own RNG seeded from `hash([version, seed])`, so the same seed and generator version always give the same plan, and the run RNG used for puzzle choices is untouched.
+- Separation: the plan contains no puzzle content; puzzles are chosen by the scheduler when a room is entered. `DungeonGenerator.room_def()` builds the RoomDef for each entry.
+- New runs from the menu (and restarts) now play a generated plan; `GameState.run_plan` stores it and the snapshot records `plan_version`. Without a plan (direct scene runs, tests) the three fixture rooms are used.
+- Validation: `tools/run_tests.sh` — 242 passed, 0 failed (adds `tests/unit/test_dungeon_generator.gd`); `tools/check_boot.sh` OK.
 
 ---
 
