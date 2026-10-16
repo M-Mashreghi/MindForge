@@ -30,8 +30,8 @@ func test_difficulty_scales_through_structure() -> void:
 	for seed_value in range(1, 16):
 		easy.append(gen.generate(seed_value, 150.0)["puzzle"])
 		expert.append(gen.generate(seed_value, 880.0)["puzzle"])
-	check(easy.all(func(p): return (p.prompt["items"] as Array).size() == 3), "easy uses 3 items")
-	check(expert.all(func(p): return (p.prompt["items"] as Array).size() >= 5), "expert uses 5+ items")
+	check(easy.all(func(p): return (p.prompt["items"] as Array).size() == 4), "easy uses 4 items")
+	check(expert.all(func(p): return (p.prompt["items"] as Array).size() == 6), "expert uses 6 items")
 	check(expert.all(func(p): return not (p.prompt["clues"] as Array).any(func(c): return c["type"] == "at")), "expert has no direct slot clues")
 
 

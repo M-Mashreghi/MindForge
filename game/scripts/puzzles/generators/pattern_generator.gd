@@ -6,16 +6,17 @@ extends RefCounted
 ## puzzle. Invalid output is rejected and another sub-seed is tried.
 ##
 ## Difficulty features (tiers):
-##   easy    (< 330)   arithmetic, small steps; 3-symbol cycles
-##   medium  (< 560)   larger/negative steps, alternating steps, doubling, 3-4 symbol cycles
-##   hard    (< 760)   geometric x2/x3, alternating with mixed signs, recurrence, 4-symbol cycles
-##   expert            recurrence with larger seeds, 5-symbol cycles, shorter visible sequences
+##   easy    (< 330)   arithmetic with mid-size steps; 4-symbol cycles
+##   medium  (< 560)   large or negative steps, alternating steps, geometric x2/x3, 4-5 symbol cycles
+##   hard    (< 760)   geometric x3/x4, recurrence, alternating with mixed signs, 5-6 symbol cycles
+##   expert            recurrence with negative offsets, wide alternating steps, 6-7 symbol cycles,
+##                     the fewest visible terms the rule allows
 
 const PuzzleData := preload("res://game/scripts/puzzles/puzzle_data.gd")
 const PatternFamily := preload("res://game/scripts/puzzles/pattern_family.gd")
 const SymbolGlyph := preload("res://game/scenes/puzzles/symbol_glyph.gd")
 
-const GENERATOR_VERSION := "pattern-gen-v1"
+const GENERATOR_VERSION := "pattern-gen-v2"
 const MAX_TRIES := 6
 
 var _family := PatternFamily.new()
@@ -88,38 +89,52 @@ func _choose_rule(rng: RandomNumberGenerator, tier: String) -> Dictionary:
 	match tier:
 		"easy":
 			if rng.randf() < 0.65:
-				return {"rule": "arithmetic", "params": {"start": rng.randi_range(1, 9), "step": rng.randi_range(1, 4)}, "shown": 4}
-			return {"rule": "symbol_cycle", "params": {"cycle": symbols.slice(0, 3), "offset": 0}, "shown": 5}
+				var step := rng.randi_range(3, 9) * (1 if rng.randf() < 0.8 else -1)
+				return {"rule": "arithmetic", "params": {"start": rng.randi_range(10, 40), "step": step}, "shown": 4}
+			return {"rule": "symbol_cycle", "params": {"cycle": symbols.slice(0, 4), "offset": rng.randi_range(0, 3)}, "shown": 5}
 		"medium":
 			match rng.randi_range(0, 3):
 				0:
-					var step := rng.randi_range(5, 12) * (1 if rng.randf() < 0.6 else -1)
-					return {"rule": "arithmetic", "params": {"start": rng.randi_range(20, 60), "step": step}, "shown": 4}
+					var step := rng.randi_range(11, 27) * (1 if rng.randf() < 0.5 else -1)
+					return {"rule": "arithmetic", "params": {"start": rng.randi_range(40, 120), "step": step}, "shown": 3}
 				1:
-					var a := rng.randi_range(2, 6)
-					var b := -rng.randi_range(1, a - 1)
-					return {"rule": "alternating", "params": {"start": rng.randi_range(1, 10), "steps": [a, b]}, "shown": 6}
+					var a := rng.randi_range(4, 11)
+					var b := -rng.randi_range(1, a + 4)
+					if b == -a:
+						b -= 1
+					return {"rule": "alternating", "params": {"start": rng.randi_range(5, 30), "steps": [a, b]}, "shown": 5}
 				2:
-					return {"rule": "geometric", "params": {"start": rng.randi_range(1, 5), "ratio": 2}, "shown": 5}
+					return {"rule": "geometric", "params": {"start": rng.randi_range(2, 7), "ratio": rng.randi_range(2, 3)}, "shown": 4}
 				_:
-					var n := rng.randi_range(3, 4)
-					return {"rule": "symbol_cycle", "params": {"cycle": symbols.slice(0, n), "offset": rng.randi_range(0, n - 1)}, "shown": n + 2}
+					var n := rng.randi_range(4, 5)
+					return {"rule": "symbol_cycle", "params": {"cycle": symbols.slice(0, n), "offset": rng.randi_range(0, n - 1)}, "shown": n + 1}
 		"hard":
 			match rng.randi_range(0, 3):
 				0:
-					return {"rule": "geometric", "params": {"start": rng.randi_range(2, 6), "ratio": rng.randi_range(2, 3)}, "shown": 4}
+					return {"rule": "geometric", "params": {"start": rng.randi_range(2, 9), "ratio": rng.randi_range(3, 4)}, "shown": 4}
 				1:
-					var a := rng.randi_range(4, 9)
-					var b := -rng.randi_range(2, 7)
-					return {"rule": "alternating", "params": {"start": rng.randi_range(10, 30), "steps": [a, b]}, "shown": 5}
+					var a := rng.randi_range(7, 16)
+					var b := -rng.randi_range(3, 14)
+					return {"rule": "alternating", "params": {"start": rng.randi_range(10, 50), "steps": [a, b]}, "shown": 5}
 				2:
-					return {"rule": "recurrence", "params": {"a": rng.randi_range(1, 4), "b": rng.randi_range(2, 6)}, "shown": 5}
+					return {"rule": "recurrence", "params": {"a": rng.randi_range(2, 4), "b": rng.randi_range(1, 9)}, "shown": 4}
 				_:
-					return {"rule": "symbol_cycle", "params": {"cycle": symbols.slice(0, 4), "offset": rng.randi_range(0, 3)}, "shown": 5}
+					var n := rng.randi_range(5, 6)
+					return {"rule": "symbol_cycle", "params": {"cycle": symbols.slice(0, n), "offset": rng.randi_range(0, n - 1)}, "shown": n + 1}
 		_:
-			if rng.randf() < 0.6:
-				return {"rule": "recurrence", "params": {"a": rng.randi_range(3, 9), "b": rng.randi_range(5, 14)}, "shown": 4}
-			return {"rule": "symbol_cycle", "params": {"cycle": symbols.slice(0, 5), "offset": rng.randi_range(0, 4)}, "shown": 6}
+			match rng.randi_range(0, 2):
+				0:
+					var b := rng.randi_range(-9, 15)
+					if b == 0:
+						b = -5
+					return {"rule": "recurrence", "params": {"a": rng.randi_range(2, 5), "b": b}, "shown": 4}
+				1:
+					var a := rng.randi_range(12, 25) * (1 if rng.randf() < 0.5 else -1)
+					var b := rng.randi_range(5, 20) * (-1 if a > 0 else 1)
+					return {"rule": "alternating", "params": {"start": rng.randi_range(20, 90), "steps": [a, b]}, "shown": 5}
+				_:
+					var n := rng.randi_range(6, 7)
+					return {"rule": "symbol_cycle", "params": {"cycle": symbols.slice(0, n), "offset": rng.randi_range(0, n - 1)}, "shown": n + 1}
 
 
 ## Terms of the rule; computed through the solver one step at a time so the

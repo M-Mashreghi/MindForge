@@ -5,30 +5,30 @@ extends RefCounted
 ## Presentation timing is a separate, optional input: it never changes the
 ## generated target, and timing is excluded from the content fingerprint.
 ##
-##   easy    3x3, 3 cells, clustered path, positions or sequence
-##   medium  4x3 / 4x4, 4-5 cells, mixed
-##   hard    4x4, 6 cells, scattered sequence
-##   expert  5x4, 7-8 cells, scattered with near-miss neighbours, recall
+##   easy    3x3 / 4x3, 4 cells, clustered path, positions or sequence
+##   medium  4x4, 5-6 cells, mixed
+##   hard    5x4, 7 cells, scattered sequence
+##   expert  5x5, 8-9 cells, scattered with near-miss neighbours, recall
 ##           threshold of length - 1
 
 const PuzzleData := preload("res://game/scripts/puzzles/puzzle_data.gd")
 const MemoryFamily := preload("res://game/scripts/puzzles/memory_family.gd")
 
-const GENERATOR_VERSION := "memory-gen-v1"
+const GENERATOR_VERSION := "memory-gen-v2"
 const MAX_TRIES := 6
 const TIERS := {
-	"easy": {"grids": [[3, 3]], "length": [3, 3], "scatter": 0.0, "modes": ["positions", "sequence"]},
-	"medium": {"grids": [[4, 3], [4, 4]], "length": [4, 5], "scatter": 0.4, "modes": ["positions", "sequence"]},
-	"hard": {"grids": [[4, 4]], "length": [6, 6], "scatter": 0.8, "modes": ["sequence"]},
-	"expert": {"grids": [[5, 4]], "length": [7, 8], "scatter": 1.0, "modes": ["sequence", "positions"]},
+	"easy": {"grids": [[3, 3], [4, 3]], "length": [4, 4], "scatter": 0.0, "modes": ["positions", "sequence"]},
+	"medium": {"grids": [[4, 4]], "length": [5, 6], "scatter": 0.5, "modes": ["positions", "sequence"]},
+	"hard": {"grids": [[5, 4]], "length": [7, 7], "scatter": 0.9, "modes": ["sequence"]},
+	"expert": {"grids": [[5, 5]], "length": [8, 9], "scatter": 1.0, "modes": ["sequence", "positions"]},
 }
 ## Default display timing per tier; accessibility scaling is applied later
 ## by the renderer and never stored here.
 const DEFAULT_PRESENTATION := {
-	"easy": {"show_ms": 900, "gap_ms": 300, "conceal_ms": 700},
-	"medium": {"show_ms": 800, "gap_ms": 250, "conceal_ms": 800},
-	"hard": {"show_ms": 700, "gap_ms": 250, "conceal_ms": 900},
-	"expert": {"show_ms": 650, "gap_ms": 220, "conceal_ms": 1000},
+	"easy": {"show_ms": 750, "gap_ms": 250, "conceal_ms": 800},
+	"medium": {"show_ms": 650, "gap_ms": 220, "conceal_ms": 900},
+	"hard": {"show_ms": 580, "gap_ms": 200, "conceal_ms": 1000},
+	"expert": {"show_ms": 520, "gap_ms": 180, "conceal_ms": 1100},
 }
 
 var _family := MemoryFamily.new()

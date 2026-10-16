@@ -27,12 +27,14 @@ func _pool() -> Array:
 
 func test_target_comes_from_success_band() -> void:
 	var decision := selector.select(500.0, &"standard", _pool())
-	check(is_equal_approx(decision["target_success"], 0.75), "standard band midpoint")
-	check(is_equal_approx(predictor.predict(500.0, decision["target_difficulty"]), 0.75), "target difficulty gives 75% success")
+	var band: Array = selector.config.target_bands[&"standard"]
+	var mid: float = (band[0] + band[1]) / 2.0
+	check(is_equal_approx(decision["target_success"], mid), "standard band midpoint")
+	check(is_equal_approx(predictor.predict(500.0, decision["target_difficulty"]), mid), "target difficulty gives the midpoint success")
 	var lo: float = decision["difficulty_range"][0]
 	var hi: float = decision["difficulty_range"][1]
 	check(lo < decision["target_difficulty"] and decision["target_difficulty"] < hi, "target inside difficulty range")
-	check(is_equal_approx(predictor.predict(500.0, lo), 0.80) and is_equal_approx(predictor.predict(500.0, hi), 0.70), "range edges match band")
+	check(is_equal_approx(predictor.predict(500.0, lo), band[1]) and is_equal_approx(predictor.predict(500.0, hi), band[0]), "range edges match band")
 
 
 func test_room_types_order_targets() -> void:

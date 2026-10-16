@@ -85,10 +85,13 @@ func test_not_always_the_numerically_closest() -> void:
 
 
 func test_recovery_prefers_familiar_mechanics() -> void:
+	# A rating whose target sits between the 3- and 4-item bank
+	# puzzles, so both fit about equally and familiarity decides.
 	var profile := SkillProfile.new()
-	var target = bank.filter(func(p): return p.family == &"logic")[0]
-	var solved := {target.mechanic: true}
+	profile.set_state(&"logic", 465.0, 0.6, 10)
 	var plain := scheduler.choose(_request(profile, [], {"family": &"logic", "recovery_active": true}))
+	var target = bank.filter(func(p): return p.family == &"logic" and p.mechanic != plain["puzzle"].mechanic)[0]
+	var solved := {target.mechanic: true}
 	var familiar := scheduler.choose(_request(profile, [], {"family": &"logic", "recovery_active": true,
 		"solved_mechanics": solved}))
 	check(familiar["puzzle"].mechanic == target.mechanic, "familiar mechanic chosen in recovery")

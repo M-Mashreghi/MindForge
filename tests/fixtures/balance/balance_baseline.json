@@ -1,173 +1,173 @@
 {
-  "adaptive_algorithm_version": "adaptive-v2",
+  "adaptive_algorithm_version": "adaptive-v3",
   "cases": [
     {
       "abandon_rate": 0.0,
       "archetype": "strong",
       "estimate": {
-        "logic": 647.8,
-        "memory": 691.4,
-        "pattern": 695.6
+        "logic": 738.7,
+        "memory": 732.1,
+        "pattern": 683.3
       },
       "hint_rate": 0.0,
       "oscillation": 19.8,
       "seed": 11,
       "success_rate": 0.972,
-      "true_fit": 0.061
+      "true_fit": 0.242
     },
     {
       "abandon_rate": 0.0,
       "archetype": "strong",
       "estimate": {
-        "logic": 702.6,
-        "memory": 680.8,
-        "pattern": 705.3
+        "logic": 716.5,
+        "memory": 737.8,
+        "pattern": 771.3
       },
       "hint_rate": 0.0,
-      "oscillation": 19.2,
+      "oscillation": 20.3,
       "seed": 12,
       "success_rate": 1.0,
-      "true_fit": 0.03
+      "true_fit": 0.303
     },
     {
       "abandon_rate": 0.0,
       "archetype": "average",
       "estimate": {
-        "logic": 526.2,
-        "memory": 536.7,
-        "pattern": 562.5
+        "logic": 592.3,
+        "memory": 575.0,
+        "pattern": 557.9
       },
-      "hint_rate": 0.028,
-      "oscillation": 17.7,
+      "hint_rate": 0.167,
+      "oscillation": 16.8,
       "seed": 11,
       "success_rate": 0.889,
-      "true_fit": 1.0
+      "true_fit": 0.818
     },
     {
       "abandon_rate": 0.0,
       "archetype": "average",
       "estimate": {
-        "logic": 493.1,
-        "memory": 549.4,
-        "pattern": 427.8
+        "logic": 507.7,
+        "memory": 453.9,
+        "pattern": 482.0
       },
-      "hint_rate": 0.028,
-      "oscillation": 17.7,
+      "hint_rate": 0.083,
+      "oscillation": 24.7,
       "seed": 12,
-      "success_rate": 0.778,
-      "true_fit": 0.939
+      "success_rate": 0.722,
+      "true_fit": 0.788
     },
     {
       "abandon_rate": 0.0,
       "archetype": "struggling",
       "estimate": {
-        "logic": 383.4,
-        "memory": 352.5,
-        "pattern": 392.7
+        "logic": 311.7,
+        "memory": 315.0,
+        "pattern": 338.5
       },
-      "hint_rate": 0.306,
-      "oscillation": 37.6,
+      "hint_rate": 0.417,
+      "oscillation": 39.7,
       "seed": 11,
-      "success_rate": 0.694,
-      "true_fit": 0.545
+      "success_rate": 0.583,
+      "true_fit": 0.364
     },
     {
       "abandon_rate": 0.0,
       "archetype": "struggling",
       "estimate": {
-        "logic": 389.7,
-        "memory": 367.5,
-        "pattern": 381.0
+        "logic": 329.1,
+        "memory": 431.7,
+        "pattern": 367.2
       },
-      "hint_rate": 0.361,
-      "oscillation": 21.9,
+      "hint_rate": 0.389,
+      "oscillation": 25.7,
       "seed": 12,
-      "success_rate": 0.75,
+      "success_rate": 0.694,
       "true_fit": 0.061
     },
     {
       "abandon_rate": 0.0,
       "archetype": "improving",
       "estimate": {
-        "logic": 463.4,
-        "memory": 413.8,
-        "pattern": 483.7
+        "logic": 402.7,
+        "memory": 441.9,
+        "pattern": 428.2
       },
-      "hint_rate": 0.139,
-      "oscillation": 31.8,
+      "hint_rate": 0.111,
+      "oscillation": 33.7,
       "seed": 11,
-      "success_rate": 0.806,
-      "true_fit": 0.727
+      "success_rate": 0.75,
+      "true_fit": 0.697
     },
     {
       "abandon_rate": 0.0,
       "archetype": "improving",
       "estimate": {
-        "logic": 469.6,
-        "memory": 476.9,
-        "pattern": 518.0
+        "logic": 485.1,
+        "memory": 425.6,
+        "pattern": 520.4
       },
-      "hint_rate": 0.417,
-      "oscillation": 16.5,
+      "hint_rate": 0.444,
+      "oscillation": 19.3,
       "seed": 12,
-      "success_rate": 0.833,
-      "true_fit": 0.364
+      "success_rate": 0.806,
+      "true_fit": 0.242
     },
     {
       "abandon_rate": 0.0,
       "archetype": "inconsistent",
       "estimate": {
-        "logic": 527.8,
-        "memory": 516.4,
-        "pattern": 540.7
+        "logic": 486.6,
+        "memory": 593.8,
+        "pattern": 536.7
       },
-      "hint_rate": 0.167,
-      "oscillation": 18.8,
+      "hint_rate": 0.083,
+      "oscillation": 25.9,
       "seed": 11,
-      "success_rate": 0.833,
-      "true_fit": 1.0
+      "success_rate": 0.778,
+      "true_fit": 0.939
     },
     {
       "abandon_rate": 0.0,
       "archetype": "inconsistent",
       "estimate": {
-        "logic": 493.2,
-        "memory": 552.7,
-        "pattern": 518.6
+        "logic": 529.3,
+        "memory": 506.3,
+        "pattern": 582.9
+      },
+      "hint_rate": 0.194,
+      "oscillation": 25.0,
+      "seed": 12,
+      "success_rate": 0.806,
+      "true_fit": 0.909
+    },
+    {
+      "abandon_rate": 0.0,
+      "archetype": "specialist",
+      "estimate": {
+        "logic": 469.4,
+        "memory": 526.8,
+        "pattern": 658.7
+      },
+      "hint_rate": 0.222,
+      "oscillation": 15.6,
+      "seed": 11,
+      "success_rate": 0.861,
+      "true_fit": 0.303
+    },
+    {
+      "abandon_rate": 0.0,
+      "archetype": "specialist",
+      "estimate": {
+        "logic": 484.8,
+        "memory": 523.8,
+        "pattern": 738.0
       },
       "hint_rate": 0.25,
-      "oscillation": 26.5,
-      "seed": 12,
-      "success_rate": 0.778,
-      "true_fit": 0.788
-    },
-    {
-      "abandon_rate": 0.0,
-      "archetype": "specialist",
-      "estimate": {
-        "logic": 440.9,
-        "memory": 540.0,
-        "pattern": 685.9
-      },
-      "hint_rate": 0.167,
-      "oscillation": 20.9,
-      "seed": 11,
-      "success_rate": 0.889,
-      "true_fit": 0.455
-    },
-    {
-      "abandon_rate": 0.0,
-      "archetype": "specialist",
-      "estimate": {
-        "logic": 426.7,
-        "memory": 575.4,
-        "pattern": 690.3
-      },
-      "hint_rate": 0.139,
       "oscillation": 20.2,
       "seed": 12,
       "success_rate": 0.861,
-      "true_fit": 0.394
+      "true_fit": 0.212
     }
   ],
   "fixture_version": 1,

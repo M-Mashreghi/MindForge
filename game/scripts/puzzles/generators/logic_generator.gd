@@ -5,10 +5,10 @@ extends RefCounted
 ## puzzles) prunes clues that are not needed. Difficulty comes from the
 ## constraint structure, never from obscure wording:
 ##
-##   easy    3 items, direct slot clues allowed, extra clues kept
-##   medium  4 items, at most 2 direct slot clues, light pruning
-##   hard    5 items, at most 1 direct slot clue, fully pruned
-##   expert  5-6 items, no direct slot clues, fully pruned
+##   easy    4 items, up to 2 direct slot clues, extra clues kept
+##   medium  5 items, at most 1 direct slot clue, fully pruned
+##   hard    5-6 items, no direct slot clues, fully pruned
+##   expert  6 items, no direct slot clues, fully pruned
 ##
 ## Every candidate is checked for satisfiability and uniqueness by the
 ## solver and validated like any other puzzle before it is returned.
@@ -17,13 +17,13 @@ const PuzzleData := preload("res://game/scripts/puzzles/puzzle_data.gd")
 const LogicFamily := preload("res://game/scripts/puzzles/logic_family.gd")
 const SymbolGlyph := preload("res://game/scenes/puzzles/symbol_glyph.gd")
 
-const GENERATOR_VERSION := "logic-gen-v1"
+const GENERATOR_VERSION := "logic-gen-v2"
 const MAX_TRIES := 8
 const TIERS := {
-	"easy": {"items": [3, 3], "max_at": 3, "prune": false},
-	"medium": {"items": [4, 4], "max_at": 2, "prune": true},
-	"hard": {"items": [5, 5], "max_at": 1, "prune": true},
-	"expert": {"items": [5, 6], "max_at": 0, "prune": true},
+	"easy": {"items": [4, 4], "max_at": 2, "prune": false},
+	"medium": {"items": [5, 5], "max_at": 1, "prune": true},
+	"hard": {"items": [5, 6], "max_at": 0, "prune": true},
+	"expert": {"items": [6, 6], "max_at": 0, "prune": true},
 }
 
 var _family := LogicFamily.new()

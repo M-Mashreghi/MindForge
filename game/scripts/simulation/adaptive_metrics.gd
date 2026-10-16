@@ -17,12 +17,14 @@ extends RefCounted
 ## Computed per family and overall.
 
 const LatentPlayer := preload("res://game/scripts/simulation/latent_player.gd")
+const AdaptiveConfig := preload("res://game/scripts/adaptive/adaptive_config.gd")
 
 const METRICS_VERSION := "adaptive-metrics-v1"
 const CONVERGED := 100.0
 const FIT_LOW := 0.55
 const FIT_HIGH := 0.90
-const STANDARD_BAND := [0.70, 0.80]
+## Follows the configured standard band.
+static var STANDARD_BAND: Array = AdaptiveConfig.new().target_bands[&"standard"]
 ## z for 75% success under the simulated player's curve.
 const Z75 := 0.6745
 

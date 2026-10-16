@@ -64,7 +64,7 @@ An Elo/logistic form is acceptable for v1.
 For ordinary rooms, begin with a configurable target such as:
 
 ```text
-0.70 ≤ predicted_success ≤ 0.80
+0.65 ≤ predicted_success ≤ 0.75   (adaptive-v3; 0.70-0.80 in v2)
 ```
 
 This is an initial game-design hypothesis and must be calibrated from player telemetry.
@@ -203,7 +203,7 @@ The adaptive system should be evaluated with:
 
 See `ADAPTIVE_EVALUATION.md`.
 
-## 16. Implementation (`adaptive-v2`)
+## 16. Implementation (`adaptive-v3`)
 
 All modules live in `game/scripts/adaptive/`; every tunable value is in `adaptive_config.gd`.
 
@@ -215,12 +215,16 @@ All modules live in `game/scripts/adaptive/`; every tunable value is in `adaptiv
 | Family/overall | `skill_model.gd` | family full K, overall 0.35 K, other families untouched; before/after records |
 | Confidence-aware K | `skill_model.gd` | K 90 -> 14 as confidence rises (confidence gain 0.05, so new profiles keep a high K longer); x(0.85 + 0.15 x puzzle confidence) |
 | Prediction | `success_predictor.gd` | same logistic, clamped 0.01..0.99, exact inverse |
-| Target bands | `difficulty_selector.gd` | recovery 0.85-0.93, standard 0.70-0.80, challenge 0.55-0.68, boss 0.45-0.60; targets smoothed (60%, max 80 per room); fallbacks `in_band` / `nearest_outside_band` / `no_content` |
+| Target bands | `difficulty_selector.gd` | recovery 0.85-0.93, standard 0.65-0.75, challenge 0.52-0.64, boss 0.42-0.56; targets smoothed (60%, max 65 per room); fallbacks `in_band` / `nearest_outside_band` / `no_content` |
 | Recovery | `recovery_mode.gd` | enter: 3 fails in 4, 2 hint exhaustions, 2 abandons; exit: 3 straight successes after >= 3 rooms |
-| Cold start | `calibration_session.gd` | one gentle warm-up per family (<= 350); skippable from the menu |
+| Cold start | `calibration_session.gd` | one warm-up per family (420); skippable from the menu |
 | Scheduling | `adaptive_scheduler.gd` | fit + novelty + variety + coverage + weakness guardrail + recovery familiarity + seeded jitter, with reasons |
 
 `PlayerProfile` (autoload) applies every validated puzzle result and owns the scheduler state. Set `mindforge/debug/adaptive_log` to `true` in Project Settings to print each scheduling decision with its reasons.
+
+### adaptive-v2 -> adaptive-v3 (playtest: "puzzles are too easy")
+
+The first playtest found the game too easy: at a rating of about 550 the selector served puzzles around 400 to 520 and every one was solved on the first try. v3 makes the game harder in two ways. The target bands move down by about five points (standard 0.65-0.75, challenge 0.52-0.64, boss 0.42-0.56) and the warm-up rooms start at 420 instead of 350; the recovery band is unchanged so struggling players keep the same safety net. Separately, every procedural generator was bumped to v2 with harder content at each tier (longer and less clustered memory paths on bigger grids, more logic items with fewer direct clues, larger and mixed-sign pattern steps, longer symbol cycles, fewer visible terms; tiers are listed at the top of each file in `game/scripts/puzzles/generators/`). In simulation, overall challenge fit stays well above the static ramp (47% against 23%), strong players get fewer too-easy rooms (36% against 65% in v2), and struggling players see more too-hard rooms (58% against 41%), which recovery mode absorbs. The largest target step per room drops from 80 to 65 to keep oscillation in check. The balance fixture was regenerated for v3.
 
 ### adaptive-v1 -> adaptive-v2 (simulation-driven re-balance, Task 7.5)
 

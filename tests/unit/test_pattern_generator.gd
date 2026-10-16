@@ -45,7 +45,7 @@ func test_difficulty_features_scale() -> void:
 		rules["easy"][gen.generate(seed_value, 150.0)["puzzle"].prompt["rule"]] = true
 		rules["expert"][gen.generate(seed_value, 900.0)["puzzle"].prompt["rule"]] = true
 	check(rules["easy"].keys().all(func(r): return r in ["arithmetic", "symbol_cycle"]), "easy uses simple rules")
-	check(rules["expert"].keys().all(func(r): return r in ["recurrence", "symbol_cycle"]), "expert uses deep rules")
+	check(rules["expert"].keys().all(func(r): return r in ["recurrence", "alternating", "symbol_cycle"]), "expert uses deep rules")
 	check_eq(PatternGenerator.tier_for(150), "easy", "tier")
 	check_eq(PatternGenerator.tier_for(900), "expert", "tier")
 

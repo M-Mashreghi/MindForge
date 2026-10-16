@@ -29,9 +29,9 @@ func test_difficulty_features() -> void:
 	for seed_value in range(1, 16):
 		var easy = gen.generate(seed_value, 150.0)["puzzle"]
 		var expert = gen.generate(seed_value, 900.0)["puzzle"]
-		check_eq((easy.prompt["target"] as Array).size(), 3, "easy length 3")
-		check((expert.prompt["target"] as Array).size() >= 7, "expert length 7+")
-		check_eq(expert.prompt["grid"], {"cols": 5, "rows": 4}, "expert grid")
+		check_eq((easy.prompt["target"] as Array).size(), 4, "easy length 4")
+		check((expert.prompt["target"] as Array).size() >= 8, "expert length 8+")
+		check_eq(expert.prompt["grid"], {"cols": 5, "rows": 5}, "expert grid")
 		check_eq(expert.prompt["scoring"]["rule"], "threshold", "expert threshold recall")
 
 

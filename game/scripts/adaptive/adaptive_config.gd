@@ -3,7 +3,7 @@ extends RefCounted
 ## number so tests and balance experiments can override them; the defaults
 ## are design hypotheses to calibrate from telemetry.
 
-const ALGORITHM_VERSION := "adaptive-v2"
+const ALGORITHM_VERSION := "adaptive-v3"
 
 ## Rating scale (docs/ADAPTIVE_DIFFICULTY.md section 2).
 var skill_min: float = 0.0
@@ -42,12 +42,14 @@ var max_delta_per_event: float = 45.0
 var overall_k_weight: float = 0.35
 
 ## Target predicted-success bands per room type (Task 3.6), [low, high].
-## Standard rooms aim for roughly 70-80% success (a hypothesis to calibrate).
+## Standard rooms aim for roughly 65-75% success (adaptive-v3: playtesting
+## found the 70-80% band of adaptive-v2 too easy; harder generator content
+## does the rest).
 var target_bands: Dictionary = {
 	&"recovery": [0.85, 0.93],
-	&"standard": [0.70, 0.80],
-	&"challenge": [0.55, 0.68],
-	&"boss": [0.45, 0.60],
+	&"standard": [0.65, 0.75],
+	&"challenge": [0.52, 0.64],
+	&"boss": [0.42, 0.56],
 }
 
 ## Confidence-aware updates (Task 3.7). K shrinks from k_max (no confidence)
@@ -63,7 +65,7 @@ var confidence_drop: float = 0.15
 
 ## Smoothing of consecutive target difficulties per family (Task 3.7).
 var target_smoothing: float = 0.6
-var max_target_step: float = 80.0
+var max_target_step: float = 65.0
 
 ## Recovery mode with hysteresis (Task 3.8). Enter on repeated failure,
 ## repeated hint exhaustion or repeated abandonment; leave only after a
@@ -78,7 +80,7 @@ var recovery_min_rooms: int = 3
 ## Cold-start calibration (Task 3.9): one gentle warm-up room per family,
 ## aimed below the neutral prior so it feels like a warm-up, not an exam.
 var calibration_families: Array = [&"pattern", &"logic", &"memory"]
-var calibration_target_difficulty: float = 350.0
+var calibration_target_difficulty: float = 420.0
 
 ## Scheduler weights (Task 3.10). The total score is
 ## fit + novelty + variety + coverage + weakness + familiarity + jitter.
