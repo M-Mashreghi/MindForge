@@ -1,0 +1,20 @@
+{
+  "logic_order_easy_01": "26d211860db7007ae95ed9682ecf84712d65e6de025d209603786cc7b9c5517a",
+  "logic_order_easy_02": "3ac1fbbe5abbd24486194fae7e76f9a9e2d5eb78f4593ecd5505327f345dafdf",
+  "logic_order_hard_01": "10719ed04c314b40fb964003ba75a0f87b2f6f1b8dd8ddc3d8f46d85ee763065",
+  "logic_order_hard_02": "ac1c4dc9e8e6e8cce2799cb5ab6861a06f904d067ffc46f27b42f2ddfc46f357",
+  "logic_order_medium_01": "2dd08ceef7599c72bb22a6331cc8d66f86df1ed1567beca1b01c505f4e33da23",
+  "logic_order_medium_02": "0f81c0c514fefb492ca52bb8c271be8e49352aafed0a3c3eb68c780b5b704e29",
+  "memory_pos_easy_01": "34b344ca6494c38478772b10328134c3282b95f27dc6ec0a6402709ac29d66a1",
+  "memory_pos_hard_01": "cabb48fe4e16bf53dbc33afa1976496f53f19f3d5d93337a96e34151255aa658",
+  "memory_pos_medium_01": "7ac0ee5e34bb5673bd05e30a23f5ef182f5a4fbb95676a0884a5e3f70c93d06d",
+  "memory_seq_easy_01": "e806566645ab8e2a6ccbb567ce7f92ba794b83229d54a2b8a22c292f9226d84f",
+  "memory_seq_hard_01": "d044e05e1ec26d0b2fa11d5a7168058d4108e5442a79923cf11e1d23fa002bde",
+  "memory_seq_medium_01": "835c51a42c9d190bcbc4fbde06f431f317a3195716190905e855f2beed388950",
+  "pattern_alt_medium_01": "6b9e30a96ad4123985f5c96fccf9c6b435455e83d362763095244e9a5f4ab6a5",
+  "pattern_arith_easy_01": "e5c7a714b5e6094cef3b593b2dfa24affc6638cfe6388fbad09e0f5128d8ce56",
+  "pattern_cycle_easy_01": "097f28c1618ff23ef4703fa48bf07d960ac6c067a31d18e06fd6325e3cb44dd3",
+  "pattern_cycle_hard_01": "6bedf61f3207e256a7e90ac857bbdb4872865045ae1ab1f04280054219c132ae",
+  "pattern_geo_medium_01": "86ab7bc55420bd06aa066c8bf366283d6ecb861bce1864110267ea03f5c65bd4",
+  "pattern_rec_hard_01": "f926831219c8635c3fab584205f1bffe136e1d37ed8b3943ef877866bb4d7bed"
+}

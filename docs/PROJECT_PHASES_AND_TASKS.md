@@ -643,7 +643,7 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 
 ### Task 2.10: Local Puzzle Bank, Schema Validation and Fingerprints
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 2 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -660,13 +660,19 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(2.10): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(2.10): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Local content bank `game/resources/puzzle_bank/` with valid fixtures for all three families (pattern, logic, memory: 6 each, easy/medium/hard).
+- `PuzzleCatalog` now rejects duplicate ids and exact duplicates (same mechanics fingerprint, even with new id, wording or choice order), keeps a fingerprint index, and `pick_for_room()` skips fingerprints already used in the run when possible (anti-repetition). The dungeon passes the run's used fingerprints.
+- Repository tool `tools/validate_puzzles.gd` / `tools/validate_puzzles.sh`: validates every bundled puzzle, requires every registered family to have content, rejects duplicates, and compares fingerprints with the committed snapshot `tests/fixtures/bank_fingerprints.json` (`--write-fingerprints` refreshes it after intentional changes). The pre-commit script runs it when `GODOT` is set.
+- Validation: `tools/run_tests.sh` — 112 passed, 0 failed (adds `tests/unit/test_puzzle_bank.gd`: coverage, stable fingerprints, duplicate rejection, anti-repetition, deterministic picks); `tools/validate_puzzles.sh` — 18 valid, 0 rejected; `tools/check_boot.sh` OK.
 
 ---
 

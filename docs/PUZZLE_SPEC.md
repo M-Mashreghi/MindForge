@@ -127,6 +127,8 @@ Use it to:
 - reduce near-repeat scheduling,
 - identify AI content that restates an existing local puzzle.
 
+Implementation: the local bank lives in `game/resources/puzzle_bank/<family>.json` (`{"puzzles": [...]}`). `PuzzleCatalog` loads it and rejects invalid entries, duplicate ids and duplicate fingerprints; room selection skips fingerprints already used in the run when possible. `tools/validate_puzzles.sh` checks the whole bank and compares fingerprints with `tests/fixtures/bank_fingerprints.json`, so an accidental change to mechanics or fingerprint code is caught.
+
 ## Difficulty
 
 `target_difficulty` is the difficulty requested by the scheduler.

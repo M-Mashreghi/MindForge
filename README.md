@@ -110,6 +110,13 @@ Headless test suite (`tests/unit`, `tests/integration`):
 GODOT=/path/to/godot tools/run_tests.sh
 ```
 
+Puzzle bank check (schema, family validators, duplicates, fingerprint snapshot):
+
+```bash
+GODOT=/path/to/godot tools/validate_puzzles.sh
+GODOT=/path/to/godot tools/validate_puzzles.sh --write-fingerprints   # after intentional content changes
+```
+
 ## Controls (Phase 1 skeleton)
 
 | Action | Keyboard | Controller |

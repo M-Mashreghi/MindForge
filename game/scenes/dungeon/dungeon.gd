@@ -143,7 +143,8 @@ func _on_player_interact() -> void:
 ## Deterministic per run: picked with the run RNG the first time it is needed.
 func puzzle_for_current_room() -> RefCounted:
 	if not _room_puzzles.has(current_index):
-		_room_puzzles[current_index] = catalog.pick_for_room(current_room.room_def, GameState.rng)
+		var used: Array = _room_puzzles.values().filter(func(p): return p != null).map(func(p): return p.fingerprint)
+		_room_puzzles[current_index] = catalog.pick_for_room(current_room.room_def, GameState.rng, used)
 	return _room_puzzles[current_index]
 
 

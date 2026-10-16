@@ -1,7 +1,8 @@
 extends RefCounted
 ## Loads bundled puzzle JSON from the local bank and keeps only puzzles that
-## pass schema + family validation. Rooms pick from it deterministically
-## with the run RNG.
+## pass schema + family validation and are not duplicates (same id, or same
+## mechanics fingerprint). Rooms pick from it deterministically with the run
+## RNG, avoiding fingerprints already used in the run when possible.
 
 const PuzzleData := preload("res://game/scripts/puzzles/puzzle_data.gd")
 
@@ -11,6 +12,9 @@ const BANK_DIR := "res://game/resources/puzzle_bank"
 var puzzles: Array = []
 ## [{"file", "index", "id", "errors"}] for every rejected entry.
 var rejected: Array = []
+## fingerprint -> PuzzleData, for duplicate detection and anti-repetition.
+var by_fingerprint: Dictionary = {}
+var _ids: Dictionary = {}
 
 
 static func load_bank(dir_path: String = BANK_DIR) -> RefCounted:
@@ -24,7 +28,8 @@ static func load_bank(dir_path: String = BANK_DIR) -> RefCounted:
 
 func add_file(path: String) -> void:
 	var text := FileAccess.get_file_as_string(path)
-	var parsed: Variant = JSON.parse_string(text)
+	var json := JSON.new()
+	var parsed: Variant = json.data if json.parse(text) == OK else null
 	if typeof(parsed) != TYPE_DICTIONARY or typeof(parsed.get("puzzles")) != TYPE_ARRAY:
 		rejected.append({"file": path, "index": -1, "id": "", "errors": ["file must be {\"puzzles\": [...]}"]})
 		return
@@ -34,11 +39,20 @@ func add_file(path: String) -> void:
 
 func add_entry(raw: Variant, file: String = "", index: int = -1) -> bool:
 	var result := PuzzleData.parse(raw)
-	if result["puzzle"] == null:
-		var id: String = str(raw.get("id", "")) if typeof(raw) == TYPE_DICTIONARY else ""
-		rejected.append({"file": file, "index": index, "id": id, "errors": result["errors"]})
+	var id: String = str(raw.get("id", "")) if typeof(raw) == TYPE_DICTIONARY else ""
+	var errors: PackedStringArray = result["errors"]
+	var puzzle: RefCounted = result["puzzle"]
+	if puzzle != null:
+		if _ids.has(puzzle.id):
+			errors.append("duplicate id '%s'" % puzzle.id)
+		elif by_fingerprint.has(puzzle.fingerprint):
+			errors.append("duplicate of '%s' (same fingerprint)" % by_fingerprint[puzzle.fingerprint].id)
+	if not errors.is_empty():
+		rejected.append({"file": file, "index": index, "id": id, "errors": errors})
 		return false
-	puzzles.append(result["puzzle"])
+	puzzles.append(puzzle)
+	_ids[puzzle.id] = true
+	by_fingerprint[puzzle.fingerprint] = puzzle
 	return true
 
 
@@ -47,9 +61,21 @@ func by_family(family: StringName) -> Array:
 
 
 ## Picks a puzzle for a room: its requested family when set, otherwise any.
-## Returns null when nothing fits (callers fall back gracefully).
-func pick_for_room(room_def: Resource, rng: RandomNumberGenerator) -> RefCounted:
+## Puzzles whose fingerprint is in `avoid` are skipped unless nothing else
+## fits. Returns null when nothing fits (callers fall back gracefully).
+func pick_for_room(room_def: Resource, rng: RandomNumberGenerator, avoid: Array = []) -> RefCounted:
 	var candidates := by_family(room_def.puzzle_family) if room_def.puzzle_family != &"" else puzzles.duplicate()
 	if candidates.is_empty():
 		return null
+	var fresh := candidates.filter(func(p): return not p.fingerprint in avoid)
+	if not fresh.is_empty():
+		candidates = fresh
 	return candidates[rng.randi_range(0, candidates.size() - 1)]
+
+
+## Counts per family, for tools and diagnostics.
+func family_counts() -> Dictionary:
+	var counts := {}
+	for p in puzzles:
+		counts[p.family] = counts.get(p.family, 0) + 1
+	return counts

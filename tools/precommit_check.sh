@@ -47,6 +47,8 @@ if [ -n "${GODOT:-}" ]; then
 	bash "$ROOT/tools/check_boot.sh" || FAIL=1
 	echo "== headless tests"
 	bash "$ROOT/tools/run_tests.sh" || FAIL=1
+	echo "== puzzle bank"
+	bash "$ROOT/tools/validate_puzzles.sh" || FAIL=1
 fi
 
 if [ $FAIL -ne 0 ]; then
