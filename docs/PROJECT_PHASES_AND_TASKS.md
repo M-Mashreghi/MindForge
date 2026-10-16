@@ -1757,7 +1757,7 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 
 ### Task 6.5: Solver-First AI Logic Puzzle Generation
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 6 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1774,13 +1774,19 @@ Advance Phase 6 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(6.5): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(6.5): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- AI logic proposals (items + bounded clues of the supported types) are built solver-first in `AiPuzzleBuilder.build_logic()`: structure is checked first (known symbols, unique items, supported clue types, in-range positions, at most 10 clues), then the exhaustive logic solver computes the canonical arrangement locally. Unsatisfiable (`unsatisfiable`) or multi-solution (`not_unique`) clue sets are rejected, as is a `declared_answer` that differs from the solver. Unknown mechanics are rejected; nothing from a proposal is executed.
+- Hints for AI logic puzzles come from the local hint ladder (one slot revealed at most).
+- `tools/ai_smoke_test.gd`: end-to-end check against a running proxy (request -> strict parse -> solver-first build -> content pipeline). Verified with the mock provider over real HTTP: one pattern and one logic proposal accepted. Headless tools never touch the real save file.
+- Validation: `tools/run_tests.sh` — 296 passed, 0 failed (adds `tests/unit/test_ai_logic_builder.gd`); `tools/ai_smoke_test.gd` OK against `python -m backend.app.server`; proxy tests 7 passed; `tools/check_boot.sh` OK.
 
 ---
 
