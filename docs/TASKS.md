@@ -93,7 +93,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 7.5** — Adaptive Convergence, Oscillation and Recovery Metrics — Commit: `task(7.5)` — GitHub: `pushed to origin/main`
 - [x] **Task 7.6** — Empirical Puzzle Difficulty Calibration with Confidence — Commit: `task(7.6)` — GitHub: `pushed to origin/main`
 - [x] **Task 7.7** — Puzzle Completion, Hint and Abandonment Analytics — Commit: `task(7.7)` — GitHub: `pushed to origin/main`
-- [ ] **Task 7.8** — Adaptive-vs-Static Difficulty Comparison Experiment — Commit: `—` — GitHub: `—`
+- [x] **Task 7.8** — Adaptive-vs-Static Difficulty Comparison Experiment — Commit: `task(7.8)` — GitHub: `pushed to origin/main`
 - [ ] **Task 7.9** — Balance Regression Fixtures — Commit: `—` — GitHub: `—`
 
 ## Phase 8 — Polish, Accessibility, CI/CD & Release

@@ -2253,7 +2253,7 @@ Summaries of success, hints, attempts, completion time and abandonment per famil
 
 ### Task 7.8: Adaptive-vs-Static Difficulty Comparison Experiment
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 7 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2270,13 +2270,16 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(7.8): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(7.8): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+Adaptive and static schedules played by the same simulated players and seeds; reproducible report in docs/reports/adaptive_vs_static.md. Adaptive: 53% in-range rooms vs 23%, 10% too hard vs 49%. Open issue: strong players under-challenged.
 
 ---
 
