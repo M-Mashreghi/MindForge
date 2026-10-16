@@ -38,3 +38,12 @@ var max_delta_per_event: float = 30.0
 ## Family vs overall updates (Task 3.4): the puzzle's family moves with the
 ## full K, overall moves conservatively with this fraction of it.
 var overall_k_weight: float = 0.35
+
+## Target predicted-success bands per room type (Task 3.6), [low, high].
+## Standard rooms aim for roughly 70-80% success (a hypothesis to calibrate).
+var target_bands: Dictionary = {
+	&"recovery": [0.85, 0.93],
+	&"standard": [0.70, 0.80],
+	&"challenge": [0.55, 0.68],
+	&"boss": [0.45, 0.60],
+}

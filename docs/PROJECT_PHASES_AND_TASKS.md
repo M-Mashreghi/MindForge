@@ -856,7 +856,7 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 
 ### Task 3.6: Target-Success Band and Difficulty Selector
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 3 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -873,13 +873,20 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(3.6): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(3.6): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `DifficultySelector` (`game/scripts/adaptive/difficulty_selector.gd`): picks the target from a configurable predicted-success band per room type (`adaptive_config.gd`: recovery 0.85-0.93, standard 0.70-0.80, challenge 0.55-0.68, boss 0.45-0.60). Target difficulty = the inverse prediction at the band midpoint, with the band edges giving a difficulty range, so the gap to skill follows the success model rather than a fixed offset.
+- Candidates are ranked deterministically: in-band first, then by distance from the target success, then by difficulty distance, then id.
+- Documented fallbacks via `reason`: `in_band`, `nearest_outside_band` (no in-band content; closest first) and `no_content`. The target difficulty is clamped to the available content range (`content_clamped`). Room types map from `RoomDef.RoomType`.
+- Integration into room selection happens with the scheduler in Task 3.10.
+- Validation: `tools/run_tests.sh` — 155 passed, 0 failed (adds `tests/unit/test_difficulty_selector.gd`); `tools/check_boot.sh` OK.
 
 ---
 
