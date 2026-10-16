@@ -13,5 +13,5 @@ puzzle_anchor = Vector2(0.6, 0.35)
 allows_retreat = true
 has_entry_door = true
 has_exit_door = true
-puzzle_family = &"logic"
+puzzle_family = &""
 floor_color = Color(0.14, 0.17, 0.2, 1)

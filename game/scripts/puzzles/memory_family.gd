@@ -73,6 +73,11 @@ func mechanics(puzzle: Dictionary) -> Dictionary:
 		"scoring": prompt.get("scoring", {"rule": "exact"})}
 
 
+## Short mechanic name for variety/familiarity scheduling (e.g. "memory:sequence").
+func mechanic_label(puzzle: Dictionary) -> String:
+	return "memory:%s" % puzzle["prompt"]["mode"]
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	var cells: Array = puzzle["prompt"]["target"]
 	return PackedStringArray([", ".join(cells.map(func(c): return str(int(c) + 1)))])

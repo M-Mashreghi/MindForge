@@ -84,6 +84,11 @@ func mechanics(puzzle: Dictionary) -> Dictionary:
 	return {"rule": prompt["rule"], "params": prompt["params"], "shown": (prompt["sequence"] as Array).size()}
 
 
+## Short mechanic name for variety/familiarity scheduling (e.g. "pattern:geometric").
+func mechanic_label(puzzle: Dictionary) -> String:
+	return "pattern:%s" % puzzle["prompt"]["rule"]
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	var solved: Variant = solve(puzzle["prompt"])
 	return PackedStringArray([str(solved["answer"])]) if solved else PackedStringArray()

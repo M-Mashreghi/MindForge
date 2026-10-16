@@ -79,6 +79,11 @@ func mechanics(puzzle: Dictionary) -> Dictionary:
 	return {"template": prompt["template"], "items": items, "clues": clues}
 
 
+## Short mechanic name for variety/familiarity scheduling (template + size).
+func mechanic_label(puzzle: Dictionary) -> String:
+	return "logic:%s:%d" % [puzzle["prompt"]["template"], (puzzle["prompt"]["items"] as Array).size()]
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	var order: Array = puzzle["solution"].get("order", [])
 	return PackedStringArray([", ".join(order.map(func(i): return str(i).capitalize()))])

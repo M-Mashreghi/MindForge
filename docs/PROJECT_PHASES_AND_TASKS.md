@@ -1000,7 +1000,7 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 
 ### Task 3.10: Adaptive Scheduler Policy: Fit, Variety and Weakness Guardrails
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 3 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1017,13 +1017,20 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(3.10): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(3.10): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `AdaptiveScheduler` (`game/scripts/adaptive/adaptive_scheduler.gd`): for each family it runs the difficulty selector (with the room's band, recovery override and smoothed previous target) and scores every candidate: fit to the target success + novelty (puzzles seen in the last 6 rooms penalised) + variety (same mechanic / same family as the last room penalised) + coverage (family not seen in the last 3 rooms) + weakness guardrail (small bonus for the weakest family, a penalty once it was drilled twice in a row) + recovery familiarity (solved mechanics) + small seeded jitter. Deterministic for a seed.
+- Families now provide `mechanic_label()` (e.g. `pattern:geometric`); `PuzzleData.mechanic` is in the result identity. Fixture rooms no longer force a family, so the scheduler (or the warm-up plan) decides.
+- `PlayerProfile.schedule()` drives room selection after the warm-up, keeps run history, smoothed targets and solved mechanics, and exposes `last_schedule` with components and reasons; `AdaptiveScheduler.explain()` gives a one-line summary, printed when the `mindforge/debug/adaptive_log` project setting is on.
+- `docs/ADAPTIVE_DIFFICULTY.md` gains an implementation summary of all Phase 3 modules and parameters.
+- Validation: `tools/run_tests.sh` — 186 passed, 0 failed (adds `tests/unit/test_adaptive_scheduler.gd`: reasons/components, no back-to-back repeats, family rotation and coverage, weak family practised but not drilled, no single puzzle dominating, recovery familiarity, requested family, determinism, dungeon integration); `tools/check_boot.sh` OK.
 
 ---
 

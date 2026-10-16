@@ -11,6 +11,10 @@ config/version="0.1.0"
 run/main_scene="res://game/scenes/main/main.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 
+[mindforge]
+
+debug/adaptive_log=false
+
 [autoload]
 
 EventBus="*res://game/autoload/event_bus.gd"

@@ -144,15 +144,20 @@ func _on_player_interact() -> void:
 	}})
 
 
-## Deterministic per run: picked with the run RNG the first time it is needed.
+## Warm-up rooms come from the calibration plan; every other room asks the
+## adaptive scheduler. Deterministic per run (run RNG), chosen once per room.
 func puzzle_for_current_room() -> RefCounted:
 	if not _room_puzzles.has(current_index):
-		var used: Array = _room_puzzles.values().filter(func(p): return p != null).map(func(p): return p.fingerprint)
 		var warmup_family: StringName = PlayerProfile.calibration.next_family()
+		var puzzle: RefCounted = null
 		if warmup_family != &"":
-			_room_puzzles[current_index] = PlayerProfile.calibration.pick(catalog.by_family(warmup_family), used)
+			var used: Array = PlayerProfile.schedule_history.map(func(h): return h["fingerprint"])
+			puzzle = PlayerProfile.calibration.pick(catalog.by_family(warmup_family), used)
+			if puzzle:
+				PlayerProfile.note_presented(puzzle)
 		else:
-			_room_puzzles[current_index] = catalog.pick_for_room(current_room.room_def, GameState.rng, used)
+			puzzle = PlayerProfile.schedule(current_room.room_def, catalog.puzzles, GameState.rng)
+		_room_puzzles[current_index] = puzzle
 	return _room_puzzles[current_index]
 
 

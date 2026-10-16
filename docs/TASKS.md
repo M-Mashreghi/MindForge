@@ -46,7 +46,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 3.7** — Confidence-Aware Updates and Anti-Oscillation — Commit: `task(3.7)` — GitHub: `pushed to origin/main`
 - [x] **Task 3.8** — Failure Recovery Mode with Hysteresis — Commit: `task(3.8)` — GitHub: `pushed to origin/main`
 - [x] **Task 3.9** — Cold-Start Calibration Session — Commit: `task(3.9)` — GitHub: `pushed to origin/main`
-- [ ] **Task 3.10** — Adaptive Scheduler Policy: Fit, Variety and Weakness Guardrails — Commit: `—` — GitHub: `—`
+- [x] **Task 3.10** — Adaptive Scheduler Policy: Fit, Variety and Weakness Guardrails — Commit: `task(3.10)` — GitHub: `pushed to origin/main`
 
 ## Phase 4 — Scoring, Progression, Save & Player Feedback
 

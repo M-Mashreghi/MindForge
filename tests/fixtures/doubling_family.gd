@@ -26,5 +26,9 @@ func mechanics(puzzle: Dictionary) -> Dictionary:
 	return {"value": puzzle["prompt"]["value"]}
 
 
+func mechanic_label(_puzzle: Dictionary) -> String:
+	return "doubling"
+
+
 func answer_tokens(puzzle: Dictionary) -> PackedStringArray:
 	return PackedStringArray([str(solve(puzzle["prompt"])["answer"])])

@@ -79,3 +79,17 @@ var recovery_min_rooms: int = 3
 ## aimed below the neutral prior so it feels like a warm-up, not an exam.
 var calibration_families: Array = [&"pattern", &"logic", &"memory"]
 var calibration_target_difficulty: float = 350.0
+
+## Scheduler weights (Task 3.10). The total score is
+## fit + novelty + variety + coverage + weakness + familiarity + jitter.
+var schedule_fit_tolerance: float = 0.3
+var schedule_recent_window: int = 6
+var schedule_repeat_penalty: float = 1.0
+var schedule_same_mechanic_penalty: float = 0.25
+var schedule_same_family_penalty: float = 0.2
+var schedule_coverage_bonus: float = 0.15
+var schedule_weakness_bonus: float = 0.1
+var schedule_weakness_drill_penalty: float = 0.3
+var schedule_familiar_bonus: float = 0.2
+## Small seeded noise so the numerically closest puzzle is not always chosen.
+var schedule_jitter: float = 0.05

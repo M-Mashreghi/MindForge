@@ -9,6 +9,7 @@ extends RefCounted
 ##   check_response(puzzle: Dictionary, response: Dictionary) -> Dictionary  # {correct, ...}
 ##   mechanics(puzzle: Dictionary) -> Dictionary         # fingerprint input
 ##   answer_tokens(puzzle: Dictionary) -> PackedStringArray  # for hint-leak checks
+##   mechanic_label(puzzle: Dictionary) -> String        # e.g. "pattern:geometric", for scheduling
 
 static var _families: Dictionary = {}
 static var _builtins_loaded := false

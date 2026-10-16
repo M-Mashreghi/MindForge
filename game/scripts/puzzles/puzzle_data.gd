@@ -26,6 +26,8 @@ var provenance: Dictionary
 var presentation: Dictionary
 var max_attempts: int
 var fingerprint: String
+## Family-provided mechanic name (variety and familiarity scheduling).
+var mechanic: String
 ## Normalized copy of the source data (safe to hand to family validators).
 var data: Dictionary
 
@@ -73,6 +75,7 @@ func identity() -> Dictionary:
 		"calibrated_difficulty": calibrated_difficulty,
 		"difficulty_confidence": difficulty_confidence,
 		"time_band_seconds": time_band_seconds,
+		"mechanic": mechanic,
 	}
 
 
@@ -96,3 +99,4 @@ func _fill(d: Dictionary, computed_fingerprint: String) -> void:
 	presentation = d.get("presentation", {})
 	max_attempts = int(d.get("max_attempts", DEFAULT_MAX_ATTEMPTS))
 	fingerprint = computed_fingerprint
+	mechanic = PuzzleRegistry.validator(family).mechanic_label(d)
