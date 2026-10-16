@@ -17,7 +17,7 @@ A completed task should record its commit hash and push status.
 - [x] **Task 1.2** — GitHub Remote & Per-Task Commit Workflow Baseline — Commit: `task(1.2)` — GitHub: `pushed to origin/main`
 - [x] **Task 1.3** — Autoload Game State and Event Bus — Commit: `task(1.3)` — GitHub: `pushed to origin/main`
 - [x] **Task 1.4** — Main Menu, New Run and Exit Flow — Commit: `task(1.4)` — GitHub: `pushed to origin/main`
-- [ ] **Task 1.5** — Top-Down Player Controller — Commit: `—` — GitHub: `—`
+- [x] **Task 1.5** — Top-Down Player Controller — Commit: `task(1.5)` — GitHub: `pushed to origin/main`
 - [ ] **Task 1.6** — Reusable Dungeon Room Scene — Commit: `—` — GitHub: `—`
 - [ ] **Task 1.7** — Room Transition and Door State Flow — Commit: `—` — GitHub: `—`
 - [ ] **Task 1.8** — HUD Shell: Score, XP, Streak and Room — Commit: `—` — GitHub: `—`

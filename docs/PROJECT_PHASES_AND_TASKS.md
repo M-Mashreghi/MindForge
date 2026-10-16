@@ -172,7 +172,7 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 
 ### Task 1.5: Top-Down Player Controller
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 1 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -189,13 +189,20 @@ Advance Phase 1 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(1.5): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(1.5): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- Input actions in `project.godot`: `move_left/right/up/down` (WASD, arrow keys, d-pad, left stick) and `interact` (E, Space, Enter, joypad A). Rebindable in Project Settings > Input Map.
+- Movement math is a pure `RefCounted` (`game/scripts/dungeon/top_down_motion.gd`): acceleration, friction, max speed, diagonal input clamped to length 1.
+- Player scene `game/scenes/dungeon/player.tscn`: `CharacterBody2D` (layer `player`, collides with `world`) using `move_and_slide()`. Emits `interact_requested`; `input_enabled` freezes it for transitions. No room/door/puzzle knowledge.
+- Placeholder art drawn in code (circle + facing marker). Player added to the dungeon shell so it is playable.
+- Validation: `tools/run_tests.sh` — 20 passed, 0 failed (adds `tests/unit/test_player_motion.gd`: acceleration, diagonal cap, friction, determinism, keyboard bindings, wall collision, disabled input); `tools/check_boot.sh` OK.
 
 ---
 
