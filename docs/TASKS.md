@@ -38,7 +38,7 @@ A completed task should record its commit hash and push status.
 ## Phase 3 — Player Modeling & Adaptive Difficulty
 
 - [x] **Task 3.1** — Player Skill Profile with Confidence and Observation Counts — Commit: `task(3.1)` — GitHub: `pushed to origin/main`
-- [ ] **Task 3.2** — Performance Event Normalization with Accessibility-Safe Timing — Commit: `—` — GitHub: `—`
+- [x] **Task 3.2** — Performance Event Normalization with Accessibility-Safe Timing — Commit: `task(3.2)` — GitHub: `pushed to origin/main`
 - [ ] **Task 3.3** — Elo-Like Base Skill Update Engine — Commit: `—` — GitHub: `—`
 - [ ] **Task 3.4** — Family-Specific and Overall Skill Updates — Commit: `—` — GitHub: `—`
 - [ ] **Task 3.5** — Predicted-Success Model — Commit: `—` — GitHub: `—`

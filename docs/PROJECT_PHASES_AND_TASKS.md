@@ -717,7 +717,7 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 
 ### Task 3.2: Performance Event Normalization with Accessibility-Safe Timing
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 3 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -734,13 +734,20 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(3.2): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(3.2): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `PerformanceEvent.normalize()` (`game/scripts/adaptive/performance_event.gd`) maps a PuzzleHost result to a deterministic `observed_score` in [0, 1] plus its components (attempt/hint/slow penalties, partial credit, timing used + reason, versions).
+- Correctness dominates: a correct answer never scores below 0.6; an incorrect one never above 0.2 (partial credit from validator `matched/total`); abandoned scores 0. Secondary penalties are capped: attempts 0.1 each up to 0.2, hints 0.4 x hint cost up to 0.25, slowness up to 0.1.
+- Accessibility-safe timing: ignored when a timing accommodation is active, when the puzzle has no time band, or when the response is outside sensible bounds (< 0.5 s or > 4x the band's upper bound). Inside the band speed is neutral, so fast play is never rewarded over correctness.
+- Parameters live in `adaptive_config.gd`.
+- Validation: `tools/run_tests.sh` — 128 passed, 0 failed (adds `tests/unit/test_performance_event.gd`); `tools/check_boot.sh` OK.
 
 ---
 

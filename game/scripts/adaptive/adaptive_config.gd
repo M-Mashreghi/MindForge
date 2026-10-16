@@ -10,3 +10,20 @@ var skill_min: float = 0.0
 var skill_max: float = 1000.0
 var skill_prior: float = 500.0
 var confidence_max: float = 0.95
+
+## Performance normalization (Task 3.2). A correct answer scores at least
+## `correct_floor`; an incorrect one at most `incorrect_partial_max`, so
+## correctness always dominates every secondary signal.
+var correct_floor: float = 0.6
+var incorrect_partial_max: float = 0.2
+var attempt_penalty: float = 0.1
+var attempt_penalty_max: float = 0.2
+## Fraction of the puzzle's total hint cost subtracted (hint costs are 0..1 each).
+var hint_penalty_scale: float = 0.4
+var hint_penalty_max: float = 0.25
+## Timing only counts when it is meaningful and no accommodation is active.
+var slow_penalty_max: float = 0.1
+## Responses slower than this multiple of the band's upper bound (or faster
+## than `min_response_seconds`) are treated as unreliable and ignored.
+var timing_ignore_factor: float = 4.0
+var min_response_seconds: float = 0.5
