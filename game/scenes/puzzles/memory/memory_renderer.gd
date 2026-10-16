@@ -9,6 +9,7 @@ extends "res://game/scenes/puzzles/puzzle_renderer.gd"
 
 const MemoryTiming := preload("res://game/scripts/puzzles/memory_timing.gd")
 const SymbolGlyph := preload("res://game/scenes/puzzles/symbol_glyph.gd")
+const PuzzleStyles := preload("res://game/scenes/puzzles/puzzle_styles.gd")
 
 enum Phase { SHOW, CONCEAL, ANSWER, FEEDBACK }
 
@@ -51,6 +52,7 @@ func setup(puzzle_data: RefCounted, host_options: Dictionary = {}) -> void:
 		button.custom_minimum_size = CELL_SIZE
 		button.focus_mode = Control.FOCUS_ALL
 		button.add_theme_font_size_override("font_size", 28)
+		PuzzleStyles.apply_cell_style(button)
 		var glyph := SymbolGlyph.new()
 		glyph.symbol = "star"
 		glyph.color = LIT_COLOR
