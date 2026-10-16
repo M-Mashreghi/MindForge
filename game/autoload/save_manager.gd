@@ -13,7 +13,7 @@ const GAME_ID := "MindForge"
 const FILE_NAME := "profile.save"
 ## Command-line markers of headless tools; they never touch the real save.
 const TOOL_SCRIPTS := ["res://tests/run_tests.gd", "res://tools/validate_puzzles.gd", "res://tools/ai_smoke_test.gd",
-	"res://tools/capture_screenshots.gd"]
+	"res://tools/capture_screenshots.gd", "res://tools/simulate_players.gd"]
 
 enum Status { NONE, NEW, LOADED, MIGRATED, RECOVERED_FROM_BACKUP, CORRUPT_RESET, FUTURE_VERSION }
 

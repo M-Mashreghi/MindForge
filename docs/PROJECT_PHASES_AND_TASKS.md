@@ -2042,7 +2042,7 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 
 ### Task 7.2: Puzzle Performance Recorder
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 7 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2059,13 +2059,19 @@ Advance Phase 7 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(7.2): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(7.2): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `Telemetry` autoload (`game/autoload/telemetry.gd`): after the score and skill update for a result exist, builds the event (Task 7.1) with session id, run seed, room id, room band, recovery state and versions, and appends one JSON line to `user://telemetry/events.jsonl` (append-only; local only; `mindforge/telemetry/enabled`, on by default).
+- Safe failures: malformed events and failed writes are counted (`write_failures`) and never interrupt gameplay. Headless tools and tests never write the player's telemetry file.
+- Analysis helpers: `read_back(path)` returns every well-formed event in order and skips (counts) malformed lines; `export_events(events, path)` writes a deterministic export (sorted keys, stable order), so the same events always produce the same bytes.
+- Validation: `tools/run_tests.sh` — 331 passed, 0 failed (adds `tests/integration/test_telemetry_recorder.gd`: real gameplay results appended with skill provenance and retry markers, failed writes, malformed lines, deterministic export); `tools/check_boot.sh` OK.
 
 ---
 

@@ -5,7 +5,7 @@ extends SceneTree
 ## with code 1 if any test fails.
 
 const TEST_DIRS := ["res://tests/unit", "res://tests/integration"]
-const AUTOLOADS := ["EventBus", "GameState", "PlayerProfile", "SaveManager", "Feedback", "AiContent"]
+const AUTOLOADS := ["EventBus", "GameState", "PlayerProfile", "SaveManager", "Feedback", "AiContent", "Telemetry"]
 
 
 func _initialize() -> void:
