@@ -7,6 +7,7 @@ const RUN_STATE_VERSION := 1
 const DEFAULT_RUN_LENGTH := 3
 const MAIN_MENU_SCENE := "res://game/scenes/ui/main_menu.tscn"
 const DUNGEON_SCENE := "res://game/scenes/dungeon/dungeon.tscn"
+const ScoringEngine := preload("res://game/scripts/scoring/scoring_engine.gd")
 
 var run_active: bool = false
 var run_seed: int = 0
@@ -24,10 +25,14 @@ var streak: int = 0
 ## Player choice from the menu: run warm-up (calibration) rooms for a new
 ## profile. Kept across runs.
 var warmup_enabled: bool = true
+var scoring := ScoringEngine.new()
+## Score record of the last scored puzzle (for feedback and debugging).
+var last_score: Dictionary = {}
 
 
 func _ready() -> void:
 	reset()
+	EventBus.puzzle_resolved.connect(_on_puzzle_resolved)
 
 
 ## Clears all run values back to the idle (no run) state.
@@ -43,6 +48,7 @@ func reset() -> void:
 	xp = 0
 	xp_progress = 0.0
 	streak = 0
+	last_score = {}
 
 
 ## Starts a run. The same seed always produces the same initial state.
@@ -92,6 +98,23 @@ func mark_room_cleared() -> void:
 
 func is_final_room() -> bool:
 	return run_active and room_index >= run_length - 1
+
+
+## Scores a validated puzzle result into the run: points from the scoring
+## engine (which never touches skill), then the streak. Placeholder results
+## and results outside a run are ignored. Returns the score record.
+func apply_puzzle_result(result: Dictionary) -> Dictionary:
+	if not run_active or result.get("placeholder", false) or not result.has("puzzle_id"):
+		return {}
+	last_score = scoring.score(result, {"streak": streak})
+	score += int(last_score["points"])
+	streak = streak + 1 if last_score["correct"] else 0
+	EventBus.run_state_changed.emit()
+	return last_score
+
+
+func _on_puzzle_resolved(_room_id: StringName, _puzzle_id: StringName, result: Dictionary) -> void:
+	apply_puzzle_result(result)
 
 
 ## Picks a fresh seed for a new run. The run itself is deterministic from it.

@@ -77,6 +77,8 @@ Multipliers must be capped and deterministic.
 
 The system should reward harder correct answers without making speed the dominant factor.
 
+Implementation: `game/scripts/scoring/scoring_engine.gd` (`scoring-v1`). Base 100 points; difficulty multiplier 0.5..1.5 over effective difficulty 0..1000; the product of all multipliers is clamped to 0.25..3.0; points are a non-negative integer; incorrect or abandoned results score 0. `GameState` adds points and updates the streak from each validated result. Scoring never reads or writes skill ratings.
+
 ## 7. Failure
 
 A failed puzzle should not immediately end a run.

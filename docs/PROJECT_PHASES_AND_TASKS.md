@@ -1038,7 +1038,7 @@ Advance Phase 3 while keeping the game playable, deterministic where required, a
 
 ### Task 4.1: Deterministic Scoring Formula
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 4 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -1055,13 +1055,20 @@ Advance Phase 4 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(4.1): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(4.1): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `ScoringEngine` (`game/scripts/scoring/scoring_engine.gd`, `scoring-v1`): `points = round(100 x clamp(product of multipliers, 0.25, 3.0))`; difficulty multiplier linear 0.5..1.5 over effective difficulty (calibrated when available); speed/hint/attempt/streak multipliers are 1.0 placeholders filled in Task 4.2. Incorrect or abandoned results score 0; points are never negative.
+- Independent from skill estimation: scoring reads only the puzzle result and run context, and the skill model never reads scores (tested, including a source check).
+- `GameState.apply_puzzle_result()` adds points to the run score and updates the streak from every validated `puzzle_resolved` result (placeholders ignored); the HUD shows it through `run_state_changed`.
+- Caps/floors documented in the engine header and `docs/GAME_DESIGN.md`.
+- Validation: `tools/run_tests.sh` — 194 passed, 0 failed (adds `tests/unit/test_scoring.gd`); `tools/check_boot.sh` OK.
 
 ---
 
