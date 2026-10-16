@@ -608,7 +608,7 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 
 ### Task 2.9: Tiered Hint Ladder
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 2 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -625,13 +625,19 @@ Advance Phase 2 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(2.9): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(2.9): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+- `HintLadder` (`game/scripts/puzzles/hint_ladder.gd`): ordered levels with explicit cost metadata (`{text, cost}`, cost non-decreasing). Each level is charged once; requests after the last level return nothing and add no cost; re-reading revealed hints is free.
+- No first-hint leakage: the schema rejects a puzzle whose first hint contains an answer token from the family validator (`answer_tokens()`), matched as whole words/numbers and case-insensitively. A test checks every bundled puzzle.
+- `PuzzleHost` gets a Hint button ("Hint (n left)", disabled when exhausted or finished) and a list of revealed hints; the standardized result reports `hints_used` and `hint_cost` from the ladder.
+- Validation: `tools/run_tests.sh` — 106 passed, 0 failed (adds `tests/unit/test_hint_ladder.gd`); `tools/check_boot.sh` OK.
 
 ---
 

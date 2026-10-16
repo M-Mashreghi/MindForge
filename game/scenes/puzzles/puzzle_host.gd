@@ -5,6 +5,7 @@ extends Control
 ## It contains no family-specific solution rules.
 
 const PuzzleRegistry := preload("res://game/scripts/puzzles/puzzle_registry.gd")
+const HintLadder := preload("res://game/scripts/puzzles/hint_ladder.gd")
 
 const RESULT_VERSION := 1
 
@@ -17,8 +18,7 @@ var clock: Callable = Time.get_ticks_msec
 var puzzle: RefCounted
 var room_id: StringName = &""
 var attempts: int = 0
-var hints_used: int = 0
-var hint_cost: float = 0.0
+var hint_ladder: RefCounted
 var is_open: bool = false
 
 var _options: Dictionary = {}
@@ -30,11 +30,14 @@ var _started_ms: int = 0
 @onready var _status: Label = %Status
 @onready var _slot: Control = %RendererSlot
 @onready var _leave_button: Button = %LeaveButton
+@onready var _hint_button: Button = %HintButton
+@onready var _hint_list: VBoxContainer = %HintList
 
 
 func _ready() -> void:
 	visible = false
 	_leave_button.pressed.connect(give_up)
+	_hint_button.pressed.connect(request_hint)
 
 
 ## Shows `puzzle_data`. `host_options` may include `timing_scale` and
@@ -51,8 +54,10 @@ func open(puzzle_data: RefCounted, for_room: StringName = &"", host_options: Dic
 	_options = host_options
 	_validator = PuzzleRegistry.validator(puzzle.family)
 	attempts = 0
-	hints_used = 0
-	hint_cost = 0.0
+	hint_ladder = HintLadder.new(puzzle.hints)
+	for child in _hint_list.get_children():
+		child.queue_free()
+	_refresh_hint_button()
 	_renderer = scene.instantiate()
 	_slot.add_child(_renderer)
 	_renderer.setup(puzzle, _options)
@@ -61,11 +66,32 @@ func open(puzzle_data: RefCounted, for_room: StringName = &"", host_options: Dic
 	_status.text = ""
 	is_open = true
 	visible = true
+	_refresh_hint_button()
 	_started_ms = clock.call()
 	EventBus.puzzle_started.emit(room_id, puzzle.id)
 	var focus: Control = _renderer.initial_focus()
 	(focus if focus else _leave_button).grab_focus()
 	return true
+
+
+## Reveals the next hint level. Costs are charged once per level by the
+## ladder; requests after the last hint do nothing.
+func request_hint() -> void:
+	if not is_open or not hint_ladder.has_more():
+		return
+	var hint: Dictionary = hint_ladder.next_hint()
+	var label := Label.new()
+	label.text = "Hint %d: %s" % [hint["level"], hint["text"]]
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", 20)
+	_hint_list.add_child(label)
+	_refresh_hint_button()
+
+
+func _refresh_hint_button() -> void:
+	var left: int = hint_ladder.remaining() if hint_ladder else 0
+	_hint_button.disabled = not is_open or left == 0
+	_hint_button.text = "Hint (%d left)" % left if left > 0 else "No more hints"
 
 
 func attempts_left() -> int:
@@ -99,12 +125,13 @@ func _on_response_submitted(response: Dictionary) -> void:
 func _finish(correct: bool, abandoned: bool, check: Dictionary) -> void:
 	is_open = false
 	_renderer.set_input_enabled(false)
+	_refresh_hint_button()
 	var result := build_result(puzzle, {
 		"correct": correct,
 		"abandoned": abandoned,
 		"attempts": attempts,
-		"hints_used": hints_used,
-		"hint_cost": hint_cost,
+		"hints_used": hint_ladder.levels_used,
+		"hint_cost": hint_ladder.total_cost,
 		"response_ms": maxi(0, int(clock.call()) - _started_ms),
 		"timing_accommodation_active": bool(_options.get("timing_accommodation_active", false)),
 		"details": check,

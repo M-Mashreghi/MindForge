@@ -4,6 +4,7 @@ extends RefCounted
 ## Anything that fails is rejected before presentation.
 
 const PuzzleRegistry := preload("res://game/scripts/puzzles/puzzle_registry.gd")
+const HintLadder := preload("res://game/scripts/puzzles/hint_ladder.gd")
 
 const SCHEMA_VERSION := 2
 const SOURCES := ["local", "procedural", "ai"]
@@ -75,6 +76,11 @@ static func validate(puzzle: Variant) -> PackedStringArray:
 
 	var validator: Object = PuzzleRegistry.validator(StringName(p["family"]))
 	errors.append_array(validator.validate(p))
+	if not errors.is_empty():
+		return errors
+	# The first (lightest) hint must never give the answer away.
+	if HintLadder.leaks_answer(str(p["hints"][0]["text"]), validator.answer_tokens(p)):
+		errors.append("first hint reveals the answer")
 	return errors
 
 

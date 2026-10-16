@@ -57,6 +57,10 @@ Implementation: `game/scripts/puzzles/puzzle_schema.gd` checks the common fields
 
 Correctness comes only from the family validator's `check_response()`. The host never contains family rules. Renderers (`puzzle_renderer.gd`) emit `response_submitted(response)` and only display feedback.
 
+## Hints
+
+Hints are `{text, cost}` entries ordered from light to strong (non-decreasing cost). `HintLadder` (`game/scripts/puzzles/hint_ladder.gd`) reveals one level at a time; each level's cost is charged once, so repeated requests or re-reading never add a second penalty. The puzzle result records `hints_used` and `hint_cost`. The schema rejects a puzzle whose first hint contains an answer token from the family validator.
+
 ## Required Invariants
 
 - canonical solution is deterministic,
