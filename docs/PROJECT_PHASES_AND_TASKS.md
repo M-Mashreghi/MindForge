@@ -2505,7 +2505,7 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 - [x] Scope does not spill into the next task.
 
 **Implementation Notes**
-`.github/workflows/ci.yml` (push to main, pull requests, manual): whitespace check, secret scan (tracked .env / export credentials, provider key patterns), official Godot 4.5.2 Linux binary cached by exact version, `tools/validate.sh`, and the `--smoke-run` from source. `tools/check_task_ledger.py` (stdlib) fails when TASKS.md and PROJECT_PHASES_AND_TASKS.md disagree or a completed task has unticked Definition of Done boxes; `tools/validate.sh` now runs it. Validation: `tools/validate.sh` OK locally (387 tests, ledger 72 tasks); the first CI run on GitHub is checked after push.
+`.github/workflows/ci.yml` (push to main, pull requests, manual): whitespace check, secret scan (tracked .env / export credentials, provider key patterns), official Godot 4.5.2 Linux binary cached by exact version, `tools/validate.sh`, and the `--smoke-run` from source. `tools/check_task_ledger.py` (stdlib) fails when TASKS.md and PROJECT_PHASES_AND_TASKS.md disagree or a completed task has unticked Definition of Done boxes; `tools/validate.sh` now runs it. Validation: `tools/validate.sh` OK locally (387 tests, ledger 72 tasks). The first CI run failed on an intermittent "ObjectDB instances leaked at exit": the 8.4 worker thread loaded generator scripts itself. Generators are now created on the main thread (`ContentPool.make_generators()`); 0 leaks in 8 full local runs (was about 1 in 4), and CI passes on GitHub.
 
 ---
 

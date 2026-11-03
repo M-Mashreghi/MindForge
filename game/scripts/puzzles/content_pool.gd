@@ -29,16 +29,26 @@ static func ratings_of(skills: RefCounted, families: Array = []) -> Dictionary:
 	return ratings
 
 
+## One generator instance per family. Create them on the main thread:
+## loading scripts from a worker thread is not safe.
+static func make_generators() -> Dictionary:
+	var generators := {}
+	for family in GENERATORS:
+		generators[family] = load(GENERATORS[family]).new()
+	return generators
+
+
 ## The slow, pure part: runs the generators and returns
 ## [{"family", "index", "raw" (null when generation failed)}] in a fixed
-## order. Touches no catalog or autoload, so it can run on a worker thread.
-static func generate_raw(run_seed: int, ratings: Dictionary, families: Array = []) -> Array:
+## order. Touches no catalog, autoload or resource loader when `generators`
+## (from make_generators) is given, so it can run on a worker thread.
+static func generate_raw(run_seed: int, ratings: Dictionary, families: Array = [], generators: Dictionary = {}) -> Array:
 	var out: Array = []
 	var wanted: Array = families if not families.is_empty() else GENERATORS.keys()
 	for family in wanted:
 		if not GENERATORS.has(family) or not ratings.has(family):
 			continue
-		var generator: RefCounted = load(GENERATORS[family]).new()
+		var generator: RefCounted = generators[family] if generators.has(family) else load(GENERATORS[family]).new()
 		var base: float = ratings[family]
 		for i in OFFSETS.size():
 			var difficulty := clampf(base + OFFSETS[i], 50.0, 950.0)

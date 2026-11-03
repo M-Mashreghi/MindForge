@@ -90,7 +90,8 @@ func _ready() -> void:
 func _start_generation() -> void:
 	var seed_value: int = GameState.run_seed
 	var ratings: Dictionary = ContentPool.ratings_of(PlayerProfile.skills)
-	_generation_task = WorkerThreadPool.add_task(func(): _generated_raw = ContentPool.generate_raw(seed_value, ratings))
+	var generators: Dictionary = ContentPool.make_generators()
+	_generation_task = WorkerThreadPool.add_task(func(): _generated_raw = ContentPool.generate_raw(seed_value, ratings, [], generators))
 
 
 func _process(_delta: float) -> void:
