@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: 4.5.2-stable
+
+jobs:
+  validate:
+    name: Headless validation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Whitespace check
+        run: git diff --check "$(git hash-object -t tree /dev/null)" HEAD -- . ':!docs/PROJECT_PHASES_AND_TASKS.md'
+
+      - name: Secret scan
+        run: |
+          if git ls-files | grep -qE '(^|/)\.env$|export_credentials\.cfg$'; then
+            echo "::error::.env or export credentials are tracked"; exit 1
+          fi
+          if git grep -nIE 'sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|sk-ant-[A-Za-z0-9_-]{16,}' -- . ':!tools/precommit_check.sh' ':!.github/workflows/ci.yml'; then
+            echo "::error::possible provider key committed"; exit 1
+          fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The official Godot binary for an exact version never changes, so
+      # caching it by version is safe and reproducible.
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_VERSION }}-linux-x86_64
+
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot
+          curl -fsSL -o /tmp/godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d ~/godot
+          mv ~/godot/Godot_v${GODOT_VERSION}_linux.x86_64 ~/godot/godot
+          chmod +x ~/godot/godot
+
+      - name: Validate (boot, puzzle bank, test suites, proxy tests, task ledger)
+        env:
+          GODOT: /home/runner/godot/godot
+        run: bash tools/validate.sh
+
+      - name: Smoke run from source
+        run: |
+          OUT="$(~/godot/godot --headless --path . -- --smoke-run 2>&1)"; STATUS=$?
+          echo "$OUT" | tail -5
+          [ $STATUS -eq 0 ] && echo "$OUT" | grep -q "MindForge smoke OK"

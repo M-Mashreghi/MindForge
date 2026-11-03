@@ -22,7 +22,19 @@ implementation → tests → docs → commit → push → verification
 
 See `GIT_WORKFLOW.md`.
 
-GitHub Actions is not a substitute for local task verification; both should pass once CI exists.
+GitHub Actions is not a substitute for local task verification; both must pass.
+
+## Continuous Integration
+
+`.github/workflows/ci.yml` runs on every push to `main`, every pull request
+and on demand. On Ubuntu 24.04 it checks whitespace, scans for tracked
+`.env` / export credentials and provider-key patterns, downloads the
+official Godot 4.5.2 Linux binary (cached by exact version), then runs
+`tools/validate.sh` (boot, puzzle bank, all test suites with the
+required-suite guard, AI proxy tests, task-ledger consistency) and the
+`--smoke-run` from source. Any failure fails the run. No dependency other
+than the pinned Godot binary is cached; the AI proxy tests use only the
+Python standard library.
 
 ## Optional AI Backend
 

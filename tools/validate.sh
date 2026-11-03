@@ -3,8 +3,8 @@
 #   tools/validate.sh            (uses $GODOT, else `godot` on PATH)
 # Runs the boot check, the puzzle bank validator, every test suite in
 # tests/suites.gd (puzzle, adaptive, save, procedural, ai_fallback, other)
-# with the required-suite guard, and the AI proxy unit tests when Python is
-# available. Prints a summary and exits non-zero on any blocking failure.
+# with the required-suite guard, and, when Python is available, the AI proxy
+# unit tests and the task-ledger consistency check. Prints a summary and exits non-zero on any blocking failure.
 set -u
 GODOT_BIN="${GODOT:-godot}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -44,8 +44,9 @@ for candidate in python python3; do
 done
 if [ -n "$PY" ] && [ -d "$ROOT/backend/tests" ]; then
 	step "AI proxy tests" bash -c "cd '$ROOT' && '$PY' -m unittest discover -s backend/tests -t . 2>&1 | tail -3; exit \${PIPESTATUS[0]}"
+	step "task ledger" "$PY" "$ROOT/tools/check_task_ledger.py"
 else
-	RESULTS+=("skip  AI proxy tests (python not found)")
+	RESULTS+=("skip  AI proxy tests and task ledger (python not found)")
 fi
 
 echo "== summary"

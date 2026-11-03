@@ -2479,7 +2479,7 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 
 ### Task 8.6: GitHub Actions CI
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 8 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2496,13 +2496,16 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(8.6): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(8.6): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+`.github/workflows/ci.yml` (push to main, pull requests, manual): whitespace check, secret scan (tracked .env / export credentials, provider key patterns), official Godot 4.5.2 Linux binary cached by exact version, `tools/validate.sh`, and the `--smoke-run` from source. `tools/check_task_ledger.py` (stdlib) fails when TASKS.md and PROJECT_PHASES_AND_TASKS.md disagree or a completed task has unticked Definition of Done boxes; `tools/validate.sh` now runs it. Validation: `tools/validate.sh` OK locally (387 tests, ledger 72 tasks); the first CI run on GitHub is checked after push.
 
 ---
 
