@@ -62,6 +62,8 @@ tools/precommit_check.sh
 
 It prints the branch, remote and staged diff stat, and fails on staged whitespace errors, a staged `.env` / export credentials file, or added lines that look like a real secret. Set `GODOT=/path/to/godot` to also run the headless boot check (`tools/check_boot.sh`) and test suite (`tools/run_tests.sh`).
 
+`tools/validate.sh` runs the full headless validation (boot, puzzle bank, every test suite with the required-suite guard, AI proxy tests) in one command and is what CI runs.
+
 ## Staging
 
 Stage only files that belong to the current task.

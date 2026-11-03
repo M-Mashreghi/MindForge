@@ -2319,7 +2319,7 @@ Frozen balance baseline (6 archetypes x seeds 11,12, 36 rooms) in tests/fixtures
 
 ### Task 8.1: Godot Headless Validation Test Suite
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 8 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2336,13 +2336,16 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(8.1): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(8.1): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+One command, `tools/validate.sh`: headless boot, puzzle bank validator, all test suites with the required-suite guard, AI proxy unit tests; summary table and exit 1 on any blocking failure. `tests/suites.gd` groups test files into puzzle, adaptive, save, procedural, ai_fallback (+ other); `tests/run_tests.gd -- --suite=a,b` runs a subset and prints per-suite counts, `--require-suites` fails on an empty required suite or a manifest entry whose file is gone. Validation: `tools/validate.sh` OK (363 passed: puzzle 75, adaptive 102, save 37, procedural 38, ai_fallback 46, other 65; bank 18 valid; proxy 7 tests); unknown suite and missing manifest file both exit 1.
 
 ---
 

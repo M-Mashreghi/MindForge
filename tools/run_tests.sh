@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Runs the headless GDScript test suite (tests/unit, tests/integration).
-# Usage: tools/run_tests.sh            (uses $GODOT, else `godot` on PATH)
+# Usage: tools/run_tests.sh [--suite=a,b] [--require-suites]   (uses $GODOT, else `godot` on PATH)
 set -u
 GODOT_BIN="${GODOT:-godot}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -12,7 +12,7 @@ fi
 
 # Refresh the import cache so new scripts/classes are known.
 "$GODOT_BIN" --headless --path "$ROOT" --import >/dev/null 2>&1
-OUTPUT="$("$GODOT_BIN" --headless --path "$ROOT" -s res://tests/run_tests.gd 2>&1)"
+OUTPUT="$("$GODOT_BIN" --headless --path "$ROOT" -s res://tests/run_tests.gd -- "$@" 2>&1)"
 STATUS=$?
 echo "$OUTPUT"
 

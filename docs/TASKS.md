@@ -98,7 +98,7 @@ A completed task should record its commit hash and push status.
 
 ## Phase 8 — Polish, Accessibility, CI/CD & Release
 
-- [ ] **Task 8.1** — Godot Headless Validation Test Suite — Commit: `—` — GitHub: `—`
+- [x] **Task 8.1** — Godot Headless Validation Test Suite — Commit: `task(8.1)` — GitHub: `pushed to origin/main`
 - [ ] **Task 8.2** — Accessibility: Timer, Motion, Readability and Input Options — Commit: `—` — GitHub: `—`
 - [ ] **Task 8.3** — Visual Theme and Placeholder Asset Cleanup — Commit: `—` — GitHub: `—`
 - [ ] **Task 8.4** — Performance and Scene-Load Profiling — Commit: `—` — GitHub: `—`

@@ -240,7 +240,9 @@ On Windows with winget, the executable is under `%LOCALAPPDATA%\Microsoft\WinGet
 The project ships with its own headless test runner and repository tools:
 
 ```bash
+GODOT=/path/to/godot tools/validate.sh           # everything below in one command, non-zero on failure
 GODOT=/path/to/godot tools/run_tests.sh          # 363 headless unit + integration tests
+GODOT=/path/to/godot tools/run_tests.sh --suite=save,ai_fallback   # one or more suites (tests/suites.gd)
 GODOT=/path/to/godot tools/check_boot.sh         # project boots without parser/runtime errors
 GODOT=/path/to/godot tools/validate_puzzles.sh   # whole puzzle bank through the content pipeline
 GODOT=/path/to/godot tools/precommit_check.sh    # all of the above + whitespace and secret checks
