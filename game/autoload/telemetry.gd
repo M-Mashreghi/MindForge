@@ -14,7 +14,7 @@ const ContentPipeline := preload("res://game/scripts/puzzles/content_pipeline.gd
 
 const ENABLED_SETTING := "mindforge/telemetry/enabled"
 const TOOL_SCRIPTS := ["res://tests/run_tests.gd", "res://tools/validate_puzzles.gd", "res://tools/ai_smoke_test.gd",
-	"res://tools/capture_screenshots.gd", "res://tools/simulate_players.gd", "res://tools/calibrate_difficulty.gd", "res://tools/telemetry_report.gd", "res://tools/compare_schedules.gd", "res://tools/update_balance_fixtures.gd"]
+	"res://tools/capture_screenshots.gd", "res://tools/simulate_players.gd", "res://tools/calibrate_difficulty.gd", "res://tools/telemetry_report.gd", "res://tools/compare_schedules.gd", "res://tools/update_balance_fixtures.gd", "res://tools/profile_performance.gd"]
 
 var enabled: bool = true
 var path: String = "user://telemetry/events.jsonl"
@@ -22,6 +22,9 @@ var session_id: String = TelemetryEvent.new_session_id()
 var written: int = 0
 var write_failures: int = 0
 var last_event: Dictionary = {}
+## Append handle kept open between events (reopened when `path` changes).
+var _file: FileAccess
+var _file_path: String = ""
 
 
 func _ready() -> void:
@@ -66,17 +69,38 @@ func record(event: Dictionary) -> bool:
 	if not TelemetryEvent.validate(event).is_empty():
 		write_failures += 1
 		return false
-	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
-	var mode := FileAccess.READ_WRITE if FileAccess.file_exists(path) else FileAccess.WRITE
-	var file := FileAccess.open(path, mode)
+	var file := _file_for_append()
 	if file == null:
 		write_failures += 1
 		return false
 	file.seek_end()
 	file.store_line(JSON.stringify(event, "", true))
-	file.close()
+	# Flush so a crash loses nothing; reopening the file per event cost
+	# several milliseconds each (docs/reports/performance_baseline.md).
+	file.flush()
 	written += 1
 	return true
+
+
+## Closes the open telemetry file (also done when `path` changes or on exit).
+func close_file() -> void:
+	_file = null
+	_file_path = ""
+
+
+func _exit_tree() -> void:
+	close_file()
+
+
+func _file_for_append() -> FileAccess:
+	if _file != null and _file_path == path:
+		return _file
+	close_file()
+	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+	var mode := FileAccess.READ_WRITE if FileAccess.file_exists(path) else FileAccess.WRITE
+	_file = FileAccess.open(path, mode)
+	_file_path = path if _file != null else ""
+	return _file
 
 
 ## Every well-formed event in `file_path` (see TelemetryEvent.read_events).

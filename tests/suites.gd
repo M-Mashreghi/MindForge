@@ -30,7 +30,7 @@ const SUITES := {
 	"procedural": [
 		"test_dungeon_generator.gd", "test_room_planner.gd", "test_variety.gd",
 		"test_pattern_generator.gd", "test_logic_generator.gd", "test_memory_generator.gd",
-		"test_boss_room.gd",
+		"test_boss_room.gd", "test_performance.gd",
 	],
 	"ai_fallback": [
 		"test_ai_adapter.gd", "test_ai_cache.gd", "test_ai_contract.gd", "test_ai_hints.gd",

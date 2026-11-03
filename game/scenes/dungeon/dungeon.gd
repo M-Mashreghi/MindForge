@@ -15,6 +15,7 @@ const DifficultyCalibrator := preload("res://game/scripts/telemetry/difficulty_c
 const CALIBRATION_PATH := "user://calibration.json"
 const RoomDef := preload("res://game/scripts/dungeon/room_def.gd")
 const Accessibility := preload("res://game/scripts/settings/accessibility.gd")
+const PuzzleRegistry := preload("res://game/scripts/puzzles/puzzle_registry.gd")
 const DEMO_ROOM_DEFS: Array[Resource] = [
 	preload("res://game/resources/room_defs/fixture_entrance.tres"),
 	preload("res://game/resources/room_defs/fixture_gallery.tres"),
@@ -52,6 +53,12 @@ var current_index: int = -1
 var _solved_rooms: Dictionary = {}
 var _guard := TransitionGuard.new()
 var catalog: RefCounted
+## Background local generation (see _start_generation); -1 when idle.
+var _generation_task: int = -1
+var _generation_ready := false
+var _generated_raw: Array = []
+## Generated puzzles admitted to the catalog per frame once ready.
+const ADMIT_PER_FRAME := 1
 ## Puzzle chosen for each fixture room index, so a retry shows the same one.
 var _room_puzzles: Dictionary = {}
 
@@ -61,6 +68,10 @@ func _ready() -> void:
 	player.interact_requested.connect(_on_player_interact)
 	puzzle_host.finished.connect(_on_puzzle_finished)
 	catalog = PuzzleCatalog.load_bank()
+	# Load the puzzle renderer scenes in the background now, so opening the
+	# first puzzle of each family does not stall on a disk load.
+	for family in PuzzleRegistry.family_names():
+		ResourceLoader.load_threaded_request(PuzzleRegistry.renderer_path(family))
 	# Empirical calibration (tools/calibrate_difficulty.gd), when available.
 	DifficultyCalibrator.apply(catalog, DifficultyCalibrator.load_file(CALIBRATION_PATH))
 	EventBus.puzzle_resolved.connect(_on_puzzle_resolved)
@@ -68,13 +79,55 @@ func _ready() -> void:
 		GameState.start_run(DEMO_SEED, DEMO_ROOM_DEFS.size())
 	room_defs = build_room_defs(GameState.run_plan)
 	if not GameState.run_plan.is_empty():
-		# Generated runs also get locally generated puzzles near the player's level.
-		generated_content = ContentPool.extend(catalog, GameState.run_seed, PlayerProfile.skills)
-		# Optional AI content: cached puzzles now, fresh ones in the
-		# background. Rooms never wait for it.
-		AiContent.load_cached_into(catalog)
-		AiContent.start_pregeneration(catalog, ai_targets())
+		# Generated runs also get locally generated puzzles near the player's
+		# level. Generation is the slowest part of starting a run, so it runs
+		# on a worker thread while the first room is shown; results join the
+		# catalog a few per frame, or all at once if a puzzle is needed first.
+		_start_generation()
 	_show_room(0, false)
+
+
+func _start_generation() -> void:
+	var seed_value: int = GameState.run_seed
+	var ratings: Dictionary = ContentPool.ratings_of(PlayerProfile.skills)
+	_generation_task = WorkerThreadPool.add_task(func(): _generated_raw = ContentPool.generate_raw(seed_value, ratings))
+
+
+func _process(_delta: float) -> void:
+	if _generation_task < 0:
+		return
+	if not _generation_ready:
+		if not WorkerThreadPool.is_task_completed(_generation_task):
+			return
+		WorkerThreadPool.wait_for_task_completion(_generation_task)
+		_generation_ready = true
+	_admit_generated(ADMIT_PER_FRAME)
+
+
+## Blocks until local generation has joined the catalog (called before a
+## puzzle is chosen, so scheduling always sees the full, deterministic pool).
+func ensure_generated_content() -> void:
+	if _generation_task < 0:
+		return
+	if not _generation_ready:
+		WorkerThreadPool.wait_for_task_completion(_generation_task)
+		_generation_ready = true
+	_admit_generated(_generated_raw.size())
+
+
+func _admit_generated(count: int) -> void:
+	var batch := _generated_raw.slice(0, count)
+	_generated_raw = _generated_raw.slice(count)
+	var stats: Dictionary = ContentPool.admit(catalog, batch)
+	generated_content["added"] = int(generated_content.get("added", 0)) + stats["added"]
+	generated_content["rejected"] = int(generated_content.get("rejected", 0)) + stats["rejected"]
+	if not _generated_raw.is_empty():
+		return
+	_generation_task = -1
+	# Optional AI content: cached puzzles now, fresh ones in the
+	# background. Rooms never wait for it.
+	AiContent.load_cached_into(catalog)
+	AiContent.start_pregeneration(catalog, ai_targets())
 
 
 ## Pre-generation targets near the player's level (AI families only).
@@ -88,6 +141,14 @@ func ai_targets() -> Array:
 
 
 func _exit_tree() -> void:
+	if _generation_task >= 0 and not _generation_ready:
+		WorkerThreadPool.wait_for_task_completion(_generation_task)
+	_generation_task = -1
+	# Collect background renderer loads nobody opened, so none outlives the scene.
+	for family in PuzzleRegistry.family_names():
+		var path := PuzzleRegistry.renderer_path(family)
+		if ResourceLoader.load_threaded_get_status(path) != ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+			ResourceLoader.load_threaded_get(path)
 	AiContent.cancel_pregeneration()
 
 
@@ -219,6 +280,7 @@ func is_boss_room() -> bool:
 ## Warm-up rooms come from the calibration plan; every other room asks the
 ## adaptive scheduler. Deterministic per run (run RNG), chosen once per room.
 func puzzle_for_current_room() -> RefCounted:
+	ensure_generated_content()
 	if is_boss_room() and PlayerProfile.calibration.next_family() == &"":
 		return _boss_stage_puzzle()
 	if not _room_puzzles.has(current_index):

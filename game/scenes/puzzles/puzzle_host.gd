@@ -47,7 +47,9 @@ func _ready() -> void:
 func open(puzzle_data: RefCounted, for_room: StringName = &"", host_options: Dictionary = {}) -> bool:
 	if is_open or puzzle_data == null or not PuzzleRegistry.has_family(puzzle_data.family):
 		return false
-	var scene: PackedScene = load(PuzzleRegistry.renderer_path(puzzle_data.family))
+	var path := PuzzleRegistry.renderer_path(puzzle_data.family)
+	# The dungeon may have started loading renderers in the background.
+	var scene: PackedScene = ResourceLoader.load_threaded_get(path) 		if ResourceLoader.load_threaded_get_status(path) != ResourceLoader.THREAD_LOAD_INVALID_RESOURCE else load(path)
 	if scene == null:
 		push_error("No renderer for puzzle family %s" % puzzle_data.family)
 		return false

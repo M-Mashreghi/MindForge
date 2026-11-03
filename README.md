@@ -251,6 +251,7 @@ GODOT=/path/to/godot tools/precommit_check.sh    # all of the above + whitespace
 godot --headless --path . -s res://tools/simulate_players.gd     # simulated players, all archetypes
 godot --headless --path . -s res://tools/compare_schedules.gd    # adaptive vs static report
 godot --headless --path . -s res://tools/telemetry_report.gd     # analytics from local telemetry
+godot --headless --path . -s res://tools/profile_performance.gd  # timing baseline (docs/reports/performance_baseline.md)
 ```
 
 What the tests cover includes:

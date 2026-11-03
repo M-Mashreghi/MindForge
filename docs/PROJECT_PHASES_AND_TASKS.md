@@ -2415,7 +2415,7 @@ One palette (`game/scripts/ui/palette.gd`) and a shared interface Theme (`game/s
 
 ### Task 8.4: Performance and Scene-Load Profiling
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 8 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2432,13 +2432,16 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(8.4): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(8.4): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+`tools/profile_performance.gd` measures dungeon scene load, background generation, room transitions, puzzle scene creation per family, telemetry writes and the AI pre-generation boundary; baseline in docs/reports/performance_baseline.md (i7-13620H, headless). Stalls removed: local puzzle generation (about 200-400 ms, synchronous in the dungeon's `_ready`) now runs on a WorkerThreadPool task and joins the catalog one puzzle per frame, with `ensure_generated_content()` before any scheduling so the pool and choices stay deterministic; telemetry keeps its file open and flushes instead of reopening per event (7 ms -> 0.04 ms median); renderer scenes load in the background at dungeon start (first open 13-16 ms -> about 2 ms). Known remaining cost: the longest frame while generated puzzles are admitted is about 18 ms (one uniqueness check), only in the first second of a run. Validation: `tools/validate.sh` OK (383 passed; adds tests/integration/test_performance.gd: background pool equals the synchronous pool in order, first puzzle waits for it, room build and telemetry write budgets, AI start does not block); windowed screenshot run without errors.
 
 ---
 

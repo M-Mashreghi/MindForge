@@ -23,6 +23,7 @@ func after_each() -> void:
 
 
 func _wipe() -> void:
+	tel.close_file()
 	for p in [PATH, EXPORT]:
 		if FileAccess.file_exists(p):
 			DirAccess.remove_absolute(p)
