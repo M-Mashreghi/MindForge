@@ -2383,7 +2383,7 @@ Settings menu adds untimed play, memory display speed (1x/1.5x/2x/3x), interface
 
 ### Task 8.3: Visual Theme and Placeholder Asset Cleanup
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 8 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2400,13 +2400,16 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(8.3): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(8.3): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+One palette (`game/scripts/ui/palette.gd`) and a shared interface Theme (`game/scripts/ui/ui_theme.gd`, applied to the root window at startup) replace scattered placeholder colors. Rooms are drawn as flagstone floors tinted by room type, brick walls, torches and an octagonal rune pedestal whose marker shape names the room type; doors gain a padlock when locked; the player is a hooded figure with a facing arrow. Puzzle cell, glyph and result colors come from the palette. docs/ASSETS.md records provenance and licenses (all art and sound generated in code, Godot's bundled Open Sans under OFL 1.1). Validation: `tools/validate.sh` OK (378 passed; adds tests/unit/test_visual_theme.gd: WCAG AA for every text pair, a distinct marker per room type, theme on the root window, no unregistered media files); README screenshots regenerated and checked by eye.
 
 ---
 

@@ -5,12 +5,13 @@ extends "res://game/scenes/puzzles/puzzle_renderer.gd"
 ##
 ## Response: {"answer": <chosen value>}
 
+const Palette := preload("res://game/scripts/ui/palette.gd")
 const SymbolGlyph := preload("res://game/scenes/puzzles/symbol_glyph.gd")
 
 const TILE_SIZE := Vector2(84, 84)
 const CHOICE_SIZE := Vector2(96, 96)
-const CORRECT_COLOR := Color(0.45, 0.9, 0.55)
-const WRONG_COLOR := Color(0.95, 0.45, 0.45)
+const CORRECT_COLOR := Palette.SUCCESS
+const WRONG_COLOR := Palette.DANGER
 
 @onready var _sequence_row: HBoxContainer = %SequenceRow
 @onready var _choice_row: HBoxContainer = %ChoiceRow

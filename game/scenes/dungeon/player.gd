@@ -3,6 +3,7 @@ extends CharacterBody2D
 ## It knows nothing about rooms, doors or puzzles.
 
 const TopDownMotion := preload("res://game/scripts/dungeon/top_down_motion.gd")
+const Palette := preload("res://game/scripts/ui/palette.gd")
 
 ## Emitted when the interact action is pressed while input is enabled.
 signal interact_requested
@@ -10,7 +11,7 @@ signal interact_requested
 @export var max_speed: float = 260.0
 @export var acceleration: float = 2400.0
 @export var friction: float = 2800.0
-@export var body_color: Color = Color(0.42, 0.78, 0.95)
+@export var body_color: Color = Palette.PLAYER_CLOAK
 
 ## When false the player ignores input and slows to a stop (menus, transitions).
 var input_enabled: bool = true
@@ -55,6 +56,11 @@ func place_at(world_position: Vector2) -> void:
 
 
 func _draw() -> void:
-	# Placeholder art: a body circle with a facing marker (shape, not only color).
+	# Hooded adventurer seen from above; the face and a small arrow show the
+	# facing direction by shape, not only by color.
+	draw_circle(Vector2(0, 3), 13.0, Color(0, 0, 0, 0.3))
 	draw_circle(Vector2.ZERO, 14.0, body_color)
-	draw_circle(facing * 9.0, 4.0, Color(0.05, 0.05, 0.1))
+	draw_circle(Vector2.ZERO, 9.0, Palette.PLAYER_HOOD)
+	draw_circle(facing * 5.0, 4.5, Palette.PLAYER_FACE)
+	var side := facing.orthogonal()
+	draw_colored_polygon(PackedVector2Array([facing * 22.0, facing * 16.0 + side * 5.0, facing * 16.0 - side * 5.0]), Palette.FOCUS)

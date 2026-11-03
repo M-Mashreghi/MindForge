@@ -10,6 +10,7 @@ extends Node
 ## the `reduced_motion` setting they skip the motion and apply the final
 ## state immediately.
 
+const UiTheme := preload("res://game/scripts/ui/ui_theme.gd")
 const SAMPLE_RATE := 22050
 const SFX_BUS := &"SFX"
 
@@ -39,6 +40,8 @@ var _next_player := 0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# Shared interface theme for every scene (docs/ASSETS.md).
+	get_tree().root.theme = UiTheme.build()
 	output_enabled = DisplayServer.get_name() != "headless"
 	_ensure_bus()
 	for kind in SOUND_SPECS:

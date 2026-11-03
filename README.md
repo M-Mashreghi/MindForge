@@ -230,7 +230,8 @@ On Windows with winget, the executable is under `%LOCALAPPDATA%\Microsoft\WinGet
 | Move | WASD / arrow keys | Left stick / d-pad |
 | Interact with the pedestal | E / Space / Enter | A |
 | Navigate menus and puzzles | Arrow keys + Enter | D-pad + A |
-| Pause (resume, restart, abandon) / leave a puzzle | Esc | – |
+| Pause (resume, restart, abandon) / leave a puzzle | Esc | B |
+| Pause | P | Start |
 | Toggle internal numbers on the summary (debug builds) | F3 | – |
 | Toggle the adaptive debug overlay (debug builds) | F9 | – |
 
@@ -344,7 +345,7 @@ Every task has a dedicated, tested commit: 64 of 72 tasks are complete. See [`do
 
 ## Assets and licensing
 
-All art is drawn in code (shapes and style boxes), and all sound effects are short tones **synthesized in code** at startup ([`game/autoload/feedback.gd`](game/autoload/feedback.gd)). The repository ships **no third-party art, audio or fonts**; the UI uses Godot's built-in default font.
+All art is drawn in code (shapes and style boxes), and all sound effects are short tones **synthesized in code** at startup ([`game/autoload/feedback.gd`](game/autoload/feedback.gd)). The repository ships **no third-party art, audio or fonts**; the UI uses Godot's built-in default font. The visual language (a torch-lit stone dungeon with rune accents, WCAG-checked text contrast, shape cues for every state) and the full asset register with licenses are in [docs/ASSETS.md](docs/ASSETS.md).
 
 ---
 

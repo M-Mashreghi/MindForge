@@ -1,11 +1,12 @@
 extends RefCounted
-## Shared placeholder styles for puzzle cells/slots, so empty cells stay
-## visible against the dark host panel.
+## Shared styles for puzzle cells/slots (from the palette), so empty cells
+## stay visible against the dark host panel and focus is always obvious.
 
-const CELL_BG := Color(0.2, 0.19, 0.28)
-const CELL_BG_HOVER := Color(0.26, 0.24, 0.36)
-const CELL_BORDER := Color(0.45, 0.42, 0.6)
-const CELL_FOCUS := Color(0.95, 0.9, 1.0)
+const Palette := preload("res://game/scripts/ui/palette.gd")
+const CELL_BG := Palette.PANEL_SOFT
+const CELL_BG_HOVER := Palette.PANEL_HOVER
+const CELL_BORDER := Palette.PANEL_BORDER
+const CELL_FOCUS := Palette.FOCUS
 
 
 static func apply_cell_style(button: Button) -> void:

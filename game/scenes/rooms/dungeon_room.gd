@@ -5,10 +5,12 @@ extends Node2D
 
 const RoomDef := preload("res://game/scripts/dungeon/room_def.gd")
 const Door := preload("res://game/scenes/rooms/door.gd")
+const Palette := preload("res://game/scripts/ui/palette.gd")
 
 const WALL_THICKNESS := 32.0
 const DOOR_GAP := 96.0
-const WALL_COLOR := Color(0.32, 0.3, 0.38)
+const TILE := 48.0
+const BRICK := Vector2(48.0, 16.0)
 
 ## Emitted when the player reaches a door (the dungeon decides what happens).
 signal door_reached(door: Area2D)
@@ -49,6 +51,7 @@ func mark_solved() -> void:
 		return
 	is_solved = true
 	_refresh_door_states()
+	queue_redraw()
 	solved.emit()
 	Feedback.pulse(exit_door)
 
@@ -118,11 +121,81 @@ func _add_wall(rect: Rect2) -> void:
 func _draw() -> void:
 	if room_def == null:
 		return
-	draw_rect(get_interior_rect(), room_def.floor_color)
+	_draw_floor()
 	for child in _walls.get_children():
 		var shape := child as CollisionShape2D
 		var size: Vector2 = (shape.shape as RectangleShape2D).size
-		draw_rect(Rect2(shape.position - size / 2.0, size), WALL_COLOR)
-	# Placeholder pedestal marking where the puzzle will be presented.
-	draw_circle(puzzle_anchor.position, 28.0, Color(0.5, 0.42, 0.7))
-	draw_circle(puzzle_anchor.position, 28.0, Color(0.85, 0.8, 1.0), false, 2.0)
+		_draw_wall(Rect2(shape.position - size / 2.0, size))
+	for x in [room_def.size.x * 0.25, room_def.size.x * 0.75]:
+		_draw_torch(Vector2(x, -WALL_THICKNESS / 2.0))
+	_draw_pedestal(puzzle_anchor.position)
+
+
+## Room-type floor tint mixed with the room's own color, laid as offset
+## flagstones whose shade varies deterministically per room.
+func floor_color() -> Color:
+	return room_def.floor_color.lerp(Palette.floor_color(room_def.room_type), 0.5)
+
+
+func _draw_floor() -> void:
+	var base := floor_color()
+	var rect := get_interior_rect()
+	draw_rect(rect, base)
+	var rows := ceili(rect.size.y / TILE)
+	var cols := ceili(rect.size.x / TILE) + 1
+	var salt := hash(str(room_def.room_id))
+	for row in rows:
+		var offset := (TILE / 2.0) if row % 2 == 1 else 0.0
+		for col in cols:
+			var tile := Rect2(col * TILE - offset, row * TILE, TILE, TILE).intersection(rect)
+			if tile.size.x <= 0.0 or tile.size.y <= 0.0:
+				continue
+			var shade := float(absi(hash(Vector3i(row, col, salt))) % 7) / 100.0 - 0.03
+			draw_rect(tile.grow(-1.0), base.lightened(shade) if shade > 0.0 else base.darkened(-shade))
+			draw_rect(tile, Palette.FLOOR_LINE, false, 1.0)
+
+
+## Wall segment as a stone brick course with a lit top edge.
+func _draw_wall(rect: Rect2) -> void:
+	draw_rect(rect, Palette.MORTAR)
+	var rows := ceili(rect.size.y / BRICK.y)
+	for row in rows:
+		var offset := BRICK.x / 2.0 if row % 2 == 1 else 0.0
+		var x := rect.position.x - offset
+		while x < rect.end.x:
+			var brick := Rect2(x, rect.position.y + row * BRICK.y, BRICK.x, BRICK.y).intersection(rect)
+			if brick.size.x > 2.0 and brick.size.y > 2.0:
+				draw_rect(brick.grow(-1.0), Palette.STONE)
+				draw_line(brick.position + Vector2(1, 1), Vector2(brick.end.x - 1, brick.position.y + 1), Palette.STONE_LIGHT, 1.0)
+			x += BRICK.x
+	draw_rect(rect, Palette.STONE_DARK, false, 1.0)
+
+
+func _draw_torch(at: Vector2) -> void:
+	for i in 3:
+		draw_circle(at, 46.0 - i * 12.0, Palette.TORCH_GLOW)
+	draw_rect(Rect2(at + Vector2(-3, -2), Vector2(6, 12)), Palette.WOOD_DARK)
+	draw_colored_polygon(PackedVector2Array([at + Vector2(-6, -2), at + Vector2(0, -16), at + Vector2(6, -2)]), Palette.TORCH)
+
+
+## Octagonal rune altar; the inner marker's shape names the room type
+## (circle standard, leaf recovery, triangle challenge, crown boss).
+func _draw_pedestal(at: Vector2) -> void:
+	var outer := PackedVector2Array()
+	for i in 8:
+		outer.append(at + Vector2.from_angle(TAU * (i + 0.5) / 8.0) * 32.0)
+	draw_colored_polygon(outer, Palette.STONE_DARK)
+	outer.append(outer[0])
+	draw_polyline(outer, Palette.RUNE_DIM, 2.0)
+	draw_arc(at, 22.0, 0.0, TAU, 32, Palette.RUNE_DIM, 1.5)
+	var color := Palette.SUCCESS if is_solved else Palette.RUNE
+	match Palette.marker(room_def.room_type):
+		"leaf":
+			draw_colored_polygon(PackedVector2Array([at + Vector2(0, -13), at + Vector2(9, 0), at + Vector2(0, 13), at + Vector2(-9, 0)]), color)
+		"triangle":
+			draw_colored_polygon(PackedVector2Array([at + Vector2(0, -13), at + Vector2(12, 9), at + Vector2(-12, 9)]), color)
+		"crown":
+			draw_colored_polygon(PackedVector2Array([at + Vector2(-13, 9), at + Vector2(-13, -8), at + Vector2(-6, 0),
+				at + Vector2(0, -12), at + Vector2(6, 0), at + Vector2(13, -8), at + Vector2(13, 9)]), color)
+		_:
+			draw_circle(at, 10.0, color)

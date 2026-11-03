@@ -13,6 +13,7 @@ const SUITES := {
 		"test_pattern_family.gd", "test_logic_family.gd", "test_memory_family.gd",
 		"test_hint_ladder.gd", "test_puzzle_host.gd", "test_pattern_renderer.gd",
 		"test_logic_renderer.gd", "test_memory_renderer.gd", "test_dungeon_puzzles.gd",
+		"test_visual_theme.gd",
 	],
 	"adaptive": [
 		"test_elo.gd", "test_skill_model.gd", "test_skill_profile.gd",

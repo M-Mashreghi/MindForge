@@ -7,6 +7,7 @@ extends "res://game/scenes/puzzles/puzzle_renderer.gd"
 ## prompt = {"mode": "sequence" | "positions", "grid": {"cols", "rows"}, "target": [cell indices]}
 ## Response: {"cells": [picked cell indices, in pick order]}
 
+const Palette := preload("res://game/scripts/ui/palette.gd")
 const MemoryTiming := preload("res://game/scripts/puzzles/memory_timing.gd")
 const SymbolGlyph := preload("res://game/scenes/puzzles/symbol_glyph.gd")
 const PuzzleStyles := preload("res://game/scenes/puzzles/puzzle_styles.gd")
@@ -16,7 +17,7 @@ enum Phase { SHOW, CONCEAL, ANSWER, FEEDBACK }
 signal phase_changed(phase: Phase)
 
 const CELL_SIZE := Vector2(88, 88)
-const LIT_COLOR := Color(1.0, 0.86, 0.4)
+const LIT_COLOR := Palette.WARNING
 
 ## When false, tests drive the schedule with advance(ms) instead of _process.
 @export var auto_play: bool = true

@@ -100,7 +100,7 @@ A completed task should record its commit hash and push status.
 
 - [x] **Task 8.1** — Godot Headless Validation Test Suite — Commit: `task(8.1)` — GitHub: `pushed to origin/main`
 - [x] **Task 8.2** — Accessibility: Timer, Motion, Readability and Input Options — Commit: `task(8.2)` — GitHub: `pushed to origin/main`
-- [ ] **Task 8.3** — Visual Theme and Placeholder Asset Cleanup — Commit: `—` — GitHub: `—`
+- [x] **Task 8.3** — Visual Theme and Placeholder Asset Cleanup — Commit: `task(8.3)` — GitHub: `pushed to origin/main`
 - [ ] **Task 8.4** — Performance and Scene-Load Profiling — Commit: `—` — GitHub: `—`
 - [ ] **Task 8.5** — Desktop Export Presets — Commit: `—` — GitHub: `—`
 - [ ] **Task 8.6** — GitHub Actions CI — Commit: `—` — GitHub: `—`

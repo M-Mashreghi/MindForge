@@ -2,13 +2,14 @@ extends Control
 ## Draws a named symbol as a distinct shape, so symbols never rely on color
 ## alone. Shared by pattern and memory renderers.
 
+const Palette := preload("res://game/scripts/ui/palette.gd")
 const SYMBOLS := ["circle", "triangle", "square", "diamond", "star", "hexagon", "cross", "ring"]
 
 @export var symbol: String = "circle":
 	set(value):
 		symbol = value
 		queue_redraw()
-@export var color: Color = Color(0.92, 0.88, 1.0):
+@export var color: Color = Palette.TEXT:
 	set(value):
 		color = value
 		queue_redraw()

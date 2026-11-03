@@ -35,6 +35,7 @@ MindForge/
 │   ├── DEPLOYMENT.md
 │   ├── GIT_WORKFLOW.md
 │   ├── ADAPTIVE_EVALUATION.md
+│   ├── ASSETS.md             # asset register and visual language
 │   ├── REVIEW_NOTES_v2.md
 │   └── RUNBOOK.md
 │
@@ -56,6 +57,8 @@ MindForge/
 │   │   ├── scoring/
 │   │   ├── dungeon/
 │   │   ├── telemetry/
+│   │   ├── settings/
+│   │   ├── ui/              # palette and interface theme
 │   │   └── ai/
 │   ├── resources/
 │   │   ├── puzzle_defs/

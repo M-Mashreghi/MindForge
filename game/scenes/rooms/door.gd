@@ -10,6 +10,7 @@ signal player_reached(door: Area2D)
 signal state_changed(door: Area2D, state: State)
 
 const DOOR_SIZE := Vector2(24, 96)
+const Palette := preload("res://game/scripts/ui/palette.gd")
 
 @export var role: Role = Role.EXIT
 @export var state: State = State.LOCKED
@@ -68,18 +69,20 @@ func _draw() -> void:
 	var rect := Rect2(-DOOR_SIZE / 2.0, DOOR_SIZE)
 	match state:
 		State.LOCKED:
-			# Closed door with bars.
-			draw_rect(rect, Color(0.45, 0.32, 0.2))
+			# Iron-banded wooden door with a padlock (shape cue, not only color).
+			draw_rect(rect, Palette.WOOD)
 			for i in 3:
 				var y := rect.position.y + (i + 1) * DOOR_SIZE.y / 4.0
-				draw_line(Vector2(rect.position.x, y), Vector2(rect.end.x, y), Color(0.2, 0.14, 0.1), 3.0)
-			draw_rect(rect, Color(0.85, 0.75, 0.5), false, 2.0)
+				draw_line(Vector2(rect.position.x, y), Vector2(rect.end.x, y), Palette.IRON.darkened(0.3), 3.0)
+			draw_rect(rect, Palette.BRASS, false, 2.0)
+			draw_arc(Vector2(0, -3), 4.0, PI, TAU, 8, Palette.BRASS, 2.0)
+			draw_rect(Rect2(-5, -3, 10, 9), Palette.BRASS)
 		State.UNLOCKED:
-			# Open frame only.
-			draw_rect(rect, Color(0.85, 0.75, 0.5), false, 2.0)
+			# Open archway: frame only.
+			draw_rect(rect, Palette.BRASS, false, 2.0)
 		State.SOLVED:
 			# Open frame with a glowing arrow pointing through the door.
-			draw_rect(rect, Color(0.55, 0.95, 0.6), false, 3.0)
+			draw_rect(rect, Palette.SUCCESS, false, 3.0)
 			var dir := 1.0 if role == Role.EXIT else -1.0
 			draw_colored_polygon(PackedVector2Array([
-				Vector2(-6 * dir, -12), Vector2(8 * dir, 0), Vector2(-6 * dir, 12)]), Color(0.55, 0.95, 0.6))
+				Vector2(-6 * dir, -12), Vector2(8 * dir, 0), Vector2(-6 * dir, 12)]), Palette.SUCCESS)
