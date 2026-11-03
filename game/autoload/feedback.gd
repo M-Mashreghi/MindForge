@@ -4,7 +4,8 @@ extends Node
 ## Sounds: every EventBus.feedback_requested kind (and `play()` calls for
 ## transitions, doors and UI) maps to a short placeholder tone that is
 ## generated in code at startup, so no third-party audio is shipped.
-## Volume follows the player's `master_volume` setting on the Master bus.
+## Volume follows the player's `master_volume` setting on the Master bus,
+## and the `ui_scale` setting scales the root window's content.
 ## Animations: `pulse()` and `count_up()` are the only motion helpers; with
 ## the `reduced_motion` setting they skip the motion and apply the final
 ## state immediately.
@@ -48,8 +49,13 @@ func _ready() -> void:
 		add_child(player)
 		_players.append(player)
 	EventBus.feedback_requested.connect(func(kind, _data): play(kind))
-	EventBus.profile_changed.connect(func(_id): apply_volume())
+	EventBus.profile_changed.connect(func(_id): _apply_settings())
+	_apply_settings()
+
+
+func _apply_settings() -> void:
 	apply_volume()
+	apply_ui_scale()
 
 
 ## Stop playback before the tree goes away so no playback outlives its player.
@@ -79,6 +85,11 @@ func apply_volume() -> void:
 	var volume := clampf(float(PlayerProfile.setting("master_volume")), 0.0, 1.0)
 	AudioServer.set_bus_mute(0, volume <= 0.001)
 	AudioServer.set_bus_volume_db(0, linear_to_db(maxf(volume, 0.001)))
+
+
+## Scales all UI and 2D content by the `ui_scale` setting (readability).
+func apply_ui_scale() -> void:
+	get_tree().root.content_scale_factor = float(PlayerProfile.setting("ui_scale"))
 
 
 func motion_enabled() -> bool:

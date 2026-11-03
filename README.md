@@ -80,7 +80,7 @@ Open the next room ← Reward score & XP ← Pick the next puzzle in the target 
     <td align="center"><img src="docs/images/run_summary.png" alt="Run summary"><br><sub><b>Run summary</b>: friendly per-family trends, no labels</sub></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/images/settings.png" alt="Settings"><br><sub><b>Settings</b>: reduced motion and master volume</sub></td>
+    <td align="center"><img src="docs/images/settings.png" alt="Settings"><br><sub><b>Settings</b>: reduced motion, untimed play, memory speed, interface size, volume</sub></td>
     <td align="center"><sub>All screenshots are captured from the real build with<br><code>tools/capture_screenshots.gd</code></sub></td>
   </tr>
 </table>
@@ -114,7 +114,8 @@ Open the next room ← Reward score & XP ← Pick the next puzzle in the target 
 - **Feedback banners** with symbols (✓ ↻ ✗ ★ ◆); they never reveal answers.
 
 ### ♿ Accessibility and safety
-- **Reduced motion** and **master volume** settings.
+- **Reduced motion**, **untimed play**, **slower memory timing** (up to 3x), **interface size** (up to 150%) and **master volume** settings.
+- Full **keyboard and controller** navigation (D-pad / A / B, Start pauses).
 - **Accessibility-safe timing**: when a timing accommodation is on, slower play never lowers your inferred skill or your score.
 - **No colour-only information**: every symbol is a distinct shape.
 - **Keyboard and controller** navigation from the first frame.

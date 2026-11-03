@@ -18,7 +18,7 @@ func test_menu_buttons_present() -> void:
 		check(button != null and button.focus_mode == Control.FOCUS_ALL, "%s keyboard focusable" % button_name)
 
 
-func test_settings_placeholder_opens_and_returns_focus() -> void:
+func test_settings_opens_and_returns_focus() -> void:
 	var menu: Control = await add_to_root(MENU_SCENE.instantiate())
 	(menu.find_child("SettingsButton") as Button).pressed.emit()
 	await tree.process_frame
@@ -56,3 +56,19 @@ func test_begin_new_run_state_depends_only_on_seed() -> void:
 	check_eq(gs.snapshot(), first, "same seed, same initial run state")
 	await tree.process_frame
 	await tree.process_frame
+
+
+func test_accessibility_settings_are_focusable_and_saved_to_profile() -> void:
+	var profile: Node = tree.root.get_node("PlayerProfile")
+	var menu: Control = await add_to_root(MENU_SCENE.instantiate())
+	for control_name in ["ReducedMotionToggle", "RelaxedTimingToggle", "MemoryTimingOption", "UiScaleOption", "VolumeSlider"]:
+		var control := menu.find_child(control_name) as Control
+		check(control != null and control.focus_mode == Control.FOCUS_ALL, "%s keyboard/controller focusable" % control_name)
+	var timing := menu.find_child("MemoryTimingOption") as OptionButton
+	check_eq(timing.item_count, 4, "four memory timing choices")
+	check_eq(timing.selected, 0, "normal timing selected by default")
+	timing.select(2)
+	timing.item_selected.emit(2)
+	check_eq(profile.setting("memory_timing_scale"), 2.0, "choice stored in profile")
+	(menu.find_child("RelaxedTimingToggle") as CheckButton).button_pressed = true
+	check_eq(profile.setting("relaxed_timing"), true, "untimed play stored")

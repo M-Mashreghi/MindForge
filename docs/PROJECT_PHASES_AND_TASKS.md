@@ -2351,7 +2351,7 @@ One command, `tools/validate.sh`: headless boot, puzzle bank validator, all test
 
 ### Task 8.2: Accessibility: Timer, Motion, Readability and Input Options
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 8 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2368,13 +2368,16 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(8.2): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(8.2): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+Settings menu adds untimed play, memory display speed (1x/1.5x/2x/3x), interface size (100/125/150%, root content scale) next to reduced motion and volume; reduced motion now also makes room transitions instant. `game/scripts/settings/accessibility.gd` owns allowed values, sanitizing and the puzzle host options; the dungeon passes `timing_scale` and `timing_accommodation_active`, so any timing accommodation neutralizes timing in skill and score instead of lowering them. Settings stay in the profile `settings` section, validated on load and never read by the skill model. Controller: `pause` action (P / Start) and A/B bindings for ui_accept/ui_cancel. Validation: `tools/validate.sh` OK (373 passed; adds tests/unit/test_settings.gd, accommodation-never-lower check in test_performance_event.gd, menu focus/persistence and dungeon-to-host option tests). Note: naming the new test file test_accessibility.gd made Godot report script resources still in use at exit (static test caches unloaded in a different order), so it is test_settings.gd.
 
 ---
 

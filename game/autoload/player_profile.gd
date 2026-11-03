@@ -15,6 +15,7 @@ const AdaptiveScheduler := preload("res://game/scripts/adaptive/adaptive_schedul
 const DifficultySelector := preload("res://game/scripts/adaptive/difficulty_selector.gd")
 const Progression := preload("res://game/scripts/scoring/progression.gd")
 const RoomPlanner := preload("res://game/scripts/adaptive/room_planner.gd")
+const Accessibility := preload("res://game/scripts/settings/accessibility.gd")
 const DEBUG_LOG_SETTING := "mindforge/debug/adaptive_log"
 
 const PROFILE_ID := &"local"
@@ -24,8 +25,9 @@ var config: RefCounted = AdaptiveConfig.new()
 var skills: RefCounted = SkillProfile.new(config)
 ## Lifetime XP / level / best score: separate from skill ratings.
 var progression: RefCounted = Progression.new()
-## Player settings (accessibility and audio). Defaults are the safe choices.
-const DEFAULT_SETTINGS := {"reduced_motion": false, "master_volume": 0.8}
+## Player settings (accessibility and audio), kept apart from skill state:
+## nothing in the skill model reads them. Defaults are the safe choices.
+const DEFAULT_SETTINGS := Accessibility.DEFAULTS
 var settings: Dictionary = DEFAULT_SETTINGS.duplicate()
 var model: RefCounted = SkillModel.new(config)
 var predictor: RefCounted = SuccessPredictor.new(config)
@@ -87,12 +89,7 @@ func export_state() -> Dictionary:
 func import_state(data: Dictionary) -> void:
 	skills.load_dict(data.get("skills", {}))
 	progression.load_dict(data.get("progression", {}))
-	settings = DEFAULT_SETTINGS.duplicate()
-	var saved_settings: Variant = data.get("settings", {})
-	if typeof(saved_settings) == TYPE_DICTIONARY:
-		for key in DEFAULT_SETTINGS:
-			if saved_settings.has(key) and typeof(saved_settings[key]) == typeof(DEFAULT_SETTINGS[key]):
-				settings[key] = saved_settings[key]
+	settings = Accessibility.sanitize_all(data.get("settings", {}))
 	solved_mechanics.clear()
 	for mechanic in data.get("solved_mechanics", []):
 		solved_mechanics[str(mechanic)] = true
@@ -104,12 +101,21 @@ func setting(key: String) -> Variant:
 
 
 func set_setting(key: String, value: Variant) -> void:
-	settings[key] = value
+	if not DEFAULT_SETTINGS.has(key):
+		push_warning("Unknown setting %s" % key)
+		return
+	settings[key] = Accessibility.sanitize(key, value)
 	EventBus.profile_changed.emit(PROFILE_ID)
 
 
 func reduced_motion() -> bool:
 	return bool(setting("reduced_motion"))
+
+
+## Puzzle host options (memory timing, timing accommodation) for the
+## current settings.
+func accessibility_options() -> Dictionary:
+	return Accessibility.host_options(settings)
 
 
 ## Adds XP to lifetime progression. Returns levels gained.

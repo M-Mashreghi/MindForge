@@ -70,3 +70,13 @@ func test_puzzle_choice_is_deterministic_per_seed() -> void:
 	await tree.process_frame
 	var b := await _make_dungeon(77)
 	check_eq(b.puzzle_for_current_room().id, first, "same seed, same puzzle")
+
+
+func test_accessibility_settings_reach_the_puzzle_host() -> void:
+	tree.root.get_node("PlayerProfile").set_setting("memory_timing_scale", 2.0)
+	var dungeon := await _make_dungeon()
+	dungeon._on_player_interact()
+	await tree.process_frame
+	check(dungeon.puzzle_host.is_open, "host opened")
+	check_eq(dungeon.puzzle_host._options.get("timing_scale"), 2.0, "timing scale passed to renderer")
+	check_eq(dungeon.puzzle_host._options.get("timing_accommodation_active"), true, "accommodation flagged for rating and score")

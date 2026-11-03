@@ -74,3 +74,14 @@ func test_incorrect_and_abandoned() -> void:
 func test_deterministic() -> void:
 	var r := {"correct": true, "attempts": 2, "hint_cost": 0.35, "response_ms": 52000}
 	check_eq(PerformanceEvent.normalize(r, BAND), PerformanceEvent.normalize(r.duplicate(), BAND), "same input, same event")
+
+
+func test_accommodation_never_scores_below_unaccommodated_play() -> void:
+	# Same correctness, any response time: the accommodated event is never
+	# rated lower than the standard one.
+	for ms in [5000, 20000, 45000, 70000, 100000]:
+		var standard: Dictionary = PerformanceEvent.normalize({"correct": true, "response_ms": ms}, BAND)
+		var options := preload("res://game/scripts/settings/accessibility.gd").host_options({"relaxed_timing": true})
+		var accommodated: Dictionary = PerformanceEvent.normalize({"correct": true, "response_ms": ms,
+			"timing_accommodation_active": options["timing_accommodation_active"]}, BAND)
+		check(accommodated["observed_score"] >= standard["observed_score"], "accommodated >= standard at %d ms" % ms)

@@ -122,11 +122,50 @@ max_value = 1.0
 step = 0.05
 value = 0.8
 
-[node name="Placeholder" type="Label" parent="Center/SettingsPanel/Content"]
+[node name="RelaxedTimingToggle" type="CheckButton" parent="Center/SettingsPanel/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Response time is not used for rating or score."
+theme_override_font_sizes/font_size = 22
+text = "Untimed play"
+
+[node name="MemoryTimingRow" type="HBoxContainer" parent="Center/SettingsPanel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MemoryTimingLabel" type="Label" parent="Center/SettingsPanel/Content/MemoryTimingRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "Memory display speed"
+
+[node name="MemoryTimingOption" type="OptionButton" parent="Center/SettingsPanel/Content/MemoryTimingRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+
+[node name="UiScaleRow" type="HBoxContainer" parent="Center/SettingsPanel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="UiScaleLabel" type="Label" parent="Center/SettingsPanel/Content/UiScaleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "Interface size"
+
+[node name="UiScaleOption" type="OptionButton" parent="Center/SettingsPanel/Content/UiScaleRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+
+[node name="AccessibilityNote" type="Label" parent="Center/SettingsPanel/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.72, 0.85, 1)
 theme_override_font_sizes/font_size = 18
-text = "More accessibility options arrive in a later update."
+text = "These options never lower your rating or score."
 horizontal_alignment = 1
 autowrap_mode = 3
 

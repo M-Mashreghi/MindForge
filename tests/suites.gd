@@ -20,7 +20,7 @@ const SUITES := {
 		"test_recovery_mode.gd", "test_adaptive_scheduler.gd", "test_adaptive_metrics.gd",
 		"test_calibration.gd", "test_difficulty_calibrator.gd", "test_performance_event.gd",
 		"test_simulation_harness.gd", "test_schedule_comparison.gd", "test_balance_fixtures.gd",
-		"test_puzzle_analytics.gd",
+		"test_puzzle_analytics.gd", "test_settings.gd",
 	],
 	"save": [
 		"test_save_manager.gd", "test_progression.gd", "test_scoring.gd",

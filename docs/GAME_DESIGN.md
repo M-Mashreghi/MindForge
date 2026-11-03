@@ -102,6 +102,15 @@ Plan for:
 - reduced-motion option,
 - keyboard navigation where possible.
 
+Implemented settings (Settings menu, `game/scripts/settings/accessibility.gd`):
+- **Reduced motion**: no pulses, count-ups or banner motion; room transitions cut instead of fading.
+- **Untimed play**: response time is ignored for skill and score.
+- **Memory display speed**: 1x, 1.5x, 2x or 3x show/conceal time. Puzzle identity and correctness are unchanged.
+- **Interface size**: 100%, 125% or 150% scaling of the whole window content.
+- **Keyboard and controller**: every menu, setting and puzzle is reachable with arrows/D-pad, accept (Enter/Space/A) and back (Escape/B); P or Start pauses.
+
+Any timing accommodation (untimed play or slower memory timing) sets `timing_accommodation_active` on the attempt, so the skill model and scoring neutralize timing instead of reading slower play as lower skill. Settings live in the profile's `settings` section, are validated on load (wrong types and out-of-range values fall back or snap to an offered value), and are never read by the skill model.
+
 ## 10. Adaptive Experience Design
 
 The dungeon should adapt invisibly enough that the player experiences a coherent world rather than a visible difficulty algorithm.

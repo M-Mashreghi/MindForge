@@ -14,6 +14,7 @@ const BossTrial := preload("res://game/scripts/dungeon/boss_trial.gd")
 const DifficultyCalibrator := preload("res://game/scripts/telemetry/difficulty_calibrator.gd")
 const CALIBRATION_PATH := "user://calibration.json"
 const RoomDef := preload("res://game/scripts/dungeon/room_def.gd")
+const Accessibility := preload("res://game/scripts/settings/accessibility.gd")
 const DEMO_ROOM_DEFS: Array[Resource] = [
 	preload("res://game/resources/room_defs/fixture_entrance.tres"),
 	preload("res://game/resources/room_defs/fixture_gallery.tres"),
@@ -97,6 +98,13 @@ static func build_room_defs(plan: Dictionary) -> Array:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Escape / controller B leave a puzzle or pause; P / controller Start
+	# (`pause`) always toggles the pause menu.
+	if event.is_action_pressed("pause") and not puzzle_host.is_open and not _guard.in_progress:
+		get_viewport().set_input_as_handled()
+		if not pause_menu.is_open:
+			pause_menu.open()
+		return
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		if puzzle_host.is_open:
@@ -192,7 +200,8 @@ func _open_puzzle(puzzle: RefCounted, room_id: StringName) -> void:
 		"predicted_success": prediction["predicted_success"],
 		"hints_available": puzzle.hints.size(),
 	}
-	var options := {"context": context}
+	var options: Dictionary = PlayerProfile.accessibility_options()
+	options["context"] = context
 	var trial: RefCounted = boss_trials.get(current_index)
 	if trial:
 		context["boss"] = true
@@ -279,7 +288,7 @@ func _on_puzzle_resolved(room_id: StringName, _puzzle_id: StringName, result: Di
 
 
 func _fade_to(alpha: float) -> void:
-	if fade_duration <= 0.0:
+	if Accessibility.transition_seconds(fade_duration, PlayerProfile.reduced_motion()) <= 0.0:
 		_fade.color.a = alpha
 		await get_tree().process_frame
 		return
