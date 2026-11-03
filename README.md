@@ -252,6 +252,7 @@ godot --headless --path . -s res://tools/simulate_players.gd     # simulated pla
 godot --headless --path . -s res://tools/compare_schedules.gd    # adaptive vs static report
 godot --headless --path . -s res://tools/telemetry_report.gd     # analytics from local telemetry
 godot --headless --path . -s res://tools/profile_performance.gd  # timing baseline (docs/reports/performance_baseline.md)
+GODOT=/path/to/godot tools/export_release.sh     # Windows/Linux release builds + smoke run (needs export templates)
 ```
 
 What the tests cover includes:

@@ -32,6 +32,9 @@ const SUITES := {
 		"test_pattern_generator.gd", "test_logic_generator.gd", "test_memory_generator.gd",
 		"test_boss_room.gd", "test_performance.gd",
 	],
+	"release": [
+		"test_export_presets.gd",
+	],
 	"ai_fallback": [
 		"test_ai_adapter.gd", "test_ai_cache.gd", "test_ai_contract.gd", "test_ai_hints.gd",
 		"test_ai_intake.gd", "test_ai_logic_builder.gd", "test_ai_pattern_builder.gd",

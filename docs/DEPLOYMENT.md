@@ -57,6 +57,34 @@ Web export is post-MVP if AI/network behavior and save semantics are validated.
 - no secrets detected,
 - docs/task ledger consistency check passes.
 
+## Desktop Export
+
+`export_presets.cfg` defines two release presets with fixed output paths
+under the git-ignored `exports/` folder:
+
+| Preset | Output |
+|---|---|
+| Windows Desktop | `exports/windows/MindForge.exe` (x86_64, PCK embedded) |
+| Linux | `exports/linux/MindForge.x86_64` (x86_64, PCK embedded) |
+
+Both exclude `tests/`, `tools/`, `docs/`, `backend/`, `exports/`, Markdown
+files and `.env` / `.env.*`; debug-only settings (adaptive log, internal
+math, overlay) and AI are off by default (`tests/unit/test_export_presets.gd`).
+
+```bash
+GODOT=/path/to/godot tools/export_release.sh                    # both presets
+GODOT=/path/to/godot tools/export_release.sh "Windows Desktop"  # one preset
+```
+
+The script exports each preset and smoke-tests the build for the current OS:
+`MindForge --headless -- --smoke-run` boots, starts a seeded run, solves the
+first room through the normal puzzle host and exits 0 with
+`MindForge smoke OK` (`game/scripts/release/smoke_run.gd`; save and
+telemetry are off during it). Exporting needs the export templates for the
+exact engine version (4.5.2); without them the script fails with a clear
+message. The same smoke run works from source:
+`godot --headless --path . -- --smoke-run`.
+
 ## Export Safety
 
 Exports must exclude:

@@ -2447,7 +2447,7 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 
 ### Task 8.5: Desktop Export Presets
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 8 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2464,13 +2464,16 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(8.5): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(8.5): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+`export_presets.cfg`: Windows Desktop and Linux release presets (x86_64, embedded PCK, fixed paths under git-ignored exports/), excluding tests, tools, docs, backend, exports, Markdown and .env files. `tools/export_release.sh` exports and smoke-tests the build for the current OS with `-- --smoke-run` (game/scripts/release/smoke_run.gd: seeded run, first room solved through the puzzle host, exit 0 on success; save and telemetry off). Validation: `tools/validate.sh` OK (387 passed; adds a `release` suite, tests/unit/test_export_presets.gd); smoke run from source passes with no leaks and leaves the player profile untouched. Not done locally: an exported-binary smoke test, because the Godot 4.5.2 export templates are not installed and the user chose not to download them; without templates the script fails with a clear message.
 
 ---
 
