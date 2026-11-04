@@ -13,6 +13,9 @@ MindForge watches how you play and keeps every room near the edge of your abilit
 ![Offline first](https://img.shields.io/badge/offline-first-8a63d2)
 ![Assets](https://img.shields.io/badge/assets-100%25%20code--generated-f0a500)
 ![Progress](https://img.shields.io/badge/roadmap-8%20of%208%20phases-2ea44f)
+[![Latest release](https://img.shields.io/github/v/release/M-Mashreghi/MindForge?label=download&color=2ea44f)](https://github.com/M-Mashreghi/MindForge/releases/latest)
+
+**[⬇ Download for Windows](https://github.com/M-Mashreghi/MindForge/releases/latest)** · no install, no account, plays offline
 
 <img src="docs/images/boss_stage.png" alt="A two-stage guardian trial in a boss room" width="820">
 
@@ -22,6 +25,7 @@ MindForge watches how you play and keeps every room near the edge of your abilit
 
 ## Contents
 
+- [Download and play](#download-and-play)
 - [What is MindForge?](#what-is-mindforge)
 - [Screenshots](#screenshots)
 - [Features](#features)
@@ -37,6 +41,25 @@ MindForge watches how you play and keeps every room near the edge of your abilit
 - [Documentation](#documentation)
 - [Assets and licensing](#assets-and-licensing)
 - [Development workflow](#development-workflow)
+
+---
+
+## Download and play
+
+Grab the latest build from the **[Releases page](https://github.com/M-Mashreghi/MindForge/releases/latest)** (current version: [v0.1.0](https://github.com/M-Mashreghi/MindForge/releases/tag/v0.1.0)).
+
+| System | File | How to start |
+|---|---|---|
+| Windows 10/11 (64-bit) | `MindForge-<version>-windows-x86_64.zip` | Unzip, then double-click `MindForge.exe` |
+| Linux (64-bit) | `MindForge-<version>-linux-x86_64.zip` | Unzip, then run `./MindForge.x86_64` |
+
+- **No install needed.** Everything the game needs is inside the executable. You don't need Godot, an account or an internet connection.
+- **Windows security prompt.** The build is not code-signed, so Windows SmartScreen may show "Windows protected your PC". Click **More info → Run anyway**.
+- **Graphics.** Any GPU with OpenGL 3.3 support works (the game uses Godot's Compatibility renderer).
+- **Saves** are stored in `%APPDATA%\Godot\app_userdata\MindForge` on Windows and `~/.local/share/godot/app_userdata/MindForge` on Linux.
+- **Checksums** for every file are in `SHA256SUMS.txt` on the release.
+
+New to the game? See [Controls](#controls). To build from source instead, see [Getting started](#getting-started).
 
 ---
 
@@ -194,8 +217,7 @@ The LLM is never the answer key: it may only propose structured parameters, and 
 
 ## Getting started
 
-### Just play
-Download the latest build from [Releases](https://github.com/M-Mashreghi/MindForge/releases/latest): unzip `MindForge-<version>-windows-x86_64.zip` and double-click `MindForge.exe` (or the Linux zip and run `./MindForge.x86_64`). No install, Godot or internet connection needed. The build is not code-signed, so Windows SmartScreen may ask you to choose **More info → Run anyway**.
+Just want to play? Use the ready-made builds in [Download and play](#download-and-play). The steps below are for running and testing from source.
 
 ### Requirements
 - **Godot 4.5** (standard build, not .NET). The project is pinned to 4.5 and verified with 4.5.2.
