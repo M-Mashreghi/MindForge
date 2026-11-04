@@ -6,6 +6,8 @@ extends RefCounted
 ## through the same catalog checks (schema, family validator, duplicates)
 ## as bundled ones; rejected output never enters the pool.
 
+const PuzzleData := preload("res://game/scripts/puzzles/puzzle_data.gd")
+
 const GENERATORS := {
 	&"pattern": "res://game/scripts/puzzles/generators/pattern_generator.gd",
 	&"logic": "res://game/scripts/puzzles/generators/logic_generator.gd",
@@ -29,8 +31,7 @@ static func ratings_of(skills: RefCounted, families: Array = []) -> Dictionary:
 	return ratings
 
 
-## One generator instance per family. Create them on the main thread:
-## loading scripts from a worker thread is not safe.
+## One generator instance per family.
 static func make_generators() -> Dictionary:
 	var generators := {}
 	for family in GENERATORS:
@@ -38,23 +39,56 @@ static func make_generators() -> Dictionary:
 	return generators
 
 
-## The slow, pure part: runs the generators and returns
-## [{"family", "index", "raw" (null when generation failed)}] in a fixed
-## order. Touches no catalog, autoload or resource loader when `generators`
-## (from make_generators) is given, so it can run on a worker thread.
-static func generate_raw(run_seed: int, ratings: Dictionary, families: Array = [], generators: Dictionary = {}) -> Array:
+## The generation work for a run as small jobs, in a fixed order:
+## [{"family", "index", "seed", "difficulty"}]. Running them one at a time
+## (run_job) lets the dungeon spread generation over frames.
+static func jobs(run_seed: int, ratings: Dictionary, families: Array = []) -> Array:
 	var out: Array = []
 	var wanted: Array = families if not families.is_empty() else GENERATORS.keys()
 	for family in wanted:
 		if not GENERATORS.has(family) or not ratings.has(family):
 			continue
-		var generator: RefCounted = generators[family] if generators.has(family) else load(GENERATORS[family]).new()
-		var base: float = ratings[family]
 		for i in OFFSETS.size():
-			var difficulty := clampf(base + OFFSETS[i], 50.0, 950.0)
-			var generated: Dictionary = generator.generate(hash([run_seed, family, i]), difficulty)
-			out.append({"family": family, "index": i, "raw": generated["raw"] if generated["puzzle"] != null else null})
+			out.append({"family": family, "index": i, "seed": hash([run_seed, family, i]),
+				"difficulty": clampf(float(ratings[family]) + OFFSETS[i], 50.0, 950.0)})
 	return out
+
+
+## Runs one job on the main thread: {"family", "index", "raw" (null when
+## generation failed)}.
+static func run_job(job: Dictionary, generators: Dictionary) -> Dictionary:
+	var generated: Dictionary = generators[job["family"]].generate(job["seed"], job["difficulty"])
+	var out := job.duplicate()
+	out["raw"] = generated["raw"] if generated["puzzle"] != null else null
+	return out
+
+
+## The slow half of run_job, safe on a worker thread: builds raw data only
+## (the generators' build_raw never touches the shared puzzle registry).
+## Pass the result through `finish_job` on the main thread.
+static func prebuild_job(job: Dictionary, generators: Dictionary) -> Dictionary:
+	var out := job.duplicate()
+	out["prebuilt"] = generators[job["family"]].build_raw(job["seed"], job["difficulty"])
+	return out
+
+
+## Main-thread half: keeps the prebuilt raw puzzle when it parses (the same
+## result `generate` would give), otherwise reruns the full generator so
+## the outcome always equals run_job.
+static func finish_job(job: Dictionary, generators: Dictionary) -> Dictionary:
+	var prebuilt: Dictionary = job.get("prebuilt", {})
+	if not prebuilt.is_empty() and PuzzleData.parse(prebuilt)["puzzle"] != null:
+		var out := job.duplicate()
+		out.erase("prebuilt")
+		out["raw"] = prebuilt
+		return out
+	return run_job(job, generators)
+
+
+## Every job at once, in order.
+static func generate_raw(run_seed: int, ratings: Dictionary, families: Array = []) -> Array:
+	var generators := make_generators()
+	return jobs(run_seed, ratings, families).map(func(job): return run_job(job, generators))
 
 
 ## Adds generated entries to `catalog` through the normal catalog checks.

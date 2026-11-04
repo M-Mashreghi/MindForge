@@ -43,12 +43,12 @@ func _run() -> void:
 		dungeon.puzzle_close_delay = 0.0
 		root.add_child(dungeon)
 		scene_load.append(PerfStats.elapsed_ms(t))
-		# Frames until background generation has joined the catalog; the
-		# longest of them is the worst stall the player can see.
+		# Frames until local generation has joined the catalog; the longest
+		# of them is the worst stall the player can see.
 		var frames := 0
 		var worst_frame := 0.0
 		t = PerfStats.now_usec()
-		while dungeon._generation_task >= 0 and frames < 600:
+		while dungeon.is_generating() and frames < 600:
 			var f := PerfStats.now_usec()
 			await process_frame
 			worst_frame = maxf(worst_frame, PerfStats.elapsed_ms(f))
@@ -78,7 +78,7 @@ func _run() -> void:
 		dungeon.queue_free()
 		await process_frame
 	_row("Dungeon scene load (puzzle bank, calibration, first room)", scene_load)
-	_row("Local generation in background, until pool is ready (not a stall)", generation_ready)
+	_row("Local generation on a worker thread, until pool is ready (not a stall)", generation_ready)
 	_row("Longest frame while generated puzzles join the catalog", generation_frame)
 	_row("Room transition (build and show next room)", transitions)
 	for family in host_open:

@@ -57,7 +57,8 @@ var catalog: RefCounted
 var _generation_task: int = -1
 var _generation_ready := false
 var _generated_raw: Array = []
-## Generated puzzles admitted to the catalog per frame once ready.
+var _generators: Dictionary = {}
+## Generated puzzles parsed and admitted to the catalog per frame.
 const ADMIT_PER_FRAME := 1
 ## Puzzle chosen for each fixture room index, so a retry shows the same one.
 var _room_puzzles: Dictionary = {}
@@ -80,18 +81,20 @@ func _ready() -> void:
 	room_defs = build_room_defs(GameState.run_plan)
 	if not GameState.run_plan.is_empty():
 		# Generated runs also get locally generated puzzles near the player's
-		# level. Generation is the slowest part of starting a run, so it runs
-		# on a worker thread while the first room is shown; results join the
-		# catalog a few per frame, or all at once if a puzzle is needed first.
+		# level. Building them is the slowest part of starting a run, so it
+		# runs on a worker thread (pure generator code only) while the first
+		# room is shown; the results are parsed and admitted to the catalog
+		# one per frame, or all at once if a puzzle is needed first.
 		_start_generation()
 	_show_room(0, false)
 
 
 func _start_generation() -> void:
-	var seed_value: int = GameState.run_seed
-	var ratings: Dictionary = ContentPool.ratings_of(PlayerProfile.skills)
-	var generators: Dictionary = ContentPool.make_generators()
-	_generation_task = WorkerThreadPool.add_task(func(): _generated_raw = ContentPool.generate_raw(seed_value, ratings, [], generators))
+	var jobs: Array = ContentPool.jobs(GameState.run_seed, ContentPool.ratings_of(PlayerProfile.skills))
+	_generators = ContentPool.make_generators()
+	var generators := _generators
+	_generation_task = WorkerThreadPool.add_task(func():
+		_generated_raw = jobs.map(func(job): return ContentPool.prebuild_job(job, generators)))
 
 
 func _process(_delta: float) -> void:
@@ -100,24 +103,31 @@ func _process(_delta: float) -> void:
 	if not _generation_ready:
 		if not WorkerThreadPool.is_task_completed(_generation_task):
 			return
-		WorkerThreadPool.wait_for_task_completion(_generation_task)
-		_generation_ready = true
+		_finish_generation_task()
 	_admit_generated(ADMIT_PER_FRAME)
 
 
-## Blocks until local generation has joined the catalog (called before a
-## puzzle is chosen, so scheduling always sees the full, deterministic pool).
+## Runs all remaining local generation (called before a puzzle is chosen,
+## so scheduling always sees the full, deterministic pool).
 func ensure_generated_content() -> void:
 	if _generation_task < 0:
 		return
-	if not _generation_ready:
-		WorkerThreadPool.wait_for_task_completion(_generation_task)
-		_generation_ready = true
+	_finish_generation_task()
 	_admit_generated(_generated_raw.size())
 
 
+func is_generating() -> bool:
+	return _generation_task >= 0
+
+
+func _finish_generation_task() -> void:
+	if not _generation_ready:
+		WorkerThreadPool.wait_for_task_completion(_generation_task)
+		_generation_ready = true
+
+
 func _admit_generated(count: int) -> void:
-	var batch := _generated_raw.slice(0, count)
+	var batch := _generated_raw.slice(0, count).map(func(job): return ContentPool.finish_job(job, _generators))
 	_generated_raw = _generated_raw.slice(count)
 	var stats: Dictionary = ContentPool.admit(catalog, batch)
 	generated_content["added"] = int(generated_content.get("added", 0)) + stats["added"]
@@ -125,6 +135,7 @@ func _admit_generated(count: int) -> void:
 	if not _generated_raw.is_empty():
 		return
 	_generation_task = -1
+	_generators = {}
 	# Optional AI content: cached puzzles now, fresh ones in the
 	# background. Rooms never wait for it.
 	AiContent.load_cached_into(catalog)
@@ -142,8 +153,8 @@ func ai_targets() -> Array:
 
 
 func _exit_tree() -> void:
-	if _generation_task >= 0 and not _generation_ready:
-		WorkerThreadPool.wait_for_task_completion(_generation_task)
+	if _generation_task >= 0:
+		_finish_generation_task()
 	_generation_task = -1
 	# Collect background renderer loads nobody opened, so none outlives the scene.
 	for family in PuzzleRegistry.family_names():

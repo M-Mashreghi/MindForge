@@ -59,6 +59,20 @@ func generate(seed_value: int, difficulty: float, presentation: Dictionary = {})
 	return {"puzzle": null, "raw": {}, "errors": errors}
 
 
+## The first raw puzzle the generator builds for these inputs, without
+## parsing it (no shared puzzle registry access, so safe on a worker
+## thread); the catalog parses and validates it on admission. Empty when
+## no attempt produced parameters.
+func build_raw(seed_value: int, difficulty: float, presentation: Dictionary = {}) -> Dictionary:
+	for attempt in MAX_TRIES:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = hash([GENERATOR_VERSION, seed_value, roundi(difficulty), attempt])
+		var raw := _build(rng, seed_value, clampf(difficulty, 0.0, 1000.0), attempt, presentation)
+		if not raw.is_empty():
+			return raw
+	return {}
+
+
 func _build(rng: RandomNumberGenerator, seed_value: int, difficulty: float, attempt: int, presentation: Dictionary) -> Dictionary:
 	var tier := tier_for(difficulty)
 	var rules: Dictionary = TIERS[tier]

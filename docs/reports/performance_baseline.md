@@ -5,12 +5,12 @@ Frame budget at 60 FPS: 16.7 ms. Times are wall-clock for the synchronous work o
 
 | Operation | Samples | Median ms | p95 ms | Max ms |
 |---|---:|---:|---:|---:|
-| Dungeon scene load (puzzle bank, calibration, first room) | 5 | 39.34 | 177.83 | 177.83 |
-| Local generation in background, until pool is ready (not a stall) | 5 | 415.49 | 463.41 | 463.41 |
-| Longest frame while generated puzzles join the catalog | 5 | 18.34 | 23.40 | 23.40 |
-| Room transition (build and show next room) | 30 | 0.43 | 0.65 | 0.83 |
-| Puzzle scene creation: pattern | 5 | 1.61 | 5.83 | 5.83 |
-| Puzzle scene creation: logic | 5 | 2.32 | 2.50 | 2.50 |
-| Puzzle scene creation: memory | 5 | 1.78 | 1.89 | 1.89 |
-| Telemetry write (one event) | 50 | 0.04 | 0.09 | 1.41 |
-| AI pre-generation start (must not block) | 5 | 0.03 | 0.09 | 0.09 |
+| Dungeon scene load (puzzle bank, calibration, first room) | 5 | 29.88 | 168.29 | 168.29 |
+| Local generation on a worker thread, until pool is ready (not a stall) | 5 | 356.70 | 401.38 | 401.38 |
+| Longest frame while generated puzzles join the catalog | 5 | 16.20 | 17.06 | 17.06 |
+| Room transition (build and show next room) | 30 | 0.26 | 0.36 | 0.54 |
+| Puzzle scene creation: pattern | 5 | 1.07 | 3.43 | 3.43 |
+| Puzzle scene creation: logic | 5 | 1.42 | 2.28 | 2.28 |
+| Puzzle scene creation: memory | 5 | 1.22 | 1.61 | 1.61 |
+| Telemetry write (one event) | 50 | 0.04 | 0.11 | 1.39 |
+| AI pre-generation start (must not block) | 5 | 0.02 | 0.02 | 0.02 |
