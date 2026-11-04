@@ -2511,7 +2511,7 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 
 ### Task 8.7: Secrets, Licensing and Dependency Audit
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 8 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2528,13 +2528,16 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(8.7): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(8.7): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+`tools/audit_release.py` (stdlib; `--history` scans every revision) fails on tracked `.env` / credentials / key files, key-shaped strings (Anthropic, OpenAI-style, GitHub, AWS, private keys), secret values in `.env.example`, media files missing from docs/ASSETS.md, and Godot addons, Python requirements or CI actions that are used but not listed in docs/DEPENDENCIES.md (or listed but unused). docs/DEPENDENCIES.md inventories Godot 4.5.2 (MIT), its bundled Open Sans (OFL 1.1), the optional `anthropic` SDK (MIT, proxy only, never exported) and the three CI actions; no addons and nothing unused to remove. `.gitignore` now also covers `.env.*` (keeping `.env.example`) and key files. `tools/validate.sh` runs the audit and CI runs it with full history. Result: 0 problems in the tree and the whole history; planted fake key and unlisted addon are both caught. Open item for the owner: the repository has no LICENSE file for the project itself.
 
 ---
 

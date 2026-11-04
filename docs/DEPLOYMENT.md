@@ -27,8 +27,10 @@ GitHub Actions is not a substitute for local task verification; both must pass.
 ## Continuous Integration
 
 `.github/workflows/ci.yml` runs on every push to `main`, every pull request
-and on demand. On Ubuntu 24.04 it checks whitespace, scans for tracked
-`.env` / export credentials and provider-key patterns, downloads the
+and on demand. On Ubuntu 24.04 it checks whitespace, runs the release
+audit over the tree and full history (`tools/audit_release.py --history`:
+tracked `.env` / credentials, key-shaped strings, unregistered media,
+dependency list), downloads the
 official Godot 4.5.2 Linux binary (cached by exact version), then runs
 `tools/validate.sh` (boot, puzzle bank, all test suites with the
 required-suite guard, AI proxy tests, task-ledger consistency) and the

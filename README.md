@@ -347,7 +347,7 @@ Every task has a dedicated, tested commit: 64 of 72 tasks are complete. See [`do
 
 ## Assets and licensing
 
-All art is drawn in code (shapes and style boxes), and all sound effects are short tones **synthesized in code** at startup ([`game/autoload/feedback.gd`](game/autoload/feedback.gd)). The repository ships **no third-party art, audio or fonts**; the UI uses Godot's built-in default font. The visual language (a torch-lit stone dungeon with rune accents, WCAG-checked text contrast, shape cues for every state) and the full asset register with licenses are in [docs/ASSETS.md](docs/ASSETS.md).
+All art is drawn in code (shapes and style boxes), and all sound effects are short tones **synthesized in code** at startup ([`game/autoload/feedback.gd`](game/autoload/feedback.gd)). The repository ships **no third-party art, audio or fonts**; the UI uses Godot's built-in default font. Third-party code and its licenses (only the Godot engine ships in a build; the optional AI proxy can use the MIT-licensed `anthropic` SDK) are listed in [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md), checked by `python tools/audit_release.py`. The visual language (a torch-lit stone dungeon with rune accents, WCAG-checked text contrast, shape cues for every state) and the full asset register with licenses are in [docs/ASSETS.md](docs/ASSETS.md).
 
 ---
 

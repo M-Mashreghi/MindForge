@@ -5,6 +5,11 @@
 
 # Secrets
 .env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.keystore
 
 # Build / export output
 exports/
