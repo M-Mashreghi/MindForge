@@ -2543,7 +2543,7 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 
 ### Task 8.8: Release Runbook and Portfolio Demo Checklist
 
-**Status:** `[ ]` Not Started
+**Status:** `[x]` Completed
 
 **Purpose**  
 Advance Phase 8 while keeping the game playable, deterministic where required, and narrowly scoped to this task.
@@ -2560,13 +2560,16 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 - Confirm the core offline game loop still starts when this task touches runtime code.
 
 **Definition of Done**
-- [ ] Task-specific implementation exists.
-- [ ] Relevant automated/headless validation passes.
-- [ ] No new runtime errors in the affected playable flow.
-- [ ] Documentation and task status are synchronized.
-- [ ] A dedicated `task(8.8): ...` Git commit exists.
-- [ ] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
-- [ ] Scope does not spill into the next task.
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(8.8): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+docs/RELEASE.md: clean-clone setup (Godot 4.5.2, Python stdlib), run/test/export commands, offline mode and the optional AI proxy, release steps, and a 20-minute demo path contrasting a strong and a struggling profile live (F9 overlay, recovery mode) and side by side (`tools/demo_adaptation.gd`: same seed, difficulties about 490 vs 230 by room 15). `tools/check_release.py` fails when a done task has no `task(<id>)` commit, the tree is dirty, HEAD is not on origin/main, or the tag is missing, not on HEAD, or not pushed. README and the progress summary updated (72 of 72). Release `v0.1.0` tagged on the task(8.8) commit and pushed; `check_release.py --tag v0.1.0` reports 0 problems and CI is green.
 
 ---
 
@@ -2574,12 +2577,12 @@ Advance Phase 8 while keeping the game playable, deterministic where required, a
 
 | Phase | Tasks | Completed |
 |---|---:|---:|
-| 1 — Foundation, Repository Workflow & Playable 2D Skeleton | 8 | 0 |
-| 2 — Puzzle Framework & Three Puzzle Families | 10 | 0 |
-| 3 — Player Modeling & Adaptive Difficulty | 10 | 0 |
-| 4 — Scoring, Progression, Save & Player Feedback | 8 | 0 |
-| 5 — Procedural Dungeon & Content Scheduling | 8 | 0 |
-| 6 — AI Puzzle Generation & Safe Content Pipeline | 11 | 0 |
-| 7 — Telemetry, Simulation & Difficulty Calibration | 9 | 0 |
-| 8 — Polish, Accessibility, CI/CD & Release | 8 | 0 |
-| **Total** | **72** | **0** |
+| 1 — Foundation, Repository Workflow & Playable 2D Skeleton | 8 | 8 |
+| 2 — Puzzle Framework & Three Puzzle Families | 10 | 10 |
+| 3 — Player Modeling & Adaptive Difficulty | 10 | 10 |
+| 4 — Scoring, Progression, Save & Player Feedback | 8 | 8 |
+| 5 — Procedural Dungeon & Content Scheduling | 8 | 8 |
+| 6 — AI Puzzle Generation & Safe Content Pipeline | 11 | 11 |
+| 7 — Telemetry, Simulation & Difficulty Calibration | 9 | 9 |
+| 8 — Polish, Accessibility, CI/CD & Release | 8 | 8 |
+| **Total** | **72** | **72** |

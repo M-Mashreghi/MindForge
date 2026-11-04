@@ -37,6 +37,7 @@ MindForge/
 │   ├── ADAPTIVE_EVALUATION.md
 │   ├── ASSETS.md             # asset register and visual language
 │   ├── DEPENDENCIES.md       # third-party code and licenses
+│   ├── RELEASE.md            # release runbook and portfolio demo
 │   ├── REVIEW_NOTES_v2.md
 │   └── RUNBOOK.md
 │

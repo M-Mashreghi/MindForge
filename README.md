@@ -9,10 +9,10 @@ MindForge watches how you play and keeps every room near the edge of your abilit
 
 ![Godot 4.5](https://img.shields.io/badge/Godot-4.5-478CBF?logo=godotengine&logoColor=white)
 ![GDScript](https://img.shields.io/badge/language-GDScript-355570)
-![Tests](https://img.shields.io/badge/tests-363%20passing-2ea44f)
+![Tests](https://img.shields.io/badge/tests-387%20passing-2ea44f)
 ![Offline first](https://img.shields.io/badge/offline-first-8a63d2)
 ![Assets](https://img.shields.io/badge/assets-100%25%20code--generated-f0a500)
-![Progress](https://img.shields.io/badge/roadmap-phase%207%20of%208-blue)
+![Progress](https://img.shields.io/badge/roadmap-8%20of%208%20phases-2ea44f)
 
 <img src="docs/images/boss_stage.png" alt="A two-stage guardian trial in a boss room" width="820">
 
@@ -243,7 +243,7 @@ The project ships with its own headless test runner and repository tools:
 
 ```bash
 GODOT=/path/to/godot tools/validate.sh           # everything below in one command, non-zero on failure (also run by CI)
-GODOT=/path/to/godot tools/run_tests.sh          # 363 headless unit + integration tests
+GODOT=/path/to/godot tools/run_tests.sh          # 387 headless unit + integration tests
 GODOT=/path/to/godot tools/run_tests.sh --suite=save,ai_fallback   # one or more suites (tests/suites.gd)
 GODOT=/path/to/godot tools/check_boot.sh         # project boots without parser/runtime errors
 GODOT=/path/to/godot tools/validate_puzzles.sh   # whole puzzle bank through the content pipeline
@@ -253,6 +253,7 @@ godot --headless --path . -s res://tools/compare_schedules.gd    # adaptive vs s
 godot --headless --path . -s res://tools/telemetry_report.gd     # analytics from local telemetry
 godot --headless --path . -s res://tools/profile_performance.gd  # timing baseline (docs/reports/performance_baseline.md)
 GODOT=/path/to/godot tools/export_release.sh     # Windows/Linux release builds + smoke run (needs export templates)
+godot --headless --path . -s res://tools/demo_adaptation.gd   # strong vs struggling player, same seed, side by side
 ```
 
 What the tests cover includes:
@@ -311,9 +312,9 @@ MindForge/
 | 5 | Procedural dungeon and content scheduling | ✅ Done |
 | 6 | AI puzzle generation behind a safe, solver-first pipeline | ✅ Done |
 | 7 | Telemetry, simulated players and difficulty calibration | ✅ Done |
-| 8 | Polish, accessibility options, CI/CD and release | ⏳ Next |
+| 8 | Polish, accessibility options, CI/CD and release | ✅ Done |
 
-Every task has a dedicated, tested commit: 64 of 72 tasks are complete. See [`docs/TASKS.md`](docs/TASKS.md) for the full ledger and [`docs/PROJECT_PHASES_AND_TASKS.md`](docs/PROJECT_PHASES_AND_TASKS.md) for each task's contract and implementation notes.
+Every task has a dedicated, tested commit: all 72 tasks are complete, and `v0.1.0` is the first tagged release. See [`docs/TASKS.md`](docs/TASKS.md) for the full ledger and [`docs/PROJECT_PHASES_AND_TASKS.md`](docs/PROJECT_PHASES_AND_TASKS.md) for each task's contract and implementation notes.
 
 ---
 
@@ -342,6 +343,9 @@ Every task has a dedicated, tested commit: 64 of 72 tasks are complete. See [`do
 | [AI content policy](docs/AI_CONTENT_POLICY.md) | what AI may and may not do |
 | [Git workflow](docs/GIT_WORKFLOW.md) | per-task commits and pre-commit checks |
 | [Task ledger](docs/TASKS.md) | progress for all 72 tasks |
+| [Release runbook and demo](docs/RELEASE.md) | clean-clone setup, test/export/release steps, optional AI, 20-minute demo path |
+| [Deployment](docs/DEPLOYMENT.md) | export presets, CI, export safety |
+| [Assets](docs/ASSETS.md) and [dependencies](docs/DEPENDENCIES.md) | visual language, provenance and licenses |
 
 ---
 
