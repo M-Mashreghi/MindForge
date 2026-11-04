@@ -194,6 +194,9 @@ The LLM is never the answer key: it may only propose structured parameters, and 
 
 ## Getting started
 
+### Just play
+Download the latest build from [Releases](https://github.com/M-Mashreghi/MindForge/releases/latest): unzip `MindForge-<version>-windows-x86_64.zip` and double-click `MindForge.exe` (or the Linux zip and run `./MindForge.x86_64`). No install, Godot or internet connection needed. The build is not code-signed, so Windows SmartScreen may ask you to choose **More info → Run anyway**.
+
 ### Requirements
 - **Godot 4.5** (standard build, not .NET). The project is pinned to 4.5 and verified with 4.5.2.
 - Windows, Linux or macOS. Tests run headless.
@@ -314,7 +317,7 @@ MindForge/
 | 7 | Telemetry, simulated players and difficulty calibration | ✅ Done |
 | 8 | Polish, accessibility options, CI/CD and release | ✅ Done |
 
-Every task has a dedicated, tested commit: all 72 tasks are complete, and `v0.1.0` is the first tagged release. See [`docs/TASKS.md`](docs/TASKS.md) for the full ledger and [`docs/PROJECT_PHASES_AND_TASKS.md`](docs/PROJECT_PHASES_AND_TASKS.md) for each task's contract and implementation notes.
+Every task has a dedicated, tested commit: all 73 tasks are complete, and `v0.1.0` is the first tagged release, with downloadable Windows and Linux builds on the Releases page. See [`docs/TASKS.md`](docs/TASKS.md) for the full ledger and [`docs/PROJECT_PHASES_AND_TASKS.md`](docs/PROJECT_PHASES_AND_TASKS.md) for each task's contract and implementation notes.
 
 ---
 
@@ -342,7 +345,7 @@ Every task has a dedicated, tested commit: all 72 tasks are complete, and `v0.1.
 | [Save and telemetry](docs/SAVE_AND_TELEMETRY.md) | save format, atomic writes, telemetry events, analytics, privacy |
 | [AI content policy](docs/AI_CONTENT_POLICY.md) | what AI may and may not do |
 | [Git workflow](docs/GIT_WORKFLOW.md) | per-task commits and pre-commit checks |
-| [Task ledger](docs/TASKS.md) | progress for all 72 tasks |
+| [Task ledger](docs/TASKS.md) | progress for all 73 tasks |
 | [Release runbook and demo](docs/RELEASE.md) | clean-clone setup, test/export/release steps, optional AI, 20-minute demo path |
 | [Deployment](docs/DEPLOYMENT.md) | export presets, CI, export safety |
 | [Assets](docs/ASSETS.md) and [dependencies](docs/DEPENDENCIES.md) | visual language, provenance and licenses |

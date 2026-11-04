@@ -85,6 +85,11 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for what the presets include and exclude.
 7. `python tools/check_release.py --tag vX.Y.Z` reports 0 problems: every
    completed task has its `task(<id>)` commit, HEAD is on `origin/main`,
    and the tag points at HEAD locally and on origin.
+8. The tag push starts `.github/workflows/release.yml`, which exports the
+   Windows and Linux builds in the cloud, smoke-tests each on its own OS
+   and publishes them as the GitHub Release for the tag. For a tag that
+   already exists, run the workflow by hand (Actions -> Release -> Run
+   workflow, `tag` = `vX.Y.Z`). See [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## 6. Portfolio demo (about 20 minutes)
 

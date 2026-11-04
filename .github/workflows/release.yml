@@ -1,0 +1,193 @@
+name: Release
+
+# Builds the desktop exports in the cloud (export templates are downloaded
+# here, so nobody needs them installed locally), smoke-tests each build on
+# its own OS, and publishes them as a GitHub Release.
+#   - push of a v* tag: build and publish that tag
+#   - workflow_dispatch: build and publish an existing tag (e.g. v0.1.0)
+#   - pull_request touching the release path: build and smoke-test only
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build and publish (e.g. v0.1.0)"
+        required: true
+  pull_request:
+    paths:
+      - .github/workflows/release.yml
+      - export_presets.cfg
+      - tools/export_release.sh
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+env:
+  GODOT_VERSION: 4.5.2-stable
+  TEMPLATES_DIR: /home/runner/.local/share/godot/export_templates/4.5.2.stable
+
+jobs:
+  export:
+    name: Export Windows and Linux
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - name: Resolve tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG="${{ github.ref_name }}"
+          else
+            TAG="pr-${{ github.event.pull_request.number }}"
+          fi
+          case "$TAG" in *[!A-Za-z0-9._-]*) echo "bad tag: $TAG" >&2; exit 1 ;; esac
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          # Build exactly the tagged code; on a pull request, its head.
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Cache Godot and export templates
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ${{ env.TEMPLATES_DIR }}
+          key: godot-${{ env.GODOT_VERSION }}-linux-x86_64-desktop-templates
+
+      - name: Download Godot and the desktop export templates
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          BASE="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}"
+          mkdir -p ~/godot "$TEMPLATES_DIR"
+          curl -fsSL -o /tmp/godot.zip "$BASE/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d ~/godot
+          mv ~/godot/Godot_v${GODOT_VERSION}_linux.x86_64 ~/godot/godot
+          chmod +x ~/godot/godot
+          curl -fsSL -o /tmp/templates.tpz "$BASE/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          # Only the desktop templates the presets use (the full archive is ~1.3 GB).
+          unzip -q -j -o /tmp/templates.tpz \
+            templates/version.txt \
+            templates/windows_release_x86_64.exe \
+            templates/windows_release_x86_64_console.exe \
+            templates/linux_release.x86_64 \
+            -d "$TEMPLATES_DIR"
+          rm /tmp/templates.tpz
+          cat "$TEMPLATES_DIR/version.txt"
+
+      - name: Export and smoke-test the Linux build
+        env:
+          GODOT: /home/runner/godot/godot
+        run: bash tools/export_release.sh
+
+      - name: Package
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          # Godot is MIT licensed: ship its notice with the binaries.
+          RAW="https://raw.githubusercontent.com/godotengine/godot/${GODOT_VERSION}"
+          mkdir -p dist notices
+          curl -fsSL -o notices/GODOT_LICENSE.txt "$RAW/LICENSE.txt"
+          curl -fsSL -o notices/GODOT_COPYRIGHT.txt "$RAW/COPYRIGHT.txt"
+          printf '%s\n' \
+            "MindForge $TAG - adaptive 2D puzzle dungeon" \
+            "" \
+            "Windows: unzip and double-click MindForge.exe." \
+            "  If SmartScreen says 'Windows protected your PC', click" \
+            "  'More info' then 'Run anyway' (the build is not code-signed)." \
+            "Linux: unzip, then run ./MindForge.x86_64 (chmod +x if needed)." \
+            "" \
+            "No install, account or internet connection is needed." \
+            "Saves go to %APPDATA%\\Godot\\app_userdata\\MindForge (Windows)" \
+            "or ~/.local/share/godot/app_userdata/MindForge (Linux)." \
+            "" \
+            "Built with the Godot Engine (MIT); see GODOT_LICENSE.txt." \
+            > notices/README.txt
+          for os in windows linux; do
+            name="MindForge-${TAG}-${os}-x86_64"
+            mkdir -p "stage/$name"
+            cp exports/$os/* notices/* "stage/$name/"
+            chmod +x "stage/$name/"MindForge.x86_64 2>/dev/null || true
+            (cd stage && zip -qr "../dist/$name.zip" "$name")
+          done
+          (cd dist && sha256sum *.zip > SHA256SUMS.txt && cat SHA256SUMS.txt)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mindforge-builds
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  smoke-windows:
+    name: Smoke-test the Windows build
+    needs: export
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: mindforge-builds
+          path: dist
+
+      - name: Boot the exe headless and play one room
+        shell: bash
+        env:
+          TAG: ${{ needs.export.outputs.tag }}
+        run: |
+          unzip -q "dist/MindForge-${TAG}-windows-x86_64.zip" -d run
+          cd "run/MindForge-${TAG}-windows-x86_64"
+          ./MindForge.exe --headless -- --smoke-run > smoke.log 2>&1; STATUS=$?
+          tail -5 smoke.log
+          [ $STATUS -eq 0 ] \
+            && grep -q "MindForge boot OK" smoke.log \
+            && grep -q "MindForge smoke OK" smoke.log \
+            && ! grep -qE "SCRIPT ERROR|Parse Error" smoke.log
+
+  publish:
+    name: Publish GitHub Release
+    if: github.event_name != 'pull_request'
+    needs: [export, smoke-windows]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: mindforge-builds
+          path: dist
+
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ needs.export.outputs.tag }}
+        run: |
+          printf '%s\n' \
+            "## Download and play" \
+            "" \
+            "- **Windows:** download \`MindForge-${TAG}-windows-x86_64.zip\`, unzip it and double-click \`MindForge.exe\`. The build is not code-signed, so if SmartScreen appears choose **More info -> Run anyway**." \
+            "- **Linux:** download \`MindForge-${TAG}-linux-x86_64.zip\`, unzip it and run \`./MindForge.x86_64\`." \
+            "" \
+            "No install, account or internet connection needed: the game data is embedded in the executable and the optional AI features are off by default." \
+            "" \
+            "Each build was smoke-tested in CI on its own OS (boot plus one solved room). Checksums are in \`SHA256SUMS.txt\`." \
+            > notes.md
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/* --clobber
+          else
+            gh release create "$TAG" dist/* --verify-tag --title "MindForge $TAG" --notes-file notes.md --latest
+          fi

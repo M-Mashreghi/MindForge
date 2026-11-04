@@ -14,7 +14,9 @@ separately in [ASSETS.md](ASSETS.md).
 | python | `anthropic` | Claude provider of the optional AI proxy (`backend/app/providers/anthropic_provider.py`, imported lazily) | No: the proxy falls back to the offline mock provider, and the game runs without the proxy | MIT |
 | action | `actions/checkout` | CI: check out the repository | CI only | MIT |
 | action | `actions/setup-python` | CI: Python for the proxy tests and audits | CI only | MIT |
-| action | `actions/cache` | CI: cache the pinned Godot binary | CI only | MIT |
+| action | `actions/cache` | CI: cache the pinned Godot binary and desktop export templates | CI only | MIT |
+| action | `actions/upload-artifact` | Release workflow: hand the exported builds between jobs | CI only | MIT |
+| action | `actions/download-artifact` | Release workflow: fetch the builds for the Windows smoke test and the release | CI only | MIT |
 
 The Python standard library covers the proxy server, its tests and all
 repository tools (`tools/*.py`). There are no Godot addons (`addons/` does
