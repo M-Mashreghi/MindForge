@@ -58,6 +58,27 @@ Initial release targets:
 - Linux desktop,
 - optional macOS once tested.
 
+## Release Builds
+
+`.github/workflows/release.yml` builds the downloadable releases in the
+cloud, so no one needs export templates installed locally. On Ubuntu it
+downloads the pinned Godot 4.5.2 binary and only the desktop templates the
+presets use (Windows x86_64, Linux x86_64; cached by exact version), runs
+`tools/export_release.sh` (both exports plus the Linux smoke run), and
+packages `MindForge-<tag>-windows-x86_64.zip` and
+`MindForge-<tag>-linux-x86_64.zip` (the executable with the PCK embedded, a
+short README and Godot's MIT license and copyright notices) with
+`SHA256SUMS.txt`. A Windows runner then unzips the Windows build and runs
+`MindForge.exe --headless -- --smoke-run`. Only when both smoke runs pass is
+the GitHub Release created (or its assets replaced) with the workflow's own
+`GITHUB_TOKEN`; no other secret is used.
+
+Triggers: pushing a `v*` tag builds and publishes that tag; running the
+workflow by hand with a `tag` input (Actions -> Release -> Run workflow)
+builds and publishes an existing tag from its tagged code; a pull request
+that touches the workflow, `export_presets.cfg` or `tools/export_release.sh`
+builds and smoke-tests without publishing. Builds are not code-signed.
+
 Web export is post-MVP if AI/network behavior and save semantics are validated.
 
 ## CI Gates

@@ -106,3 +106,4 @@ A completed task should record its commit hash and push status.
 - [x] **Task 8.6** — GitHub Actions CI — Commit: `task(8.6)` — GitHub: `pushed to origin/main`
 - [x] **Task 8.7** — Secrets, Licensing and Dependency Audit — Commit: `task(8.7)` — GitHub: `pushed to origin/main`
 - [x] **Task 8.8** — Release Runbook and Portfolio Demo Checklist — Commit: `task(8.8)` — GitHub: `pushed to origin/main`
+- [x] **Task 8.9** — Cloud Release Builds and GitHub Release Publishing — Commit: `task(8.9)` — GitHub: `pushed to claude/project-thread-f3lrqy (pull request to main)`

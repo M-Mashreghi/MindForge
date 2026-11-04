@@ -2573,6 +2573,37 @@ docs/RELEASE.md: clean-clone setup (Godot 4.5.2, Python stdlib), run/test/export
 
 ---
 
+### Task 8.9: Cloud Release Builds and GitHub Release Publishing
+
+**Status:** `[x]` Completed
+
+**Purpose**
+Let anyone download and play a release without installing Godot, and let maintainers cut a release without installing export templates locally.
+
+**Task-Specific Implementation Contract**
+- Export the Windows Desktop and Linux presets in GitHub Actions with the pinned Godot 4.5.2 templates downloaded in CI.
+- Smoke-test each build on its own OS before anything is published.
+- Publish the builds (zipped, with Godot's license notice and checksums) as the GitHub Release for a tag, including an already existing tag.
+
+**Required Verification**
+- Run the export and Linux smoke run with the same script CI uses.
+- Run the release audit and `git diff --check`.
+- Confirm no unrelated files or secrets are staged.
+
+**Definition of Done**
+- [x] Task-specific implementation exists.
+- [x] Relevant automated/headless validation passes.
+- [x] No new runtime errors in the affected playable flow.
+- [x] Documentation and task status are synchronized.
+- [x] A dedicated `task(8.9): ...` Git commit exists.
+- [x] The commit is pushed to GitHub and upstream verification succeeds when `origin` is configured.
+- [x] Scope does not spill into the next task.
+
+**Implementation Notes**
+`.github/workflows/release.yml`: on a `v*` tag push, a manual run with a `tag` input, or a pull request touching the release path. It downloads Godot 4.5.2 and only the desktop templates (cached), runs `tools/export_release.sh`, packages `MindForge-<tag>-{windows,linux}-x86_64.zip` (executable with embedded PCK, README, Godot `LICENSE.txt`/`COPYRIGHT.txt`) plus `SHA256SUMS.txt`, smoke-tests the Windows exe on a Windows runner, and only then creates or updates the release with `GITHUB_TOKEN` (no third-party release action). Verified locally with Godot 4.5.2 and the official templates: both exports succeed and the Linux build prints `MindForge smoke OK`. `actions/upload-artifact` and `actions/download-artifact` registered in DEPENDENCIES.md; the release audit reports 0 problems. README gains a "Just play" download section; DEPLOYMENT.md and RELEASE.md describe the workflow. Builds are not code-signed (SmartScreen note in the release text). macOS stays optional until it can be tested.
+
+---
+
 ## Progress Summary
 
 | Phase | Tasks | Completed |
@@ -2584,5 +2615,5 @@ docs/RELEASE.md: clean-clone setup (Godot 4.5.2, Python stdlib), run/test/export
 | 5 — Procedural Dungeon & Content Scheduling | 8 | 8 |
 | 6 — AI Puzzle Generation & Safe Content Pipeline | 11 | 11 |
 | 7 — Telemetry, Simulation & Difficulty Calibration | 9 | 9 |
-| 8 — Polish, Accessibility, CI/CD & Release | 8 | 8 |
-| **Total** | **72** | **72** |
+| 8 — Polish, Accessibility, CI/CD & Release | 9 | 9 |
+| **Total** | **73** | **73** |
