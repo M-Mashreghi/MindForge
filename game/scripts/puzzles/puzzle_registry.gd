@@ -51,7 +51,8 @@ static func has_family(family: StringName) -> bool:
 static func family_names() -> Array:
 	_ensure_builtins()
 	var names := _families.keys()
-	names.sort()
+	# By name (StringName `<` compares pointers, not text).
+	names.sort_custom(func(a, b): return str(a) < str(b))
 	return names
 
 

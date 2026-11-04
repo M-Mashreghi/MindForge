@@ -11,7 +11,7 @@ const LatentPlayer := preload("res://game/scripts/simulation/latent_player.gd")
 const Metrics := preload("res://game/scripts/simulation/adaptive_metrics.gd")
 const AdaptiveConfig := preload("res://game/scripts/adaptive/adaptive_config.gd")
 
-const FIXTURE_VERSION := 1
+const FIXTURE_VERSION := 2
 const PATH := "res://tests/fixtures/balance/balance_baseline.json"
 const SEEDS := [11, 12]
 const ROOMS := 36

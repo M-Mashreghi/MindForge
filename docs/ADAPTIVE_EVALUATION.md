@@ -101,7 +101,7 @@ A balance release should be blocked when:
 
 ### Findings (schedule-comparison-v1, adaptive-v3, seeds 1 to 3, 36 rooms)
 
-- Overall, adaptive puts 47% of rooms in the appropriate challenge range against 23% for the static ramp, with 17% too-hard rooms against 49%, no abandonment against 5%, and fewer hints (21% against 32%).
-- The gain is largest for average, inconsistent, improving and struggling players. Static leaves struggling players in too-hard rooms 89% of the time; adaptive cuts that to 41%.
-- Strong players are still the least challenged group: 36% too-easy rooms and 24% in range (65% and 4% under adaptive-v2). Their estimate settles around 750 against a latent 800 and the pool has few puzzles above that.
-- Improving players show negative progression under adaptive because warm-up starts above their initial ability; their final error (58) is still lower than with the static ramp (94).
+- Overall, adaptive puts 43% of rooms in the appropriate challenge range against 23% for the static ramp, with 18% too-hard rooms against 49%, no abandonment against 5%, and fewer hints (23% against 32%). (Re-measured in Task 8.6 after the scheduler's family order was made platform-independent; the previous 47% / 17% came from an order that depended on memory addresses.)
+- The gain is largest for average, inconsistent, improving and struggling players. Static leaves struggling players in too-hard rooms 89% of the time; adaptive cuts that to 66%, which is the weakest result and worth a later balance pass.
+- Strong players are still the least challenged group: 37% too-easy rooms and 25% in range (65% and 4% under adaptive-v2). Their estimate settles around 750 against a latent 800 and the pool has few puzzles above that.
+- Improving players show negative progression under adaptive because warm-up starts above their initial ability; their final error (80) is still lower than with the static ramp (94).

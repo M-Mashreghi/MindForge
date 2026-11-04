@@ -56,7 +56,9 @@ func choose(request: Dictionary) -> Dictionary:
 	for p in puzzles:
 		if (wanted == &"" or p.family == wanted) and not p.family in families:
 			families.append(p.family)
-	families.sort()
+	# By name: StringName `<` compares internal pointers, so a plain sort()
+	# would order families differently between runs and platforms.
+	families.sort_custom(func(a, b): return str(a) < str(b))
 	var scored: Array = []
 	var selections := {}
 	for family in families:
